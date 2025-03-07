@@ -1,0 +1,71 @@
+{
+  "name": "cuan",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A modern, responsive money manager for content management built with React, TypeScript and Tailwind CSS",
+  "type": "module",
+  "author": {
+    "name": "yudopr",
+    "url": "https://github.com/yudopr11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yudopr11/yudas"
+  },
+  "homepage": "https://cuan.yudopr.dev",
+  "license": "MIT",
+  "keywords": [
+    "money manager",
+    "admin",
+    "react",
+    "typescript",
+    "tailwindcss",
+    "markdown"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview --host 0.0.0.0 --port ${PORT:-3000}"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@types/crypto-js": "^4.2.2",
+    "axios": "^1.8.1",
+    "chart.js": "^4.4.8",
+    "crypto-js": "^4.2.0",
+    "react": "^19.0.0",
+    "react-chartjs-2": "^5.3.0",
+    "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2",
+    "react-markdown": "^10.0.0",
+    "react-router-dom": "^7.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@typescript-eslint/eslint-plugin": "^8.26.0",
+    "@typescript-eslint/parser": "^8.26.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.17",
+    "eslint": "^9.20.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "overrides": {
+    "esbuild": "^0.25.0",
+    "glob": "^11.0.1",
+    "rimraf": "^6.0.1",
+    "inflight": "npm:lru-cache@^11.0.2",
+    "@humanwhocodes/config-array": "npm:@eslint/config-array@^0.19.2",
+    "@humanwhocodes/object-schema": "npm:@eslint/object-schema@^2.1.6"
+  }
+}
