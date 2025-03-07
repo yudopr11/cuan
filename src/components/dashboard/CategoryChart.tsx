@@ -8,7 +8,6 @@ import {
 } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import type { CategoryDistribution } from '../../services/api';
-import { formatThousands } from '../../utils/formatters.js';
 import useCurrencyFormatter from '../../hooks/useCurrencyFormatter';
 
 // Register ChartJS components
