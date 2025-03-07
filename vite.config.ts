@@ -31,9 +31,6 @@ export default defineConfig(({ mode }) => {
           manualChunks: {
             'react-vendor': ['react', 'react-dom', 'react-router-dom', 'react-hot-toast'],
             'markdown-core': ['react-markdown'],
-            'syntax-highlight': ['shiki'],
-            'markdown-plugins': ['rehype-raw', 'remark-gfm'],
-            'markdown-math': ['rehype-katex', 'remark-math', 'katex'],
             'utils-vendor': ['axios', 'crypto-js'],
             'ui-vendor': ['@heroicons/react']
           }
