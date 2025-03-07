@@ -6,7 +6,7 @@
 
 > **Cuan**: Catat Uang, Analisis, Nikmati!
 
-## 🚀 Fitur Utama
+## Fitur Utama
 
 - **Dashboard** - Visualisasi dan ringkasan keuangan dengan grafik interaktif
 - **Transaksi** - Pencatatan pemasukan, pengeluaran, dan transfer antar rekening
@@ -15,7 +15,7 @@
 - **Laporan** - Analisis keuangan dengan berbagai filter dan periode
 - **Responsif** - Antarmuka yang optimal untuk desktop dan seluler
 
-## 💻 Teknologi
+## Teknologi
 
 - **Frontend**: React, TypeScript, Tailwind CSS
 - **State Management**: React Hooks
@@ -24,7 +24,7 @@
 - **UI Components**: Headless UI, Heroicons
 - **Toast Notifications**: React Hot Toast
 
-## 🛠️ Instalasi
+## Instalasi
 
 ```bash
 # Clone repositori
@@ -40,7 +40,7 @@ npm install
 npm run dev
 ```
 
-## 📚 Struktur Proyek
+## Struktur Proyek
 
 ```
 /src
@@ -58,13 +58,13 @@ npm run dev
   /utils               # Fungsi utilitas
 ```
 
-## 🔒 Keamanan
+## Keamanan
 
 - Autentikasi user dengan token
 - Enkripsi data sensitif
 - Validasi input untuk mencegah injeksi
 
-## 👨‍💻 Pengembangan
+## Pengembangan
 
 ### Prasyarat
 
@@ -97,14 +97,12 @@ Deploying to Railway is simple:
 
 That's it! Railway will automatically build and deploy your application. If needed, you can add environment variables in your project settings.
 
-## 📝 Lisensi
+## Lisensi
 
-[MIT](LICENSE)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👤 Pengembang
 
-Dikembangkan oleh [yudopr](https://github.com/yudopr)
-
----
-
-&copy; 2023 Cuan. Hak Cipta Dilindungi.
+## Acknowledgments
+- Created by [yudopr](https://github.com/yudopr11)
+- Built with [Vite](https://vitejs.dev/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), and [Tailwind CSS](https://tailwindcss.com/)
+- Deploy with [Railway](https://railway.app)
