@@ -1,46 +1,46 @@
-# Cuan - Aplikasi Manajemen Keuangan Personal
+# Cuan - Personal Financial Management Application
 
 ![Cuan Screenshot](Screenshot_8-3-2025_13259_127.0.0.1.jpeg)
 
-**Cuan** adalah aplikasi manajemen keuangan personal yang memudahkan pengelolaan keuangan Anda. Aplikasi ini membantu Anda mencatat dan memantau pengeluaran, pemasukan, serta transfer antar rekening dalam antarmuka yang intuitif dan modern.
+**Cuan** is a personal financial management application that makes it easy to manage your finances. This application helps you record and monitor expenses, income, and transfers between accounts in an intuitive and modern interface.
 
-> **Cuan**: Catat Uang, Analisis, Nikmati!
+> **Cuan**: Catat Uang, Analisis, Nikamati!
 
-## Fitur Utama
+## Key Features
 
-- **Dashboard** - Visualisasi dan ringkasan keuangan dengan grafik interaktif
-- **Transaksi** - Pencatatan pemasukan, pengeluaran, dan transfer antar rekening
-- **Kategori** - Pengelolaan kategori transaksi untuk pemasukan dan pengeluaran
-- **Akun** - Manajemen berbagai jenis rekening keuangan
-- **Laporan** - Analisis keuangan dengan berbagai filter dan periode
-- **Responsif** - Antarmuka yang optimal untuk desktop dan seluler
+- **Dashboard** - Visualization and summary of finances with interactive graphs
+- **Transactions** - Recording income, expenses, and transfers between accounts
+- **Categories** - Management of transaction categories for income and expenses
+- **Accounts** - Management of various types of financial accounts
+- **Reports** - Financial analysis with various filters and periods
+- **Responsive** - Optimal interface for desktop and mobile
 
-## Teknologi
+## Technology
 
 - **Frontend**: React, TypeScript, Tailwind CSS
 - **State Management**: React Hooks
 - **Routing**: React Router
-- **Visualisasi**: Chart.js
+- **Visualization**: Chart.js
 - **UI Components**: Headless UI, Heroicons
 - **Toast Notifications**: React Hot Toast
 
-## Instalasi
+## Installation
 
 ```bash
-# Clone repositori
+# Clone repository
 git clone https://github.com/yudopr11/cuan.git
 
-# Masuk ke direktori proyek
+# Enter the project directory
 cd cuan
 
-# Instal dependensi
+# Install dependencies
 npm install
 
-# Jalankan aplikasi dalam mode pengembangan
+# Run the app in development mode
 npm run dev
 ```
 
-## Struktur Proyek
+## Project Structure
 
 ```
 /src
@@ -58,32 +58,26 @@ npm run dev
   /utils               # Fungsi utilitas
 ```
 
-## Keamanan
+## Security
 
-- Autentikasi user dengan token
-- Enkripsi data sensitif
-- Validasi input untuk mencegah injeksi
+- User authentication with tokens
+- Sensitive data encryption
+- Input validation to prevent injection
 
-## Pengembangan
+## Development
 
-### Prasyarat
+### Prerequisites
 
-- Node.js (versi 16.x atau yang lebih baru)
-- npm atau yarn
+- Node.js (version 16.x or later)
+- npm or yarn
 
-### Menjalankan Tes
-
-```bash
-npm test
-```
-
-### Build untuk Produksi
+### Build for Production
 
 ```bash
 npm run build
 ```
 
-## Deployment
+## Deployments
 
 ### Railway
 
@@ -97,7 +91,7 @@ Deploying to Railway is simple:
 
 That's it! Railway will automatically build and deploy your application. If needed, you can add environment variables in your project settings.
 
-## Lisensi
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
