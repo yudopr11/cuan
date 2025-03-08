@@ -395,15 +395,13 @@ export default function Accounts({ isMobile }: AccountsProps) {
                       <span className="font-bold text-sm text-gray-100">{formatCurrency(accountDetails.account.limit)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-xs text-gray-400">Available Credit:</span>
-                      <span className="font-bold text-sm text-gray-100">
-                        {formatCurrency(accountDetails.account.limit - Math.abs(accountDetails.balance))}
-                      </span>
+                      <span className="text-xs text-gray-400">Payable Balance:</span>
+                      <span className="font-bold text-sm text-gray-100">{formatCurrency(accountDetails.account.limit - Math.abs(accountDetails.balance))}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-xs text-gray-400">Utilization:</span>
                       <span className="font-bold text-sm text-gray-100">
-                        {((Math.abs(accountDetails.balance) / accountDetails.account.limit) * 100).toFixed(1)}%
+                        {(((accountDetails.account.limit - Math.abs(accountDetails.balance)) / accountDetails.account.limit) * 100).toFixed(1)}%
                       </span>
                     </div>
                   </>
@@ -701,21 +699,21 @@ export default function Accounts({ isMobile }: AccountsProps) {
                     <p className="text-lg font-bold text-gray-100">{formatCurrency(accountDetails.account.limit)}</p>
                   </div>
                   <div className="bg-gray-700 p-4 rounded-lg">
-                    <p className="text-gray-400 text-sm mb-1">Available Credit</p>
+                    <p className="text-gray-400 text-sm mb-1">Payable Balance</p>
                     <p className="text-lg font-bold text-green-400">
-                      {formatCurrency(accountDetails.account.limit - Math.abs(accountDetails.balance))}
+                      {formatCurrency((accountDetails.account.limit - Math.abs(accountDetails.balance)))}
                     </p>
                   </div>
                   <div className="bg-gray-700 p-4 rounded-lg">
                     <p className="text-gray-400 text-sm mb-1">Utilization</p>
                     <div className="flex items-center">
                       <p className="text-lg font-bold text-[#30BDF2] mr-2">
-                        {((Math.abs(accountDetails.balance) / accountDetails.account.limit) * 100).toFixed(1)}%
+                        {(((accountDetails.account.limit - Math.abs(accountDetails.balance))/ accountDetails.account.limit) * 100).toFixed(1)}%
                       </p>
                       <div className="w-full bg-gray-800 rounded-full h-2">
                         <div 
                           className="bg-[#30BDF2] h-2 rounded-full" 
-                          style={{width: `${Math.min(((Math.abs(accountDetails.balance) / accountDetails.account.limit) * 100), 100)}%`}}
+                          style={{width: `${Math.min((((accountDetails.account.limit - Math.abs(accountDetails.balance))/ accountDetails.account.limit) * 100), 100)}%`}}
                         ></div>
                       </div>
                     </div>
