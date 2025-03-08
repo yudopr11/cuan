@@ -79,10 +79,40 @@ export default function Accounts({ isMobile }: AccountsProps) {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: name === 'limit' ? (value ? parseFloat(value) : undefined) : value
-    }));
+    
+    if (name === 'limit') {
+      // Format limit with thousand separator
+      const formattedValue = formatLimitValue(value);
+      const numericValue = parseFloat(value.replace(/,/g, '')) || undefined;
+      
+      setFormData(prev => ({
+        ...prev,
+        [name]: numericValue
+      }));
+      
+      // Update input display value with formatting
+      (e.target as HTMLInputElement).value = formattedValue;
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  // Add function to format limit with thousand separator
+  const formatLimitValue = (value: string) => {
+    // Remove any non-digit characters except decimal point
+    const number = value.replace(/[^\d.]/g, '');
+    
+    // Split number into integer and decimal parts
+    const [integer, decimal] = number.split('.');
+    
+    // Add thousand separator to integer part
+    const formattedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    
+    // Return formatted number with decimal if exists
+    return decimal !== undefined ? `${formattedInteger}.${decimal}` : formattedInteger;
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -293,9 +323,9 @@ export default function Accounts({ isMobile }: AccountsProps) {
                   <div className="mb-3">
                     <label className="block text-xs font-medium text-gray-300 mb-1">Credit Limit</label>
                     <input
-                      type="number"
+                      type="text"
                       name="limit"
-                      value={formData.limit || ''}
+                      value={formData.limit ? formatLimitValue(formData.limit.toString()) : ''}
                       onChange={handleInputChange}
                       className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
                     />
@@ -570,9 +600,9 @@ export default function Accounts({ isMobile }: AccountsProps) {
                 <div className="mb-4">
                   <label className="block text-gray-300 mb-2">Credit Limit</label>
                   <input
-                    type="number"
+                    type="text"
                     name="limit"
-                    value={formData.limit || ''}
+                    value={formData.limit ? formatLimitValue(formData.limit.toString()) : ''}
                     onChange={handleInputChange}
                     className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
                   />
@@ -699,7 +729,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
                     <p className="text-lg font-bold text-gray-100">{formatCurrency(accountDetails.account.limit)}</p>
                   </div>
                   <div className="bg-gray-700 p-4 rounded-lg">
-                    <p className="text-gray-400 text-sm mb-1">Payable Balance</p>
+                    <p className="text-gray-400 text-sm mb-1">Payable Balance:</p>
                     <p className="text-lg font-bold text-green-400">
                       {formatCurrency((accountDetails.account.limit - Math.abs(accountDetails.balance)))}
                     </p>
