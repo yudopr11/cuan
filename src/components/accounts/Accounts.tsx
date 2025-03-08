@@ -191,7 +191,13 @@ export default function Accounts({ isMobile }: AccountsProps) {
 
   // Calculate total balance
   const totalBalance = accounts.reduce((sum, account) => {
-    return sum + (account.balance || 0);
+    // Ensure balance is treated as a number
+    const accountBalance = account.balance !== undefined && account.balance !== null 
+      ? Number(account.balance) 
+      : 0;
+    
+    // Only add to sum if it's a valid number
+    return sum + (isNaN(accountBalance) ? 0 : accountBalance);
   }, 0);
 
   if (isLoading) {
@@ -415,6 +421,10 @@ export default function Accounts({ isMobile }: AccountsProps) {
                 <div className="flex justify-between">
                   <span className="text-xs text-gray-400">Transfers Out:</span>
                   <span className="text-[#30BDF2] font-bold text-sm">{formatCurrency(accountDetails.total_transfers_out)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-xs text-gray-400">Transfer Fees:</span>
+                  <span className="text-[#30BDF2] font-bold text-sm">{formatCurrency(accountDetails.total_transfer_fees)}</span>
                 </div>
                 
                 {accountDetails.account.type === 'credit_card' && accountDetails.account.limit && (
@@ -684,7 +694,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center border-b border-gray-700 pb-2">
                     <span className="text-gray-400">Current Balance:</span>
-                    <span className="text-xl font-bold text-[#30BDF2]">{formatCurrency(accountDetails.balance)}</span>
+                    <span className="font-bold text-[#30BDF2]">{formatCurrency(accountDetails.balance)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-400">Total Income:</span>
@@ -709,10 +719,14 @@ export default function Accounts({ isMobile }: AccountsProps) {
                     <span className="text-gray-400">Transfers Out:</span>
                     <span className="font-bold text-[#30BDF2]">{formatCurrency(accountDetails.total_transfers_out)}</span>
                   </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Transfer Fees:</span>
+                    <span className="font-bold text-[#30BDF2]">{formatCurrency(accountDetails.total_transfer_fees)}</span>
+                  </div>
                   <div className="flex justify-between items-center border-t border-gray-700 pt-2 mt-2">
                     <span className="text-gray-400">Net Transfers:</span>
                     <span className="font-bold text-white">
-                      {formatCurrency(accountDetails.total_transfers_in - accountDetails.total_transfers_out)}
+                      {formatCurrency(accountDetails.total_transfers_in - accountDetails.total_transfers_out - accountDetails.total_transfer_fees)}
                     </span>
                   </div>
                 </div>

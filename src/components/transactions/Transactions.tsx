@@ -63,7 +63,8 @@ export default function Transactions({ isMobile }: TransactionsProps) {
     transaction_type: 'expense',
     account_id: 0,
     category_id: undefined,
-    destination_account_id: undefined
+    destination_account_id: undefined,
+    transfer_fee: 0
   });
 
   // New state for filter dialog (mobile)
@@ -165,7 +166,8 @@ export default function Transactions({ isMobile }: TransactionsProps) {
         transaction_type: transaction.transaction_type,
         account_id: transaction.account_id,
         category_id: transaction.category_id,
-        destination_account_id: transaction.destination_account_id
+        destination_account_id: transaction.destination_account_id,
+        transfer_fee: transaction.transfer_fee || 0
       });
     } else {
       setSelectedTransaction(null);
@@ -182,7 +184,8 @@ export default function Transactions({ isMobile }: TransactionsProps) {
         transaction_type: 'expense',
         account_id: accounts.length > 0 ? accounts[0].account_id : 0,
         category_id: undefined,
-        destination_account_id: undefined
+        destination_account_id: undefined,
+        transfer_fee: 0
       });
     }
     setIsModalOpen(true);
@@ -196,7 +199,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
-    if (name === 'amount') {
+    if (name === 'amount' || name === 'transfer_fee') {
       // Format amount with thousand separator
       const formattedValue = formatAmount(value);
       const numericValue = parseFloat(value.replace(/,/g, '')) || 0;
@@ -489,6 +492,12 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                       </div>
                     )}
                   </div>
+                  {transaction.transaction_type === 'transfer' && transaction.transfer_fee !== undefined && transaction.transfer_fee > 0 && (
+                    <div className="mt-1 text-xs">
+                      <span className="text-gray-400">Fee: </span>
+                      <span className="text-gray-300">{formatCurrency(transaction.transfer_fee)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-end mt-2 space-x-2">
                     <button
                       onClick={() => handleOpenModal(transaction)}
@@ -615,7 +624,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="transaction_type"
                     value={filters.transaction_type}
                     onChange={handleFilterChange}
-                    className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
+                    className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md text-xs shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
                   >
                     <option value="">All Types</option>
                     <option value="income">Income</option>
@@ -632,7 +641,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="account_name"
                     value={filters.account_name}
                     onChange={handleFilterChange}
-                    className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
+                    className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md shadow-sm text-xs bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
                   >
                     <option value="">All Accounts</option>
                     {accounts.map(account => (
@@ -651,7 +660,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="category_name"
                     value={filters.category_name}
                     onChange={handleFilterChange}
-                    className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
+                    className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 text-xs rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
                   >
                     <option value="">All Categories</option>
                     {categories
@@ -700,12 +709,12 @@ export default function Transactions({ isMobile }: TransactionsProps) {
         {/* Transaction Form Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="modal-dark w-full max-w-lg p-4">
-              <h2 className="text-lg font-bold mb-3 text-white">
+            <div className="modal-dark w-full max-w-md p-4">
+              <h2 className="text-base font-bold mb-3 text-gray-200">
                 {selectedTransaction ? 'Edit Transaction' : 'Add Transaction'}
               </h2>
               
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-3">
                 <div className="mb-3">
                   <label className="block text-xs font-medium text-gray-300 mb-1">
                     Type
@@ -714,7 +723,8 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="transaction_type"
                     value={formData.transaction_type}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                   >
                     <option value="expense">Expense</option>
                     <option value="income">Income</option>
@@ -731,7 +741,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="amount"
                     value={formatAmount(formData.amount.toString())}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
                     required
                   />
                 </div>
@@ -745,7 +755,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="transaction_date"
                     value={formData.transaction_date}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
                     required
                   />
                 </div>
@@ -759,12 +769,12 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
                     required
                   />
                 </div>
                 
-                <div>
+                <div className="mb-3">
                   <label className="block text-xs font-medium text-gray-300 mb-1">
                     Account
                   </label>
@@ -772,7 +782,8 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="account_id"
                     value={formData.account_id}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                     required
                   >
                     <option value="">Select Account</option>
@@ -785,7 +796,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 </div>
                 
                 {formData.transaction_type !== 'transfer' && (
-                  <div>
+                  <div className="mb-3">
                     <label className="block text-xs font-medium text-gray-300 mb-1">
                       Category
                     </label>
@@ -793,7 +804,8 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                       name="category_id"
                       value={formData.category_id || ''}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
+                      className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none"
+                      style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                     >
                       <option value="">Select Category (Optional)</option>
                       {categories
@@ -812,41 +824,58 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 )}
                 
                 {formData.transaction_type === 'transfer' && (
-                  <div>
-                    <label className="block text-xs font-medium text-gray-300 mb-1">
-                      To Account
-                    </label>
-                    <select
-                      name="destination_account_id"
-                      value={formData.destination_account_id || ''}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
-                      required={formData.transaction_type === 'transfer'}
-                    >
-                      <option value="">Select Destination Account</option>
-                      {accounts
-                        .filter(account => account.account_id !== formData.account_id)
-                        .map(account => (
-                          <option key={account.account_id} value={account.account_id}>
-                            {account.name}
-                          </option>
-                        ))
-                      }
-                    </select>
-                  </div>
+                  <>
+                    <div className="mb-3">
+                      <label className="block text-xs font-medium text-gray-300 mb-1">
+                        To Account
+                      </label>
+                      <select
+                        name="destination_account_id"
+                        value={formData.destination_account_id || ''}
+                        onChange={handleInputChange}
+                        className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none"
+                        style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
+                        required={formData.transaction_type === 'transfer'}
+                      >
+                        <option value="">Select Destination Account</option>
+                        {accounts
+                          .filter(account => account.account_id !== formData.account_id)
+                          .map(account => (
+                            <option key={account.account_id} value={account.account_id}>
+                              {account.name}
+                            </option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                    
+                    <div className="mb-3">
+                      <label className="block text-xs font-medium text-gray-300 mb-1">
+                        Transfer Fee (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        name="transfer_fee"
+                        value={formatAmount((formData.transfer_fee || 0).toString())}
+                        onChange={handleInputChange}
+                        className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
+                      />
+                      <p className="text-xs text-gray-400 mt-1">If any fee charged for this transfer</p>
+                    </div>
+                  </>
                 )}
                 
-                <div className="flex justify-end space-x-2 pt-3">
+                <div className="flex justify-end space-x-3 pt-3">
                   <button
                     type="button"
                     onClick={handleCloseModal}
-                    className="px-3 py-1.5 border border-gray-700 rounded-md text-xs font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800"
+                    className="px-3 py-1.5 border border-gray-700 rounded-md text-xs text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-3 py-1.5 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-[#30BDF2] hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800"
+                    className="px-3 py-1.5 bg-[#30BDF2] text-xs text-white rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800"
                   >
                     {selectedTransaction ? 'Update' : 'Add'}
                   </button>
@@ -878,7 +907,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 <button
                   type="button"
                   onClick={handleDeleteTransaction}
-                  className="px-3 py-1.5 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="px-3 py-1.5 border border-transparent rounded-md shadow-sm text-xs text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
                   Delete
                 </button>
@@ -916,9 +945,10 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 value={filters.date_filter_type}
                 onChange={handleFilterChange}
                 className={`w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right ${
-                  filters.date_filter_type === 'custom' ? 'bg-[#30BDF2] text-white focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800'
+                  filters.date_filter_type === 'custom' ? 'bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900'
+                  : 'bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900'
                 }`}
+                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
               >
                 {dateFilterPresets.map(preset => (
                   <option key={preset.value} value={preset.value}>
@@ -967,6 +997,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 value={filters.transaction_type}
                 onChange={handleFilterChange}
                 className="w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
               >
                 <option value="">All Types</option>
                 <option value="income">Income</option>
@@ -984,6 +1015,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 value={filters.account_name}
                 onChange={handleFilterChange}
                 className="w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
               >
                 <option value="">All Accounts</option>
                 {accounts.map(account => (
@@ -1003,6 +1035,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 value={filters.category_name}
                 onChange={handleFilterChange}
                 className="w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
               >
                 <option value="">All Categories</option>
                 {categories
@@ -1048,6 +1081,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Account</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Category</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Amount</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Transfer Fee</th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -1063,6 +1097,9 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-gray-300">
                         {transaction.account?.name || 'Unknown account'}
+                        {transaction.transaction_type === 'transfer' && transaction.destination_account && (
+                          <span> → {transaction.destination_account.name}</span>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-gray-300">
                         {transaction.category?.name || 'Uncategorized'}
@@ -1072,6 +1109,11 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                         transaction.transaction_type === 'expense' ? 'text-red-400' : 'text-blue-400'
                       }`}>
                         {formatCurrency(transaction.amount)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-300">
+                        {transaction.transaction_type === 'transfer' && transaction.transfer_fee !== undefined && transaction.transfer_fee > 0 
+                          ? formatCurrency(transaction.transfer_fee) 
+                          : '-'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
@@ -1091,7 +1133,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="px-6 py-4 text-center text-gray-300">
+                    <td colSpan={7} className="px-6 py-4 text-center text-gray-300">
                       No transactions found
                     </td>
                   </tr>
@@ -1152,21 +1194,22 @@ export default function Transactions({ isMobile }: TransactionsProps) {
       {/* Transaction Form Modal - Desktop */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="modal-dark w-full max-w-lg p-6">
-            <h2 className="text-xl font-bold mb-4 text-white">
+          <div className="modal-dark w-full max-w-md p-6">
+            <h2 className="text-xl font-bold mb-4 text-gray-200">
               {selectedTransaction ? 'Edit Transaction' : 'Add Transaction'}
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-gray-300 mb-2">
                   Type
                 </label>
                 <select
                   name="transaction_type"
                   value={formData.transaction_type}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none"
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                 >
                   <option value="expense">Expense</option>
                   <option value="income">Income</option>
@@ -1175,7 +1218,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
               </div>
               
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-gray-300 mb-2">
                   Amount
                 </label>
                 <input
@@ -1183,13 +1226,13 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   name="amount"
                   value={formatAmount(formData.amount.toString())}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
                   required
                 />
               </div>
               
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-gray-300 mb-2">
                   Date
                 </label>
                 <input
@@ -1197,13 +1240,13 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   name="transaction_date"
                   value={formData.transaction_date}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
                   required
                 />
               </div>
               
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-gray-300 mb-2">
                   Description
                 </label>
                 <input
@@ -1211,20 +1254,21 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
                   required
                 />
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-2">
                   Account
                 </label>
                 <select
                   name="account_id"
                   value={formData.account_id}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none"
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                   required
                 >
                   <option value="">Select Account</option>
@@ -1237,15 +1281,16 @@ export default function Transactions({ isMobile }: TransactionsProps) {
               </div>
               
               {formData.transaction_type !== 'transfer' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                <div className="mb-4">
+                  <label className="block text-gray-300 mb-2">
                     Category
                   </label>
                   <select
                     name="category_id"
                     value={formData.category_id || ''}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                   >
                     <option value="">Select Category (Optional)</option>
                     {categories
@@ -1264,41 +1309,58 @@ export default function Transactions({ isMobile }: TransactionsProps) {
               )}
               
               {formData.transaction_type === 'transfer' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
-                    To Account
-                  </label>
-                  <select
-                    name="destination_account_id"
-                    value={formData.destination_account_id || ''}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
-                    required={formData.transaction_type === 'transfer'}
-                  >
-                    <option value="">Select Destination Account</option>
-                    {accounts
-                      .filter(account => account.account_id !== formData.account_id)
-                      .map(account => (
-                        <option key={account.account_id} value={account.account_id}>
-                          {account.name}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
+                <>
+                  <div className="mb-4">
+                    <label className="block text-gray-300 mb-2">
+                      To Account
+                    </label>
+                    <select
+                      name="destination_account_id"
+                      value={formData.destination_account_id || ''}
+                      onChange={handleInputChange}
+                      className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none"
+                      style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
+                      required={formData.transaction_type === 'transfer'}
+                    >
+                      <option value="">Select Destination Account</option>
+                      {accounts
+                        .filter(account => account.account_id !== formData.account_id)
+                        .map(account => (
+                          <option key={account.account_id} value={account.account_id}>
+                            {account.name}
+                          </option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <label className="block text-gray-300 mb-2">
+                      Transfer Fee (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      name="transfer_fee"
+                      value={formatAmount((formData.transfer_fee || 0).toString())}
+                      onChange={handleInputChange}
+                      className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
+                    />
+                    <p className="text-xs text-gray-400 mt-1">If any fee charged for this transfer</p>
+                  </div>
+                </>
               )}
               
               <div className="flex justify-end space-x-3 pt-4">
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="px-4 py-2 border border-gray-700 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
+                  className="px-4 py-2 border border-gray-700 rounded-md text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#30BDF2] hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
+                  className="px-4 py-2 bg-[#30BDF2] text-white rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   {selectedTransaction ? 'Update' : 'Add'}
                 </button>
@@ -1323,14 +1385,14 @@ export default function Transactions({ isMobile }: TransactionsProps) {
               <button
                 type="button"
                 onClick={handleCloseDeleteModal}
-                className="px-4 py-2 border border-gray-700 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
+                className="px-4 py-2 border border-gray-700 rounded-md text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleDeleteTransaction}
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 Delete
               </button>

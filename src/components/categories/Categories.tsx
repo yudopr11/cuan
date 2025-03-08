@@ -159,20 +159,20 @@ export default function Categories({ isMobile }: CategoriesProps) {
           {/* Tab Switcher */}
           <div className="flex rounded-lg overflow-hidden border border-gray-700">
             <button
-              className={`flex-1 py-2 text-center text-sm ${
+              className={`flex-1 py-2 px-2 text-center text-xs ${
                 activeTab === 'expense'
-                  ? 'bg-[#30BDF2] text-white focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800'
+                  ? 'bg-[#30BDF2] text-white focus:outline-none'
+                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 focus:outline-none'
               }`}
               onClick={() => handleTabChange('expense')}
             >
               Expense
             </button>
             <button
-              className={`flex-1 py-2 text-center text-sm ${
+              className={`flex-1 py-2 px-2 text-center text-xs ${
                 activeTab === 'income'
-                  ? 'bg-[#30BDF2] text-white focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800'
+                  ? 'bg-[#30BDF2] text-white focus:outline-none'
+                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 focus:outline-none'
               }`}
               onClick={() => handleTabChange('income')}
             >
@@ -457,13 +457,13 @@ export default function Categories({ isMobile }: CategoriesProps) {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="modal-dark w-full max-w-md p-6">
-            <h2 className="text-xl font-bold mb-4 text-gray-200">
+            <h2 className="text-2xl font-bold mb-4 text-gray-200">
               {selectedCategory ? 'Edit Category' : 'Add Category'}
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-2 font-medium">
                   Category Name
                 </label>
                 <input
@@ -471,20 +471,20 @@ export default function Categories({ isMobile }: CategoriesProps) {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2.5 text-base text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
                   required
                 />
               </div>
               
-              <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">
+              <div className="mb-4">
+                <label className="block text-gray-300 mb-2 font-medium">
                   Category Type
                 </label>
                 <select
                   name="type"
                   value={formData.type}
                   onChange={handleInputChange}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2.5 text-base text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none"
                   style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                 >
                   <option value="income">Income</option>
@@ -492,17 +492,17 @@ export default function Categories({ isMobile }: CategoriesProps) {
                 </select>
               </div>
               
-              <div className="flex justify-end space-x-3 pt-4">
+              <div className="flex justify-end space-x-4 pt-4">
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="px-4 py-2 border border-gray-700 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
+                  className="px-5 py-2.5 border border-gray-700 rounded-md text-base text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#30BDF2] text-sm font-medium text-white rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
+                  className="px-5 py-2.5 bg-[#30BDF2] text-base text-white rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   {selectedCategory ? 'Update' : 'Create'}
                 </button>
@@ -517,20 +517,20 @@ export default function Categories({ isMobile }: CategoriesProps) {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="modal-dark w-full max-w-md p-6">
             <h2 className="text-xl font-bold mb-4 text-gray-200">Delete Category</h2>
-            <p className="mb-6 text-sm text-gray-300">
+            <p className="mb-6 text-gray-300">
               Are you sure you want to delete the category "<span className="text-white font-medium">{categoryToDelete.name}</span>"? This action cannot be undone.
             </p>
             <div className="flex justify-end space-x-3">
               <button
                 onClick={handleCloseDeleteModal}
-                className="px-4 py-2 border border-gray-700 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
+                className="px-4 py-2 border border-gray-700 rounded-md text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleDeleteCategory}
-                className="px-4 py-2 bg-red-500 text-sm font-medium text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 Delete
               </button>

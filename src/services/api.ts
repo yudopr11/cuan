@@ -31,6 +31,7 @@ export interface AccountBalance {
   total_expenses: number;
   total_transfers_in: number;
   total_transfers_out: number;
+  total_transfer_fees: number;
   account: Account;
 }
 
@@ -58,6 +59,7 @@ export interface Transaction {
   description: string;
   transaction_date: string;
   transaction_type: string;
+  transfer_fee?: number;
   account_id: number;
   category_id?: number;
   destination_account_id?: number;
@@ -89,6 +91,7 @@ export interface TransactionCreate {
   account_id: number;
   category_id?: number;
   destination_account_id?: number;
+  transfer_fee?: number;
 }
 
 export interface TransactionListResponse {

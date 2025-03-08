@@ -63,7 +63,8 @@ export default function Dashboard({ isMobile }: DashboardProps) {
   // Initial data fetch and period changes
   useEffect(() => {
     const fetchData = async () => {
-      await fetchDashboardData(true);
+      await fetchInitialDashboardData();
+      await fetchPeriodRelatedData();
       await fetchCategoryData();
       setIsInitialLoading(false);
     };
@@ -73,7 +74,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
   // Refresh data when period changes
   useEffect(() => {
     if (!isInitialLoading) {
-      fetchDashboardData(false);
+      fetchPeriodRelatedData();
       fetchCategoryData();
     }
   }, [period]);
@@ -100,23 +101,10 @@ export default function Dashboard({ isMobile }: DashboardProps) {
     }
   };
 
-  const fetchDashboardData = async (isInitial: boolean) => {
-    if (!isInitial) {
-      setIsRefreshing(true);
-    }
+  // Fetch data that should only be loaded once at initialization
+  const fetchInitialDashboardData = async () => {
     let hasErrors = false;
     
-    // Fetch financial summary for selected period
-    try {
-      const summary = await getFinancialSummary({ period });
-      setFinancialSummary(summary);
-      setErrors(prev => ({ ...prev, financial: false }));
-    } catch (error) {
-      console.error('Error fetching financial summary:', error);
-      setErrors(prev => ({ ...prev, financial: true }));
-      hasErrors = true;
-    }
-
     // Fetch account summary with transactions included
     try {
       const accounts = await getAccountSummary({
@@ -145,6 +133,28 @@ export default function Dashboard({ isMobile }: DashboardProps) {
       hasErrors = true;
     }
     
+    // Show general error toast if any of the requests failed
+    if (hasErrors) {
+      toast.error('Some dashboard data could not be loaded. Please try refreshing the page.');
+    }
+  };
+
+  // Fetch data that should update when the period changes
+  const fetchPeriodRelatedData = async () => {
+    setIsRefreshing(true);
+    let hasErrors = false;
+    
+    // Fetch financial summary for selected period
+    try {
+      const summary = await getFinancialSummary({ period });
+      setFinancialSummary(summary);
+      setErrors(prev => ({ ...prev, financial: false }));
+    } catch (error) {
+      console.error('Error fetching financial summary:', error);
+      setErrors(prev => ({ ...prev, financial: true }));
+      hasErrors = true;
+    }
+    
     // Fetch transaction trends with appropriate grouping
     try {
       const groupBy = period === 'day' ? 'day' : 
@@ -163,9 +173,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
       hasErrors = true;
     }
 
-    if (!isInitial) {
-      setIsRefreshing(false);
-    }
+    setIsRefreshing(false);
     
     // Show general error toast if any of the requests failed
     if (hasErrors) {
@@ -373,10 +381,62 @@ export default function Dashboard({ isMobile }: DashboardProps) {
           )}
         </div>
         
+        {/* Recent Transactions */}
+        <div className="card-dark">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-base md:text-lg font-semibold text-white">Recent Transactions</h2>
+            <Link to="/transactions" className="text-xs md:text-sm text-[#30BDF2] hover:text-[#28a8d8]">View All</Link>
+          </div>
+          {recentTransactions.length > 0 ? (
+            <div className="divide-y divide-gray-700">
+              {recentTransactions.map((transaction, index, arr) => (
+                <div key={transaction.transaction_id} className={`py-2 md:py-3 flex items-center justify-between ${index === arr.length - 1 ? 'border-b-0' : ''}`}>
+                  <div className="flex items-center">
+                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center ${
+                      transaction.transaction_type === 'income' ? 'bg-green-950 text-green-400' :
+                      transaction.transaction_type === 'expense' ? 'bg-red-950 text-red-400' :
+                      'bg-blue-950 text-blue-400'
+                    }`}>
+                      {transaction.transaction_type === 'income' ? (
+                        <ArrowDownIcon className="h-4 w-4 md:h-5 md:w-5" />
+                      ) : transaction.transaction_type === 'expense' ? (
+                        <ArrowUpIcon className="h-4 w-4 md:h-5 md:w-5" />
+                      ) : (
+                        <ArrowsRightLeftIcon className="h-4 w-4 md:h-5 md:w-5" />
+                      )}
+                    </div>
+                    <div className="ml-3 md:ml-4">
+                      <div className="text-sm md:text-base font-medium text-white">{transaction.description}</div>
+                      <div className="text-xs md:text-sm text-gray-200">
+                        {formatDate(transaction.transaction_date)} · {transaction.category?.name || 'Uncategorized'}
+                      </div>
+                    </div>
+                  </div>
+                  <div className={`text-sm md:text-base font-medium ${
+                    transaction.transaction_type === 'income' ? 'text-green-400' :
+                    transaction.transaction_type === 'expense' ? 'text-red-400' :
+                    'text-blue-400'
+                  }`}>
+                    {transaction.transaction_type === 'income' ? '+' : transaction.transaction_type === 'expense' ? '-' : ''}
+                    {formatCurrency(transaction.amount)}
+                    {transaction.transaction_type === 'transfer' && transaction.transfer_fee && transaction.transfer_fee > 0 && (
+                      <div className="text-xs text-gray-400">Fee: {formatCurrency(transaction.transfer_fee)}</div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-6 md:py-8 text-center text-gray-300">
+              No recent transactions
+            </div>
+          )}
+        </div>
+        
         {/* Account Summary */}
         <div className="card-dark">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-base md:text-lg font-semibold text-white">Accounts</h2>
+            <h2 className="text-base md:text-lg font-semibold text-white">Active Accounts</h2>
             <Link to="/accounts" className="text-xs md:text-sm text-[#30BDF2]">View All</Link>
           </div>
           {!errors.accounts ? (
@@ -419,55 +479,6 @@ export default function Dashboard({ isMobile }: DashboardProps) {
               >
                 Try Again
               </button>
-            </div>
-          )}
-        </div>
-
-        {/* Recent Transactions */}
-        <div className="card-dark">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-base md:text-lg font-semibold text-white">Recent Transactions</h2>
-            <Link to="/transactions" className="text-xs md:text-sm text-[#30BDF2] hover:text-[#28a8d8]">View All</Link>
-          </div>
-          {recentTransactions.length > 0 ? (
-            <div className="divide-y divide-gray-700">
-              {recentTransactions.map((transaction, index, arr) => (
-                <div key={transaction.transaction_id} className={`py-2 md:py-3 flex items-center justify-between ${index === arr.length - 1 ? 'border-b-0' : ''}`}>
-                  <div className="flex items-center">
-                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center ${
-                      transaction.transaction_type === 'income' ? 'bg-green-950 text-green-400' :
-                      transaction.transaction_type === 'expense' ? 'bg-red-950 text-red-400' :
-                      'bg-blue-950 text-blue-400'
-                    }`}>
-                      {transaction.transaction_type === 'income' ? (
-                        <ArrowDownIcon className="h-4 w-4 md:h-5 md:w-5" />
-                      ) : transaction.transaction_type === 'expense' ? (
-                        <ArrowUpIcon className="h-4 w-4 md:h-5 md:w-5" />
-                      ) : (
-                        <ArrowsRightLeftIcon className="h-4 w-4 md:h-5 md:w-5" />
-                      )}
-                    </div>
-                    <div className="ml-3 md:ml-4">
-                      <div className="text-sm md:text-base font-medium text-white">{transaction.description}</div>
-                      <div className="text-xs md:text-sm text-gray-200">
-                        {formatDate(transaction.transaction_date)} · {transaction.category?.name || 'Uncategorized'}
-                      </div>
-                    </div>
-                  </div>
-                  <div className={`text-sm md:text-base font-medium ${
-                    transaction.transaction_type === 'income' ? 'text-green-400' :
-                    transaction.transaction_type === 'expense' ? 'text-red-400' :
-                    'text-blue-400'
-                  }`}>
-                    {transaction.transaction_type === 'income' ? '+' : transaction.transaction_type === 'expense' ? '-' : ''}
-                    {formatCurrency(transaction.amount)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="py-6 md:py-8 text-center text-gray-300">
-              No recent transactions
             </div>
           )}
         </div>
@@ -639,10 +650,63 @@ export default function Dashboard({ isMobile }: DashboardProps) {
 
       {/* Row 3: Accounts and Recent Transactions */}
       <div className="grid grid-cols-2 gap-6">
+        {/* Recent Transactions */}
+        <div className="card-dark">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Recent Transactions</h2>
+            <Link to="/transactions" className="text-xs sm:text-sm lg:text-base text-[#30BDF2] hover:text-[#28a8d8]">View All</Link>
+          </div>
+          
+          {recentTransactions.length > 0 ? (
+            <div className="divide-y divide-gray-700">
+              {recentTransactions.map((transaction) => (
+                <div key={transaction.transaction_id} className="py-3 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className={`w-8 sm:w-9 lg:w-10 h-8 sm:h-9 lg:h-10 rounded-full flex items-center justify-center ${
+                      transaction.transaction_type === 'income' ? 'bg-green-950 text-green-400' :
+                      transaction.transaction_type === 'expense' ? 'bg-red-950 text-red-400' :
+                      'bg-blue-950 text-blue-400'
+                    }`}>
+                      {transaction.transaction_type === 'income' ? (
+                        <ArrowDownIcon className="h-4 sm:h-4 lg:h-5 w-4 sm:w-4 lg:w-5" />
+                      ) : transaction.transaction_type === 'expense' ? (
+                        <ArrowUpIcon className="h-4 sm:h-4 lg:h-5 w-4 sm:w-4 lg:w-5" />
+                      ) : (
+                        <ArrowsRightLeftIcon className="h-4 sm:h-4 lg:h-5 w-4 sm:w-4 lg:w-5" />
+                      )}
+                    </div>
+                    <div className="ml-3 sm:ml-4">
+                      <div className="text-sm lg:text-base xl:text-lg font-medium text-white">{transaction.description}</div>
+                      <div className="text-xs lg:text-sm text-gray-200">
+                        {formatDate(transaction.transaction_date)} · {transaction.category?.name || 'Uncategorized'}
+                      </div>
+                    </div>
+                  </div>
+                  <div className={`text-sm lg:text-base xl:text-lg font-medium ${
+                    transaction.transaction_type === 'income' ? 'text-green-400' :
+                    transaction.transaction_type === 'expense' ? 'text-red-400' :
+                    'text-blue-400'
+                  }`}>
+                    {transaction.transaction_type === 'income' ? '+' : transaction.transaction_type === 'expense' ? '-' : ''}
+                    {formatCurrency(transaction.amount)}
+                    {transaction.transaction_type === 'transfer' && transaction.transfer_fee && transaction.transfer_fee > 0 && (
+                      <div className="text-xs text-gray-400">Fee: {formatCurrency(transaction.transfer_fee)}</div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-8 text-center text-sm lg:text-base text-gray-300">
+              No recent transactions
+            </div>
+          )}
+        </div>
+
         {/* Account Summary */}
         <div className="card-dark">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Accounts</h2>
+            <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Active Accounts</h2>
             <Link to="/accounts" className="text-xs sm:text-sm lg:text-base text-[#30BDF2]">View All</Link>
           </div>
           
@@ -686,56 +750,6 @@ export default function Dashboard({ isMobile }: DashboardProps) {
               >
                 Try Again
               </button>
-            </div>
-          )}
-        </div>
-        
-        {/* Recent Transactions */}
-        <div className="card-dark">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Recent Transactions</h2>
-            <Link to="/transactions" className="text-xs sm:text-sm lg:text-base text-[#30BDF2] hover:text-[#28a8d8]">View All</Link>
-          </div>
-          
-          {recentTransactions.length > 0 ? (
-            <div className="divide-y divide-gray-700">
-              {recentTransactions.map((transaction) => (
-                <div key={transaction.transaction_id} className="py-3 flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className={`w-8 sm:w-9 lg:w-10 h-8 sm:h-9 lg:h-10 rounded-full flex items-center justify-center ${
-                      transaction.transaction_type === 'income' ? 'bg-green-950 text-green-400' :
-                      transaction.transaction_type === 'expense' ? 'bg-red-950 text-red-400' :
-                      'bg-blue-950 text-blue-400'
-                    }`}>
-                      {transaction.transaction_type === 'income' ? (
-                        <ArrowDownIcon className="h-4 sm:h-4 lg:h-5 w-4 sm:w-4 lg:w-5" />
-                      ) : transaction.transaction_type === 'expense' ? (
-                        <ArrowUpIcon className="h-4 sm:h-4 lg:h-5 w-4 sm:w-4 lg:w-5" />
-                      ) : (
-                        <ArrowsRightLeftIcon className="h-4 sm:h-4 lg:h-5 w-4 sm:w-4 lg:w-5" />
-                      )}
-                    </div>
-                    <div className="ml-3 sm:ml-4">
-                      <div className="text-sm lg:text-base xl:text-lg font-medium text-white">{transaction.description}</div>
-                      <div className="text-xs lg:text-sm text-gray-200">
-                        {formatDate(transaction.transaction_date)} · {transaction.category?.name || 'Uncategorized'}
-                      </div>
-                    </div>
-                  </div>
-                  <div className={`text-sm lg:text-base xl:text-lg font-medium ${
-                    transaction.transaction_type === 'income' ? 'text-green-400' :
-                    transaction.transaction_type === 'expense' ? 'text-red-400' :
-                    'text-blue-400'
-                  }`}>
-                    {transaction.transaction_type === 'income' ? '+' : transaction.transaction_type === 'expense' ? '-' : ''}
-                    {formatCurrency(transaction.amount)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="py-8 text-center text-sm lg:text-base text-gray-300">
-              No recent transactions
             </div>
           )}
         </div>
