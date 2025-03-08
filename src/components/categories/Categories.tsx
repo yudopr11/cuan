@@ -161,8 +161,8 @@ export default function Categories({ isMobile }: CategoriesProps) {
             <button
               className={`flex-1 py-2 text-center text-sm ${
                 activeTab === 'expense'
-                  ? 'bg-[#30BDF2] text-white'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  ? 'bg-[#30BDF2] text-white focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800'
+                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800'
               }`}
               onClick={() => handleTabChange('expense')}
             >
@@ -171,8 +171,8 @@ export default function Categories({ isMobile }: CategoriesProps) {
             <button
               className={`flex-1 py-2 text-center text-sm ${
                 activeTab === 'income'
-                  ? 'bg-[#30BDF2] text-white'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  ? 'bg-[#30BDF2] text-white focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800'
+                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800'
               }`}
               onClick={() => handleTabChange('income')}
             >
@@ -190,13 +190,13 @@ export default function Categories({ isMobile }: CategoriesProps) {
                     <div className="space-x-2">
                       <button
                         onClick={() => handleOpenModal(category)}
-                        className="text-[#30BDF2] hover:text-[#28a8d8] mr-2 text-xs"
+                        className="text-indigo-400 hover:text-indigo-300 mr-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-800 rounded"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleOpenDeleteModal(category)}
-                        className="text-red-500 hover:text-red-400 text-xs"
+                        className="text-red-500 hover:text-red-400 text-xs focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 rounded"
                       >
                         Delete
                       </button>
@@ -214,13 +214,13 @@ export default function Categories({ isMobile }: CategoriesProps) {
                     <div className="space-x-2">
                       <button
                         onClick={() => handleOpenModal(category)}
-                        className="text-[#30BDF2] hover:text-[#28a8d8] mr-2 text-xs"
+                        className="text-indigo-400 hover:text-indigo-300 mr-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-800 rounded"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleOpenDeleteModal(category)}
-                        className="text-red-500 hover:text-red-400 text-xs"
+                        className="text-red-500 hover:text-red-400 text-xs focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 rounded"
                       >
                         Delete
                       </button>
@@ -236,7 +236,7 @@ export default function Categories({ isMobile }: CategoriesProps) {
           {/* Floating Add Button */}
           <button
             onClick={() => handleOpenModal()}
-            className="fixed bottom-20 right-4 w-12 h-12 rounded-full bg-[#30BDF2] text-white shadow-lg flex items-center justify-center hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#30BDF2] z-10"
+            className="fixed bottom-20 right-4 w-12 h-12 rounded-full bg-[#30BDF2] text-white shadow-lg flex items-center justify-center hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 z-10"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -288,13 +288,13 @@ export default function Categories({ isMobile }: CategoriesProps) {
                   <button
                     type="button"
                     onClick={handleCloseModal}
-                    className="px-3 py-1.5 border border-gray-700 rounded-md text-xs text-gray-300 hover:bg-gray-800 transition-colors"
+                    className="px-3 py-1.5 border border-gray-700 rounded-md text-xs text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-3 py-1.5 bg-[#30BDF2] text-xs text-white rounded-md hover:bg-[#28a8d8] transition-colors"
+                    className="px-3 py-1.5 bg-[#30BDF2] text-xs text-white rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800"
                   >
                     {selectedCategory ? 'Update' : 'Create'}
                   </button>
@@ -315,13 +315,13 @@ export default function Categories({ isMobile }: CategoriesProps) {
               <div className="flex justify-end space-x-3">
                 <button
                   onClick={handleCloseDeleteModal}
-                  className="px-3 py-1.5 border border-gray-700 rounded-md text-xs text-gray-300 hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-700"
+                  className="px-3 py-1.5 border border-gray-700 rounded-md text-xs text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDeleteCategory}
-                  className="px-3 py-1.5 bg-red-600 text-xs text-white rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="px-3 py-1.5 bg-red-600 text-xs text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
                   Delete
                 </button>
@@ -341,7 +341,7 @@ export default function Categories({ isMobile }: CategoriesProps) {
           {/* <h1 className="text-2xl font-bold">Categories</h1> */}
           <button
             onClick={() => handleOpenModal()}
-            className="bg-[#30BDF2] text-white px-4 py-2 rounded-md hover:bg-[#28a8d8]"
+            className="bg-[#30BDF2] text-white px-4 py-2 rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
           >
             Add Category
           </button>
@@ -376,13 +376,13 @@ export default function Categories({ isMobile }: CategoriesProps) {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button
                             onClick={() => handleOpenModal(category)}
-                            className="text-indigo-400 hover:text-indigo-300 mr-3 text-sm"
+                            className="text-indigo-400 hover:text-indigo-300 mr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleOpenDeleteModal(category)}
-                            className="text-red-500 hover:text-red-400 text-sm"
+                            className="text-red-500 hover:text-red-400 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                           >
                             Delete
                           </button>
@@ -427,13 +427,13 @@ export default function Categories({ isMobile }: CategoriesProps) {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button
                             onClick={() => handleOpenModal(category)}
-                            className="text-indigo-400 hover:text-indigo-300 mr-3 text-sm"
+                            className="text-indigo-400 hover:text-indigo-300 mr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleOpenDeleteModal(category)}
-                            className="text-red-500 hover:text-red-400 text-sm"
+                            className="text-red-500 hover:text-red-400 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                           >
                             Delete
                           </button>
@@ -456,12 +456,12 @@ export default function Categories({ isMobile }: CategoriesProps) {
       {/* Category Form Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="modal-dark w-full max-w-md p-4">
-            <h2 className="text-base font-bold mb-3 text-gray-200">
+          <div className="modal-dark w-full max-w-md p-6">
+            <h2 className="text-xl font-bold mb-4 text-gray-200">
               {selectedCategory ? 'Edit Category' : 'Add Category'}
             </h2>
             
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-gray-300 mb-1">
                   Category Name
@@ -492,17 +492,17 @@ export default function Categories({ isMobile }: CategoriesProps) {
                 </select>
               </div>
               
-              <div className="flex justify-end space-x-3 pt-3">
+              <div className="flex justify-end space-x-3 pt-4">
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="px-3 py-1.5 border border-gray-700 rounded-md text-xs text-gray-300 hover:bg-gray-800 transition-colors"
+                  className="px-4 py-2 border border-gray-700 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-3 py-1.5 bg-[#30BDF2] text-xs text-white rounded-md hover:bg-[#28a8d8] transition-colors"
+                  className="px-4 py-2 bg-[#30BDF2] text-sm font-medium text-white rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   {selectedCategory ? 'Update' : 'Create'}
                 </button>
@@ -515,21 +515,22 @@ export default function Categories({ isMobile }: CategoriesProps) {
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && categoryToDelete && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="modal-dark w-full max-w-md p-4">
-            <h2 className="text-base font-bold mb-3 text-gray-200">Delete Category</h2>
-            <p className="mb-4 text-sm text-gray-300">
+          <div className="modal-dark w-full max-w-md p-6">
+            <h2 className="text-xl font-bold mb-4 text-gray-200">Delete Category</h2>
+            <p className="mb-6 text-sm text-gray-300">
               Are you sure you want to delete the category "<span className="text-white font-medium">{categoryToDelete.name}</span>"? This action cannot be undone.
             </p>
             <div className="flex justify-end space-x-3">
               <button
                 onClick={handleCloseDeleteModal}
-                className="px-3 py-1.5 border border-gray-700 rounded-md text-xs text-gray-300 hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-700"
+                className="px-4 py-2 border border-gray-700 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleDeleteCategory}
-                className="px-3 py-1.5 bg-red-600 text-xs text-white rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="px-4 py-2 bg-red-500 text-sm font-medium text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 Delete
               </button>

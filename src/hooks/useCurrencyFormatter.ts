@@ -29,7 +29,7 @@ export default function useCurrencyFormatter() {
 
     // Define currency symbols and formatting options
     const currencyConfig: Record<string, { symbol: string, position: 'before' | 'after', space: boolean, decimalPlaces: number }> = {
-      IDR: { symbol: 'Rp', position: 'before', space: true, decimalPlaces: 2 },
+      IDR: { symbol: 'Rp', position: 'before', space: true, decimalPlaces: 0 },
       USD: { symbol: '$', position: 'before', space: false, decimalPlaces: 2 },
       EUR: { symbol: '€', position: 'after', space: true, decimalPlaces: 2 },
       GBP: { symbol: '£', position: 'before', space: false, decimalPlaces: 2 },

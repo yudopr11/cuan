@@ -221,7 +221,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
                       e.stopPropagation(); // Prevent triggering the parent onClick
                       handleOpenModal(account);
                     }}
-                    className="text-indigo-400 hover:text-indigo-300 text-xs"
+                    className="text-indigo-400 hover:text-indigo-300 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                   >
                     Edit
                   </button>
@@ -230,7 +230,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
                       e.stopPropagation(); // Prevent triggering the parent onClick
                       handleOpenDeleteModal(account);
                     }}
-                    className="text-red-600 hover:text-red-800 text-xs"
+                    className="text-red-600 hover:text-red-500 text-xs focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                   >
                     Delete
                   </button>
@@ -242,7 +242,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
           {/* Floating Add Button */}
           <button
             onClick={() => handleOpenModal()}
-            className="fixed bottom-20 right-4 w-12 h-12 rounded-full bg-[#30BDF2] text-white shadow-lg flex items-center justify-center hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#30BDF2] z-10"
+            className="fixed bottom-20 right-4 w-12 h-12 rounded-full bg-[#30BDF2] text-white shadow-lg flex items-center justify-center hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 z-10"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -317,13 +317,13 @@ export default function Accounts({ isMobile }: AccountsProps) {
                   <button
                     type="button"
                     onClick={handleCloseModal}
-                    className="px-3 py-1.5 border border-gray-700 rounded-md text-xs text-gray-300 hover:bg-gray-800"
+                    className="px-3 py-1.5 border border-gray-700 rounded-md text-xs text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-3 py-1.5 bg-[#30BDF2] text-xs text-white rounded-md hover:bg-[#28a8d8]"
+                    className="px-3 py-1.5 bg-[#30BDF2] text-xs text-white rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                   >
                     {selectedAccount ? 'Update' : 'Create'}
                   </button>
@@ -344,13 +344,13 @@ export default function Accounts({ isMobile }: AccountsProps) {
               <div className="flex justify-end space-x-3">
                 <button
                   onClick={handleCloseDeleteModal}
-                  className="px-3 py-1.5 border border-gray-700 rounded-md text-xs text-gray-300 hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-700"
+                  className="px-3 py-1.5 border border-gray-700 rounded-md text-xs text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDeleteAccount}
-                  className="px-3 py-1.5 bg-red-600 text-xs text-white rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="px-3 py-1.5 bg-red-600 text-xs text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   Delete
                 </button>
@@ -413,7 +413,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
               <div className="flex justify-end mt-4">
                 <button
                   onClick={handleCloseDetails}
-                  className="px-3 py-1.5 bg-[#30BDF2] text-xs text-white rounded-md hover:bg-[#28a8d8]"
+                  className="px-6 py-2 bg-[#30BDF2] text-white rounded-md hover:bg-[#28a8d8] font-medium focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   Close
                 </button>
@@ -433,7 +433,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
           {/* <h1 className="text-2xl font-bold">Accounts</h1> */}
           <button
             onClick={() => handleOpenModal()}
-            className="bg-[#30BDF2] text-white px-4 py-2 rounded-md hover:bg-[#28a8d8]"
+            className="bg-[#30BDF2] text-white px-4 py-2 rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
           >
             Add Account
           </button>
@@ -504,19 +504,19 @@ export default function Accounts({ isMobile }: AccountsProps) {
                     <td className="px-6 py-4 whitespace-nowrap text-right space-x-2">
                       <button 
                         onClick={() => handleViewDetails(account)}
-                        className="text-[#30BDF2] hover:text-[#28a8d8] inline-block"
+                        className="text-[#30BDF2] hover:text-[#28a8d8] inline-block focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                       >
                         View
                       </button>
                       <button 
                         onClick={() => handleOpenModal(account)}
-                        className="text-indigo-400 hover:text-indigo-300 inline-block mx-2"
+                        className="text-indigo-400 hover:text-indigo-300 inline-block mx-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                       >
                         Edit
                       </button>
                       <button 
                         onClick={() => handleOpenDeleteModal(account)}
-                        className="text-red-500 hover:text-red-700 inline-block"
+                        className="text-red-500 hover:text-red-400 inline-block focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                       >
                         Delete
                       </button>
@@ -596,13 +596,13 @@ export default function Accounts({ isMobile }: AccountsProps) {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="px-4 py-2 border border-gray-700 rounded-md text-gray-300 hover:bg-gray-800"
+                  className="px-4 py-2 border border-gray-700 rounded-md text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#30BDF2] text-white rounded-md hover:bg-[#28a8d8]"
+                  className="px-4 py-2 bg-[#30BDF2] text-white rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   {selectedAccount ? 'Update' : 'Create'}
                 </button>
@@ -623,13 +623,13 @@ export default function Accounts({ isMobile }: AccountsProps) {
             <div className="flex justify-end space-x-4">
               <button
                 onClick={handleCloseDeleteModal}
-                className="px-5 py-2 border border-gray-700 rounded-md text-gray-300 hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-700"
+                className="px-5 py-2 border border-gray-700 rounded-md text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteAccount}
-                className="px-5 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="px-5 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 Delete
               </button>
@@ -727,7 +727,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
             <div className="flex justify-end">
               <button
                 onClick={handleCloseDetails}
-                className="px-6 py-2 bg-[#30BDF2] text-white rounded-md hover:bg-[#28a8d8] font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#30BDF2]"
+                className="px-6 py-2 bg-[#30BDF2] text-white rounded-md hover:bg-[#28a8d8] font-medium focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 Close
               </button>

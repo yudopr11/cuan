@@ -8,7 +8,8 @@ import {
   CreditCardIcon,
   TagIcon,
   ArrowsRightLeftIcon,
-  UserIcon
+  UserIcon,
+  PowerIcon
 } from '@heroicons/react/24/outline';
 
 interface MainLayoutProps {
@@ -37,7 +38,8 @@ export default function MainLayout({ children, isMobile }: MainLayoutProps) {
     { name: 'Transactions', path: '/transactions', icon: ArrowsRightLeftIcon },
     { name: 'Accounts', path: '/accounts', icon: CreditCardIcon },
     { name: 'Categories', path: '/categories', icon: TagIcon },
-    { name: 'Settings', path: '/settings', icon: UserIcon }
+    { name: 'Settings', path: '/settings', icon: UserIcon },
+    { name: 'Logout', path: '/logout', icon: PowerIcon }
   ];
 
   // Get current page title
@@ -59,6 +61,12 @@ export default function MainLayout({ children, isMobile }: MainLayoutProps) {
           <h1 className="text-2xl font-bold text-[#30BDF2] tracking-wide">
             Cuan
           </h1>
+          <Link
+            to="/logout"
+            className="text-red-400"
+          >
+            <PowerIcon className="h-6 w-6" />
+          </Link>
         </header>
 
         {/* Main Content */}
@@ -69,7 +77,7 @@ export default function MainLayout({ children, isMobile }: MainLayoutProps) {
         {/* Mobile Bottom Navigation */}
         <nav className="bg-[#0f172a] border-t border-gray-700 fixed bottom-0 w-full z-10">
           <div className="px-2 py-1 flex justify-around">
-            {menuItems.map((item) => {
+            {menuItems.slice(0, 5).map((item) => {
               const Icon = item.icon;
               return (
                 <Link
@@ -109,7 +117,7 @@ export default function MainLayout({ children, isMobile }: MainLayoutProps) {
         </div>
         <nav className="p-4">
           <ul className="space-y-2">
-            {menuItems.map((item) => {
+            {menuItems.slice(0, 5).map((item) => {
               const Icon = item.icon;
               return (
                 <li key={item.path}>
@@ -132,8 +140,9 @@ export default function MainLayout({ children, isMobile }: MainLayoutProps) {
           <div className="mt-8 pt-6 border-t border-gray-700">
             <Link
               to="/logout"
-              className="flex items-center px-4 py-3 rounded-md text-red-400 hover:bg-gray-800"
+              className="flex items-center px-4 py-3 rounded-md text-red-400 hover:bg-gray-800 hover:text-red-400"
             >
+              <PowerIcon className="h-5 w-5 mr-3" />
               <span>Log Out</span>
             </Link>
           </div>

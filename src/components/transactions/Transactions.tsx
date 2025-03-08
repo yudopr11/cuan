@@ -83,12 +83,12 @@ export default function Transactions({ isMobile }: TransactionsProps) {
 
   // Fetch data on component mount
   useEffect(() => {
-    fetchTransactions();
+    // Fetch accounts and categories only once on mount
     fetchAccounts();
     fetchCategories();
   }, []);
-  
-  // Fetch data when filters or pagination changes
+
+  // Fetch transactions when filters or pagination changes
   useEffect(() => {
     fetchTransactions();
   }, [filters, skip, limit]);
@@ -385,7 +385,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
           <p className="text-gray-300 mb-4">{error}</p>
           <button
             onClick={() => fetchTransactions()}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+            className="px-4 py-2 bg-[#30BDF2] text-white rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
           >
             Try Again
           </button>
@@ -432,7 +432,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 {(filters.account_name || filters.category_name || filters.transaction_type || filters.date_filter_type !== 'month') && (
                   <button
                     onClick={handleClearFilters}
-                    className="inline-flex items-center px-2 py-1 bg-gray-700 text-gray-300 text-xs rounded-full"
+                    className="inline-flex items-center px-2 py-1 bg-gray-700 text-gray-300 text-xs rounded-full hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800"
                   >
                     Clear
                   </button>
@@ -441,7 +441,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
             </div>
             <button
               onClick={() => setIsFilterModalOpen(true)}
-              className="ml-2 p-1.5 text-gray-300 hover:text-white"
+              className="ml-2 p-1.5 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 rounded"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
@@ -492,13 +492,13 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   <div className="flex justify-end mt-2 space-x-2">
                     <button
                       onClick={() => handleOpenModal(transaction)}
-                      className="text-indigo-400 hover:text-indigo-300 mr-2 text-xs"
+                      className="text-indigo-400 hover:text-indigo-300 mr-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-800 rounded"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleOpenDeleteModal(transaction)}
-                      className="text-red-400 hover:text-red-300 text-xs"
+                      className="text-red-400 hover:text-red-300 text-xs focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-gray-800 rounded"
                     >
                       Delete
                     </button>
@@ -539,7 +539,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
           {/* Floating Add Button */}
           <button
             onClick={() => handleOpenModal()}
-            className="fixed bottom-20 right-4 w-12 h-12 rounded-full bg-[#30BDF2] text-white shadow-lg flex items-center justify-center hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#30BDF2] z-10"
+            className="fixed bottom-20 right-4 w-12 h-12 rounded-full bg-[#30BDF2] text-white shadow-lg flex items-center justify-center hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 z-10"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -567,8 +567,8 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                         onClick={() => handleDateFilterChange(preset.value as any)}
                         className={`py-1.5 px-2 text-xs rounded-md ${
                           filters.date_filter_type === preset.value
-                            ? 'bg-[#30BDF2] text-white'
-                            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                            ? 'bg-[#30BDF2] text-white focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800'
+                            : 'bg-gray-700 text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800'
                         }`}
                       >
                         {preset.label}
@@ -588,7 +588,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                         name="start_date"
                         value={filters.start_date}
                         onChange={(e) => setFilters(prev => ({ ...prev, start_date: e.target.value }))}
-                        className="w-full h-8 px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-indigo-500 focus:ring-indigo-500 text-xs"
+                        className="w-full h-8 px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
                       />
                     </div>
                     
@@ -601,7 +601,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                         name="end_date"
                         value={filters.end_date}
                         onChange={(e) => setFilters(prev => ({ ...prev, end_date: e.target.value }))}
-                        className="w-full h-8 px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-indigo-500 focus:ring-indigo-500 text-xs"
+                        className="w-full h-8 px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
                       />
                     </div>
                   </div>
@@ -615,8 +615,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="transaction_type"
                     value={filters.transaction_type}
                     onChange={handleFilterChange}
-                    className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-indigo-500 focus:ring-indigo-500 appearance-none bg-no-repeat bg-right text-xs"
-                    style={{ backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundSize: "1.5em 1.5em", paddingRight: "2.8rem", backgroundPosition: "right 0.5rem center" }}
+                    className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
                   >
                     <option value="">All Types</option>
                     <option value="income">Income</option>
@@ -633,8 +632,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="account_name"
                     value={filters.account_name}
                     onChange={handleFilterChange}
-                    className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-indigo-500 focus:ring-indigo-500 appearance-none bg-no-repeat bg-right text-xs"
-                    style={{ backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundSize: "1.5em 1.5em", paddingRight: "2.8rem", backgroundPosition: "right 0.5rem center" }}
+                    className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
                   >
                     <option value="">All Accounts</option>
                     {accounts.map(account => (
@@ -653,8 +651,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="category_name"
                     value={filters.category_name}
                     onChange={handleFilterChange}
-                    className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-indigo-500 focus:ring-indigo-500 appearance-none bg-no-repeat bg-right text-xs"
-                    style={{ backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundSize: "1.5em 1.5em", paddingRight: "2.8rem", backgroundPosition: "right 0.5rem center" }}
+                    className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
                   >
                     <option value="">All Categories</option>
                     {categories
@@ -677,14 +674,14 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 <button
                   type="button"
                   onClick={() => setIsFilterModalOpen(false)}
-                  className="px-3 py-1.5 border border-gray-700 rounded-md text-xs font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="px-3 py-1.5 border border-gray-700 rounded-md text-xs font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleClearFilters}
-                  className="px-3 py-1.5 border border-gray-700 rounded-md text-xs font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="px-3 py-1.5 border border-gray-700 rounded-md text-xs font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
                   Clear
                 </button>
@@ -717,7 +714,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="transaction_type"
                     value={formData.transaction_type}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-indigo-500 focus:ring-indigo-500 text-xs"
+                    className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
                   >
                     <option value="expense">Expense</option>
                     <option value="income">Income</option>
@@ -734,7 +731,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="amount"
                     value={formatAmount(formData.amount.toString())}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-indigo-500 focus:ring-indigo-500 text-xs"
+                    className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
                     required
                   />
                 </div>
@@ -748,7 +745,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="transaction_date"
                     value={formData.transaction_date}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-indigo-500 focus:ring-indigo-500 text-xs"
+                    className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
                     required
                   />
                 </div>
@@ -762,7 +759,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-indigo-500 focus:ring-indigo-500 text-xs"
+                    className="w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
                     required
                   />
                 </div>
@@ -775,7 +772,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="account_id"
                     value={formData.account_id}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-white text-xs"
+                    className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
                     required
                   >
                     <option value="">Select Account</option>
@@ -796,7 +793,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                       name="category_id"
                       value={formData.category_id || ''}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-white text-xs"
+                      className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
                     >
                       <option value="">Select Category (Optional)</option>
                       {categories
@@ -823,7 +820,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                       name="destination_account_id"
                       value={formData.destination_account_id || ''}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-white text-xs"
+                      className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800 text-xs"
                       required={formData.transaction_type === 'transfer'}
                     >
                       <option value="">Select Destination Account</option>
@@ -843,7 +840,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   <button
                     type="button"
                     onClick={handleCloseModal}
-                    className="px-3 py-1.5 border border-gray-700 rounded-md text-xs font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                    className="px-3 py-1.5 border border-gray-700 rounded-md text-xs font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800"
                   >
                     Cancel
                   </button>
@@ -874,7 +871,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 <button
                   type="button"
                   onClick={handleCloseDeleteModal}
-                  className="px-3 py-1.5 border border-gray-700 rounded-md text-xs font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="px-3 py-1.5 border border-gray-700 rounded-md text-xs font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
                   Cancel
                 </button>
@@ -918,8 +915,10 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 name="date_filter_type"
                 value={filters.date_filter_type}
                 onChange={handleFilterChange}
-                className="w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-indigo-500 focus:ring-indigo-500 appearance-none bg-no-repeat bg-right"
-                style={{ backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundSize: "1.5em 1.5em", paddingRight: "2.8rem", backgroundPosition: "right 0.5rem center" }}
+                className={`w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right ${
+                  filters.date_filter_type === 'custom' ? 'bg-[#30BDF2] text-white focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800'
+                }`}
               >
                 {dateFilterPresets.map(preset => (
                   <option key={preset.value} value={preset.value}>
@@ -940,7 +939,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="start_date"
                     value={filters.start_date}
                     onChange={(e) => setFilters(prev => ({ ...prev, start_date: e.target.value }))}
-                    className="w-full h-10 px-4 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-indigo-500 focus:ring-indigo-500"
+                    className="w-full h-10 px-4 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                   />
                 </div>
                 
@@ -953,7 +952,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="end_date"
                     value={filters.end_date}
                     onChange={(e) => setFilters(prev => ({ ...prev, end_date: e.target.value }))}
-                    className="w-full h-10 px-4 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-indigo-500 focus:ring-indigo-500"
+                    className="w-full h-10 px-4 py-2 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                   />
                 </div>
               </>
@@ -967,8 +966,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 name="transaction_type"
                 value={filters.transaction_type}
                 onChange={handleFilterChange}
-                className="w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-indigo-500 focus:ring-indigo-500 appearance-none bg-no-repeat bg-right"
-                style={{ backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundSize: "1.5em 1.5em", paddingRight: "2.8rem", backgroundPosition: "right 0.5rem center" }}
+                className="w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
               >
                 <option value="">All Types</option>
                 <option value="income">Income</option>
@@ -985,8 +983,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 name="account_name"
                 value={filters.account_name}
                 onChange={handleFilterChange}
-                className="w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-indigo-500 focus:ring-indigo-500 appearance-none bg-no-repeat bg-right"
-                style={{ backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundSize: "1.5em 1.5em", paddingRight: "2.8rem", backgroundPosition: "right 0.5rem center" }}
+                className="w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
               >
                 <option value="">All Accounts</option>
                 {accounts.map(account => (
@@ -1005,8 +1002,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 name="category_name"
                 value={filters.category_name}
                 onChange={handleFilterChange}
-                className="w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-indigo-500 focus:ring-indigo-500 appearance-none bg-no-repeat bg-right"
-                style={{ backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundSize: "1.5em 1.5em", paddingRight: "2.8rem", backgroundPosition: "right 0.5rem center" }}
+                className="w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
               >
                 <option value="">All Categories</option>
                 {categories
@@ -1033,7 +1029,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
               </button>
               <button
                 onClick={handleClearFilters}
-                className="flex-1 border border-gray-700 px-4 py-2 h-10 rounded-md text-sm text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                className="flex-1 border border-gray-700 px-4 py-2 h-10 rounded-md text-sm text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 Clear
               </button>
@@ -1080,13 +1076,13 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
                           onClick={() => handleOpenModal(transaction)}
-                          className="text-indigo-400 hover:text-indigo-300 mr-3 text-sm"
+                          className="text-indigo-400 hover:text-indigo-300 mr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleOpenDeleteModal(transaction)}
-                          className="text-red-400 hover:text-red-300 text-sm"
+                          className="text-red-400 hover:text-red-300 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                         >
                           Delete
                         </button>
@@ -1114,7 +1110,6 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 value={limit}
                 onChange={handlePageSizeChange}
                 className="min-w-[80px] h-10 px-4 py-2 pr-9 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] text-sm appearance-none bg-no-repeat bg-right"
-                style={{ backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundSize: "1.5em 1.5em", paddingRight: "2.8rem", backgroundPosition: "right 0.5rem center" }}
               >
                 <option value="10">10</option>
                 <option value="20">20</option>
@@ -1171,7 +1166,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   name="transaction_type"
                   value={formData.transaction_type}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-indigo-500 focus:ring-indigo-500"
+                  className="w-full px-4 py-3 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   <option value="expense">Expense</option>
                   <option value="income">Income</option>
@@ -1188,7 +1183,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   name="amount"
                   value={formatAmount(formData.amount.toString())}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-indigo-500 focus:ring-indigo-500"
+                  className="w-full px-4 py-3 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                   required
                 />
               </div>
@@ -1202,7 +1197,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   name="transaction_date"
                   value={formData.transaction_date}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-indigo-500 focus:ring-indigo-500"
+                  className="w-full px-4 py-3 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                   required
                 />
               </div>
@@ -1216,7 +1211,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-indigo-500 focus:ring-indigo-500"
+                  className="w-full px-4 py-3 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                   required
                 />
               </div>
@@ -1229,7 +1224,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   name="account_id"
                   value={formData.account_id}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-white"
+                  className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                   required
                 >
                   <option value="">Select Account</option>
@@ -1250,7 +1245,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="category_id"
                     value={formData.category_id || ''}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-white"
+                    className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                   >
                     <option value="">Select Category (Optional)</option>
                     {categories
@@ -1277,7 +1272,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     name="destination_account_id"
                     value={formData.destination_account_id || ''}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-white"
+                    className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                     required={formData.transaction_type === 'transfer'}
                   >
                     <option value="">Select Destination Account</option>
@@ -1297,7 +1292,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="px-4 py-2 border border-gray-700 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                  className="px-4 py-2 border border-gray-700 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   Cancel
                 </button>
@@ -1328,7 +1323,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
               <button
                 type="button"
                 onClick={handleCloseDeleteModal}
-                className="px-4 py-2 border border-gray-700 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                className="px-4 py-2 border border-gray-700 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 Cancel
               </button>

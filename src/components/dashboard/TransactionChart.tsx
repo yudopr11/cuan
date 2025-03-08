@@ -36,7 +36,8 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
   const formatShortDate = (dateStr: string) => {
     const date = new Date(dateStr);
     if (period === 'day') {
-      return date.toLocaleTimeString('en-US', { hour: '2-digit', hour12: true });
+      // Don't display hours for day period
+      return '';
     } else if (period === 'week') {
       return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
     } else if (period === 'year') {
@@ -118,6 +119,7 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
           },
           maxRotation: 45,
           minRotation: 45,
+          display: period !== 'day',
         },
       },
       y: {

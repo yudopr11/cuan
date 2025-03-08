@@ -29,7 +29,8 @@ export default function Dashboard({ isMobile }: DashboardProps) {
   usePageTitle('Dashboard');
 
   // Base Dashboard State
-  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [financialSummary, setFinancialSummary] = useState<FinancialSummary | null>(null);
   const [accountSummary, setAccountSummary] = useState<AccountSummary | null>(null);
   const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([]);
@@ -59,82 +60,116 @@ export default function Dashboard({ isMobile }: DashboardProps) {
   // Use the currency formatter hook
   const { formatCurrency } = useCurrencyFormatter();
 
+  // Initial data fetch and period changes
   useEffect(() => {
-    fetchDashboardData();
-  }, [period, categoryType]);
+    const fetchData = async () => {
+      await fetchDashboardData(true);
+      await fetchCategoryData();
+      setIsInitialLoading(false);
+    };
+    fetchData();
+  }, []);
 
-  const fetchDashboardData = async () => {
-    setIsLoading(true);
-    let hasErrors = false;
-    
-    // Fetch financial summary for selected period
-    try {
-      const summary = await getFinancialSummary({ period });
-      setFinancialSummary(summary);
-    } catch (error) {
-      console.error('Error fetching financial summary:', error);
-      setErrors(prev => ({ ...prev, financial: true }));
-      hasErrors = true;
+  // Refresh data when period changes
+  useEffect(() => {
+    if (!isInitialLoading) {
+      fetchDashboardData(false);
+      fetchCategoryData();
     }
+  }, [period]);
 
-    // Fetch account summary
-    try {
-      const accounts = await getAccountSummary({
-        include_transactions: false  // Explicitly set to reduce data transfer
-      });
-      setAccountSummary(accounts);
-    } catch (error) {
-      console.error('Error fetching account summary:', error);
-      setErrors(prev => ({ ...prev, accounts: true }));
-      hasErrors = true;
+  // Refresh category data when type changes
+  useEffect(() => {
+    if (!isInitialLoading && categoryType) {
+      fetchCategoryData();
     }
+  }, [categoryType]);
 
-    // Fetch recent transactions (last 5)
-    try {
-      const transactions = await getAllTransactions({ 
-        limit: 5, 
-        skip: 0,
-        date_filter_type: period as 'day' | 'week' | 'month' | 'year'
-      });
-      setRecentTransactions(transactions.data);
-    } catch (error) {
-      console.error('Error fetching recent transactions:', error);
-      setErrors(prev => ({ ...prev, transactions: true }));
-      hasErrors = true;
-    }
-    
-    // Fetch category distribution data
+  const fetchCategoryData = async () => {
     try {
       const categoryDistributionData = await getCategoryDistribution({ 
         transaction_type: categoryType,
         period
       });
       setCategoryData(categoryDistributionData);
+      setErrors(prev => ({ ...prev, categories: false }));
     } catch (error) {
       console.error('Error fetching category distribution:', error);
       setErrors(prev => ({ ...prev, categories: true }));
+      toast.error('Failed to load category distribution data');
+    }
+  };
+
+  const fetchDashboardData = async (isInitial: boolean) => {
+    if (!isInitial) {
+      setIsRefreshing(true);
+    }
+    let hasErrors = false;
+    
+    // Fetch financial summary for selected period
+    try {
+      const summary = await getFinancialSummary({ period });
+      setFinancialSummary(summary);
+      setErrors(prev => ({ ...prev, financial: false }));
+    } catch (error) {
+      console.error('Error fetching financial summary:', error);
+      setErrors(prev => ({ ...prev, financial: true }));
+      hasErrors = true;
+    }
+
+    // Fetch account summary with transactions included
+    try {
+      const accounts = await getAccountSummary({
+        include_transactions: false
+      });
+      setAccountSummary(accounts);
+      setErrors(prev => ({ ...prev, accounts: false }));
+    } catch (error) {
+      console.error('Error fetching account summary:', error);
+      setErrors(prev => ({ ...prev, accounts: true }));
+      hasErrors = true;
+    }
+
+    // Fetch recent transactions with period filter
+    try {
+      const transactions = await getAllTransactions({ 
+        limit: 5, 
+        skip: 0,
+        date_filter_type: period === 'all' ? undefined : period
+      });
+      setRecentTransactions(transactions.data);
+      setErrors(prev => ({ ...prev, transactions: false }));
+    } catch (error) {
+      console.error('Error fetching recent transactions:', error);
+      setErrors(prev => ({ ...prev, transactions: true }));
       hasErrors = true;
     }
     
-    // Fetch transaction trends
+    // Fetch transaction trends with appropriate grouping
     try {
-      const groupBy = period === 'day' ? 'day' : period === 'week' || period === 'month' ? 'day' : 'month';
+      const groupBy = period === 'day' ? 'day' : 
+                     period === 'week' || period === 'month' ? 'day' : 
+                     period === 'year' ? 'month' : 'month';
+      
       const trendsData = await getTransactionTrends({ 
         period,
         group_by: groupBy
       });
       setTrends(trendsData);
+      setErrors(prev => ({ ...prev, trends: false }));
     } catch (error) {
       console.error('Error fetching transaction trends:', error);
       setErrors(prev => ({ ...prev, trends: true }));
       hasErrors = true;
     }
-    
-    setIsLoading(false);
+
+    if (!isInitial) {
+      setIsRefreshing(false);
+    }
     
     // Show general error toast if any of the requests failed
     if (hasErrors) {
-      toast.error('Some dashboard data could not be loaded');
+      toast.error('Some dashboard data could not be loaded. Please try refreshing the page.');
     }
   };
 
@@ -157,13 +192,22 @@ export default function Dashboard({ isMobile }: DashboardProps) {
     setCategoryType(type);
   };
 
-  if (isLoading) {
+  if (isInitialLoading) {
     return (
       <div className="flex justify-center items-center h-full">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
       </div>
     );
   }
+
+  // Component to show loading overlay for refreshing data
+  const LoadingOverlay = () => (
+    isRefreshing ? (
+      <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center z-10 rounded-lg">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    ) : null
+  );
 
   // Mobile layout
   if (isMobile) {
@@ -177,6 +221,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
               className={`flex-1 text-center py-2 text-sm rounded-md ${
                 period === 'day' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
               }`}
+              disabled={isRefreshing}
             >
               Day
             </button>
@@ -185,6 +230,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
               className={`flex-1 text-center py-2 text-sm rounded-md ${
                 period === 'week' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
               }`}
+              disabled={isRefreshing}
             >
               Week
             </button>
@@ -193,6 +239,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
               className={`flex-1 text-center py-2 text-sm rounded-md ${
                 period === 'month' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
               }`}
+              disabled={isRefreshing}
             >
               Month
             </button>
@@ -201,6 +248,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
               className={`flex-1 text-center py-2 text-sm rounded-md ${
                 period === 'year' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
               }`}
+              disabled={isRefreshing}
             >
               Year
             </button>
@@ -209,6 +257,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
               className={`flex-1 text-center py-2 text-sm rounded-md ${
                 period === 'all' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
               }`}
+              disabled={isRefreshing}
             >
               All Time
             </button>
@@ -216,41 +265,35 @@ export default function Dashboard({ isMobile }: DashboardProps) {
         </div>
 
         {/* Financial Summary */}
-        <div className="card-dark">
-          <h2 className="text-base md:text-lg font-semibold text-white mb-3">Financial Summary</h2>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-green-900/30 p-3 rounded-lg">
-              <p className="text-xs md:text-sm text-green-400">Income</p>
-              <p className="text-base md:text-lg font-bold text-green-300">
-                {financialSummary ? formatCurrency(financialSummary.totals.income) : '$0.00'}
-              </p>
-            </div>
-            <div className="bg-red-900/30 p-3 rounded-lg">
-              <p className="text-xs md:text-sm text-red-400">Expenses</p>
-              <p className="text-base md:text-lg font-bold text-red-300">
-                {financialSummary ? formatCurrency(financialSummary.totals.expense) : '$0.00'}
-              </p>
-            </div>
-            <div className="bg-blue-900/30 p-3 rounded-lg">
-              <p className="text-xs md:text-sm text-blue-400">Transfers</p>
-              <p className="text-base md:text-lg font-bold text-blue-300">
-                {financialSummary ? formatCurrency(financialSummary.totals.transfer) : '$0.00'}
-              </p>
-            </div>
-            <div className="bg-indigo-900/30 p-3 rounded-lg">
-              <p className="text-xs md:text-sm text-indigo-400">Net</p>
-              <p className="text-base md:text-lg font-bold text-indigo-300">
-                {financialSummary ? formatCurrency(financialSummary.totals.net) : '$0.00'}
-              </p>
-            </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="relative card-dark flex flex-col">
+            <LoadingOverlay />
+            <p className="text-xs text-gray-300 mb-1">Income</p>
+            <p className="text-lg font-bold text-green-400">
+              {financialSummary ? formatCurrency(financialSummary.totals.income) : '$0.00'}
+            </p>
           </div>
-          {financialSummary && (
-            <div className="mt-3 p-2 bg-slate-800/50 rounded-md border border-gray-700">
-              <p className="text-sm text-gray-300">
-                Period: {new Date(financialSummary.period.start_date).toLocaleDateString()} - {new Date(financialSummary.period.end_date).toLocaleDateString()}
-              </p>
-            </div>
-          )}
+          <div className="relative card-dark flex flex-col">
+            <LoadingOverlay />
+            <p className="text-xs text-gray-300 mb-1">Expenses</p>
+            <p className="text-lg font-bold text-red-400">
+              {financialSummary ? formatCurrency(financialSummary.totals.expense) : '$0.00'}
+            </p>
+          </div>
+          <div className="relative card-dark flex flex-col">
+            <LoadingOverlay />
+            <p className="text-xs text-gray-300 mb-1">Transfers</p>
+            <p className="text-lg font-bold text-blue-400">
+              {financialSummary ? formatCurrency(financialSummary.totals.transfer) : '$0.00'}
+            </p>
+          </div>
+          <div className="relative card-dark flex flex-col">
+            <LoadingOverlay />
+            <p className="text-xs text-gray-300 mb-1">Net</p>
+            <p className={`text-lg font-bold ${financialSummary && financialSummary.totals.net >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              {financialSummary ? formatCurrency(financialSummary.totals.net) : '$0.00'}
+            </p>
+          </div>
         </div>
 
         {/* Statistics Tabs */}
@@ -443,6 +486,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
             className={`py-2 px-4 rounded-md ${
               period === 'day' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
             }`}
+            disabled={isRefreshing}
           >
             Day
           </button>
@@ -451,6 +495,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
             className={`py-2 px-4 rounded-md ${
               period === 'week' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
             }`}
+            disabled={isRefreshing}
           >
             Week
           </button>
@@ -459,6 +504,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
             className={`py-2 px-4 rounded-md ${
               period === 'month' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
             }`}
+            disabled={isRefreshing}
           >
             Month
           </button>
@@ -467,6 +513,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
             className={`py-2 px-4 rounded-md ${
               period === 'year' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
             }`}
+            disabled={isRefreshing}
           >
             Year
           </button>
@@ -475,6 +522,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
             className={`py-2 px-4 rounded-md ${
               period === 'all' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
             }`}
+            disabled={isRefreshing}
           >
             All Time
           </button>
@@ -483,7 +531,8 @@ export default function Dashboard({ isMobile }: DashboardProps) {
 
       {/* Row 1: Financial Summary */}
       <div className="grid grid-cols-4 gap-6">
-        <div className="card-dark">
+        <div className="relative card-dark">
+          <LoadingOverlay />
           <p className="text-xs sm:text-sm lg:text-base text-gray-200 mb-1">Income</p>
           <p className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-green-400">
             {financialSummary ? formatCurrency(financialSummary.totals.income) : '$0.00'}
@@ -492,7 +541,8 @@ export default function Dashboard({ isMobile }: DashboardProps) {
             {period === 'all' ? 'All Time' : `This ${period.charAt(0).toUpperCase() + period.slice(1)}`}
           </p>
         </div>
-        <div className="card-dark">
+        <div className="relative card-dark">
+          <LoadingOverlay />
           <p className="text-xs sm:text-sm lg:text-base text-gray-200 mb-1">Expenses</p>
           <p className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-red-400">
             {financialSummary ? formatCurrency(financialSummary.totals.expense) : '$0.00'}
@@ -501,7 +551,8 @@ export default function Dashboard({ isMobile }: DashboardProps) {
             {period === 'all' ? 'All Time' : `This ${period.charAt(0).toUpperCase() + period.slice(1)}`}
           </p>
         </div>
-        <div className="card-dark">
+        <div className="relative card-dark">
+          <LoadingOverlay />
           <p className="text-xs sm:text-sm lg:text-base text-gray-200 mb-1">Transfers</p>
           <p className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-blue-400">
             {financialSummary ? formatCurrency(financialSummary.totals.transfer) : '$0.00'}
@@ -510,7 +561,8 @@ export default function Dashboard({ isMobile }: DashboardProps) {
             {period === 'all' ? 'All Time' : `This ${period.charAt(0).toUpperCase() + period.slice(1)}`}
           </p>
         </div>
-        <div className="card-dark">
+        <div className="relative card-dark">
+          <LoadingOverlay />
           <p className="text-xs sm:text-sm lg:text-base text-gray-200 mb-1">Net</p>
           <p className={`text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold ${financialSummary && financialSummary.totals.net >= 0 ? 'text-green-400' : 'text-red-400'}`}>
             {financialSummary ? formatCurrency(financialSummary.totals.net) : '$0.00'}
@@ -524,7 +576,8 @@ export default function Dashboard({ isMobile }: DashboardProps) {
       {/* Row 2: Transaction Trends and Category Distribution */}
       <div className="grid grid-cols-12 gap-6">
         {/* Transaction Trends */}
-        <div className="card-dark col-span-7">
+        <div className="relative card-dark col-span-7">
+          <LoadingOverlay />
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Transaction Trends</h2>
           </div>
@@ -539,7 +592,8 @@ export default function Dashboard({ isMobile }: DashboardProps) {
         </div>
 
         {/* Category Distribution */}
-        <div className="card-dark col-span-5">
+        <div className="relative card-dark col-span-5">
+          <LoadingOverlay />
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Categories</h2>
             
