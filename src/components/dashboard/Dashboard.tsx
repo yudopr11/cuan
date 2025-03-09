@@ -369,7 +369,9 @@ export default function Dashboard({ isMobile }: DashboardProps) {
                   <CategoryChart categoryData={categoryData} type={categoryType} />
                 </div>
               ) : (
-                <p className="text-center text-gray-400 py-4">No data available for this period</p>
+                <div className="h-64 sm:h-72 md:h-80 w-full flex items-center justify-center">
+                  <p className="text-gray-400">No data available for this period</p>
+                </div>
               )}
             </div>
           )}
@@ -631,7 +633,9 @@ export default function Dashboard({ isMobile }: DashboardProps) {
                   <CategoryChart categoryData={categoryData} type={categoryType} />
                 </div>
               ) : (
-                <p className="text-center text-sm lg:text-base text-gray-400 py-4">No data available for this period</p>
+                <div className="h-64 sm:h-72 md:h-80 w-full flex items-center justify-center">
+                  <p className="text-gray-400">No data available for this period</p>
+                </div>
               )}
             </>
           )}
