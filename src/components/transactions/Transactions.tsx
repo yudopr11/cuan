@@ -37,7 +37,8 @@ export default function Transactions({ isMobile }: TransactionsProps) {
   // State for transactions
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [isFilterLoading, setIsFilterLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   // State for accounts and categories
@@ -101,27 +102,24 @@ export default function Transactions({ isMobile }: TransactionsProps) {
   }, [activeFilters, skip, limit]);
 
   const fetchTransactions = async () => {
-    setIsLoading(true);
+    // Gunakan isFilterLoading untuk semua kasus, tapi pertahankan tracking initialLoading
+    setIsFilterLoading(true);
+    
     setError(null); // Reset error state
     try {
-      // Prepare parameters - only include non-empty values
       const apiParams: Record<string, any> = {};
       
-      // Only add non-empty string parameters from activeFilters (not filters)
       if (activeFilters.account_name) apiParams.account_name = activeFilters.account_name;
       if (activeFilters.category_name) apiParams.category_name = activeFilters.category_name;
       if (activeFilters.transaction_type) apiParams.transaction_type = activeFilters.transaction_type;
       
-      // Handle custom date range differently
       if (activeFilters.date_filter_type === 'custom') {
         if (activeFilters.start_date) apiParams.start_date = activeFilters.start_date;
         if (activeFilters.end_date) apiParams.end_date = activeFilters.end_date;
       } else {
-        // For predefined ranges, just send the date_filter_type
         apiParams.date_filter_type = activeFilters.date_filter_type;
       }
       
-      // Always include these parameters
       apiParams.limit = limit;
       apiParams.skip = skip;
       
@@ -129,12 +127,16 @@ export default function Transactions({ isMobile }: TransactionsProps) {
       setTransactions(response.data);
       setTotalCount(response.total_count);
       setHasMore(response.has_more);
+      
+      // Selalu atur initialLoading ke false setelah data pertama diambil
+      setInitialLoading(false);
     } catch (error) {
       console.error('Error fetching transactions:', error);
       setError(error instanceof Error ? error.message : 'An unknown error occurred');
       toast.error('Failed to load transactions');
+      setInitialLoading(false);
     } finally {
-      setIsLoading(false);
+      setIsFilterLoading(false);
     }
   };
 
@@ -337,26 +339,28 @@ export default function Transactions({ isMobile }: TransactionsProps) {
   };
 
   const handleClearFilters = () => {
-    // Use initialFilterState for consistency
+    setIsFilterLoading(true);
+    
     setFilters(initialFilterState);
     
-    // Apply the cleared filters immediately
-    setActiveFilters(initialFilterState);
-    setSkip(0); // Reset pagination
-    
-    // Close filter modal if open
-    setIsFilterModalOpen(false);
+    Promise.resolve().then(() => {
+      setActiveFilters(initialFilterState);
+      setSkip(0);
+      
+      setIsFilterModalOpen(false);
+    });
   };
 
   const applyFilters = () => {
-    // Copy pending filters to active filters
-    setActiveFilters({...filters});
+    setIsFilterLoading(true);
     
-    // Reset pagination when filters change
-    setSkip(0);
-    
-    // Close filter modal if open
     setIsFilterModalOpen(false);
+    
+    Promise.resolve().then(() => {
+      setActiveFilters({...filters});
+      
+      setSkip(0);
+    });
   };
 
   // Pagination handling
@@ -390,8 +394,8 @@ export default function Transactions({ isMobile }: TransactionsProps) {
     );
   };
 
-  // Loading state handling
-  if (isLoading && transactions.length === 0) {
+  // Loading state handling - only show full loading screen on initial load
+  if (initialLoading) {
     return (
       <div className="flex justify-center items-center h-full">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
@@ -479,7 +483,12 @@ export default function Transactions({ isMobile }: TransactionsProps) {
           </div>
           
           {/* Transaction List */}
-          <div className="space-y-3">
+          <div className="space-y-3 relative">
+            {isFilterLoading && (
+              <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-10 rounded-lg">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+              </div>
+            )}
             {transactions.length > 0 ? (
               transactions.map(transaction => (
                 <div 
@@ -676,6 +685,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     value={filters.account_name}
                     onChange={handleFilterChange}
                     className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md shadow-sm text-xs bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                   >
                     <option value="">All Accounts</option>
                     {accounts.map(account => (
@@ -695,6 +705,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                     value={filters.category_name}
                     onChange={handleFilterChange}
                     className="w-full h-8 px-3 py-2 pr-8 border border-gray-700 rounded-md shadow-sm text-xs bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none bg-no-repeat bg-right"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                   >
                     <option value="">All Categories</option>
                     {categories
@@ -904,13 +915,13 @@ export default function Transactions({ isMobile }: TransactionsProps) {
                   <button
                     type="button"
                     onClick={handleCloseModal}
-                    className="px-3 py-1.5 border border-gray-700 rounded-md text-xs text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-800"
+                    className="px-3 py-1.5 border border-gray-700 rounded-md text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-3 py-1.5 bg-[#30BDF2] text-xs text-white rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800"
+                    className="px-3 py-1.5 bg-[#30BDF2] text-white rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
                   >
                     {selectedTransaction ? 'Update' : 'Add'}
                   </button>
@@ -1098,7 +1109,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
             <div className="flex items-end space-x-2">
               <button
                 onClick={applyFilters}
-                className={`flex-1 ${hasFilterChanges() ? 'bg-[#30BDF2] hover:bg-[#28a8d8]' : 'bg-gray-700 cursor-not-allowed'} text-white px-4 py-2 h-10 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900`}
+                className={`flex-1 ${hasFilterChanges() ? 'bg-[#30BDF2] hover:bg-[#28a8d8]' : 'bg-gray-700 cursor-not-allowed'} text-white px-4 py-2 h-10 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-800`}
                 disabled={!hasFilterChanges()}
               >
                 Apply
@@ -1114,7 +1125,12 @@ export default function Transactions({ isMobile }: TransactionsProps) {
         </div>
         
         {/* Transaction Table - Desktop */}
-        <div className="bg-gray-900 shadow-md rounded-lg overflow-hidden mb-6 border border-gray-800">
+        <div className="bg-gray-900 shadow-md rounded-lg overflow-hidden mb-6 border border-gray-800 relative">
+          {isFilterLoading && (
+            <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-10">
+              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-indigo-500"></div>
+            </div>
+          )}
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-800">
               <thead className="bg-gray-800">

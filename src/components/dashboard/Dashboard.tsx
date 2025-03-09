@@ -165,6 +165,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
         period,
         group_by: groupBy
       });
+      
       setTrends(trendsData);
       setErrors(prev => ({ ...prev, trends: false }));
     } catch (error) {
@@ -330,16 +331,13 @@ export default function Dashboard({ isMobile }: DashboardProps) {
           </div>
 
           {/* Trends Content */}
-          {activeStatsTab === 'trends' && trends && (
+          {activeStatsTab === 'trends' && (
             <div>
-              {trends.trends.length > 0 ? (
-                <div>
-                  {/* Bar chart visualization using TransactionChart component */}
-                  <TransactionChart trends={trends} period={period} />
-                </div>
-              ) : (
-                <p className="text-center text-gray-400 py-8">No trend data available for this period</p>
-              )}
+              {/* Always render the chart even with empty data */}
+              <div>
+                {/* Bar chart visualization using TransactionChart component */}
+                <TransactionChart trends={trends || { period: { start_date: '', end_date: '', period_type: period, group_by: 'day' }, trends: [] }} period={period} />
+              </div>
             </div>
           )}
 
@@ -593,13 +591,10 @@ export default function Dashboard({ isMobile }: DashboardProps) {
             <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Transaction Trends</h2>
           </div>
           
-          {trends && trends.trends.length > 0 ? (
-            <div>
-              <TransactionChart trends={trends} period={period} />
-            </div>
-          ) : (
-            <p className="text-center text-sm lg:text-base text-gray-400 py-8">No trend data available for this period</p>
-          )}
+          {/* Always render the chart even with empty data */}
+          <div>
+            <TransactionChart trends={trends || { period: { start_date: '', end_date: '', period_type: period, group_by: 'day' }, trends: [] }} period={period} />
+          </div>
         </div>
 
         {/* Category Distribution */}
