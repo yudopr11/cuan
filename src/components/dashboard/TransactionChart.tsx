@@ -46,7 +46,9 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
   const formatShortDate = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
-      if (period === 'day' || period === 'week') {
+      if (period === 'day') {
+        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      } else if (period === 'week') {
         return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
       } else if (period === 'year') {
         return date.toLocaleDateString('en-US', { month: 'short' });
@@ -59,25 +61,11 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
     }
   };
 
-  // Prepare dummy data for testing if needed
-  const dummyTrendsData = {
-    date: 'Week 1',
-    income: 110142266 / 4, // Using values from financial summary
-    expense: 5734245 / 4,
-    transfer: 5100000 / 4,
-    net: 104408021 / 4
-  };
-
   // Group data by week when period is month
   const groupDataByWeek = (data: TransactionTrends['trends']) => {
     if (!data || data.length === 0) {
-      // If no data, use dummy data
-      return [
-        { ...dummyTrendsData, date: 'Week 1' },
-        { ...dummyTrendsData, date: 'Week 2' },
-        { ...dummyTrendsData, date: 'Week 3' },
-        { ...dummyTrendsData, date: 'Week 4' }
-      ];
+      // Return empty array if no data
+      return [];
     }
     
     if (period !== 'month') {
@@ -127,28 +115,23 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
       net: data.net
     }));
     
-    // If we still don't have any data, use dummy data
-    if (result.length === 0) {
-      return [
-        { ...dummyTrendsData, date: 'Week 1' },
-        { ...dummyTrendsData, date: 'Week 2' },
-        { ...dummyTrendsData, date: 'Week 3' },
-        { ...dummyTrendsData, date: 'Week 4' }
-      ];
-    }
-    
     return result;
   };
 
-  // Make sure we have valid data
-  const validTrends = trends && trends.trends && trends.trends.length > 0 
-    ? trends 
-    : { 
-        period: trends?.period || { start_date: '', end_date: '', period_type: period, group_by: 'day' }, 
-        trends: [] // Empty array will trigger dummy data generation
-      };
-
-  const groupedTrends = groupDataByWeek(validTrends.trends);
+  // Check if we have valid data
+  const hasData = trends && trends.trends && trends.trends.length > 0;
+  
+  // Process the data only if we have some
+  const groupedTrends = hasData ? groupDataByWeek(trends.trends) : [];
+  
+  // If no data, show appropriate message
+  if (!hasData || groupedTrends.length === 0) {
+    return (
+      <div className="h-64 sm:h-72 md:h-80 w-full flex items-center justify-center">
+        <p className="text-gray-400 text-center">No transaction data available for this period</p>
+      </div>
+    );
+  }
 
   const chartData = {
     labels: period === 'month' 

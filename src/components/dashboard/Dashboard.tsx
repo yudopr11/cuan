@@ -333,11 +333,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
           {/* Trends Content */}
           {activeStatsTab === 'trends' && (
             <div>
-              {/* Always render the chart even with empty data */}
-              <div>
-                {/* Bar chart visualization using TransactionChart component */}
-                <TransactionChart trends={trends || { period: { start_date: '', end_date: '', period_type: period, group_by: 'day' }, trends: [] }} period={period} />
-              </div>
+              <TransactionChart trends={trends || { period: { start_date: '', end_date: '', period_type: period, group_by: 'day' }, trends: [] }} period={period} />
             </div>
           )}
 
@@ -591,7 +587,6 @@ export default function Dashboard({ isMobile }: DashboardProps) {
             <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Transaction Trends</h2>
           </div>
           
-          {/* Always render the chart even with empty data */}
           <div>
             <TransactionChart trends={trends || { period: { start_date: '', end_date: '', period_type: period, group_by: 'day' }, trends: [] }} period={period} />
           </div>
