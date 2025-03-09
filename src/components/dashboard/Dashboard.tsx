@@ -464,6 +464,18 @@ export default function Dashboard({ isMobile }: DashboardProps) {
                   <p className="text-sm md:text-base font-medium text-white">Total Balance:</p>
                   <p className="text-sm md:text-base font-bold text-[#30BDF2]">{accountSummary ? formatCurrency(accountSummary.total_balance) : '$0.00'}</p>
                 </div>
+                {accountSummary && accountSummary.accounts.some(account => account.type === 'credit_card' && account.payable_balance !== undefined) && (
+                  <div className="flex justify-between items-center mt-2">
+                    <p className="text-sm md:text-base font-medium text-white">Credit Card Payable:</p>
+                    <p className="text-sm md:text-base font-bold text-red-400">
+                      {formatCurrency(
+                        accountSummary.accounts
+                          .filter(account => account.type === 'credit_card' && account.payable_balance !== undefined)
+                          .reduce((sum, account) => sum + (Number(account.payable_balance) || 0), 0)
+                      )}
+                    </p>
+                  </div>
+                )}
               </div>
             </>
           ) : (
@@ -733,6 +745,18 @@ export default function Dashboard({ isMobile }: DashboardProps) {
                   <p className="text-sm lg:text-base xl:text-lg font-medium text-white">Total Balance:</p>
                   <p className="text-sm lg:text-base xl:text-lg font-bold text-[#30BDF2]">{accountSummary ? formatCurrency(accountSummary.total_balance) : '$0.00'}</p>
                 </div>
+                {accountSummary && accountSummary.accounts.some(account => account.type === 'credit_card' && account.payable_balance !== undefined) && (
+                  <div className="flex justify-between items-center mt-2">
+                    <p className="text-sm lg:text-base xl:text-lg font-medium text-white">Credit Card Payable:</p>
+                    <p className="text-sm lg:text-base xl:text-lg font-bold text-red-400">
+                      {formatCurrency(
+                        accountSummary.accounts
+                          .filter(account => account.type === 'credit_card' && account.payable_balance !== undefined)
+                          .reduce((sum, account) => sum + (Number(account.payable_balance) || 0), 0)
+                      )}
+                    </p>
+                  </div>
+                )}
               </div>
             </>
           ) : (

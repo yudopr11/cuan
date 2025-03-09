@@ -200,6 +200,15 @@ export default function Accounts({ isMobile }: AccountsProps) {
     return sum + (isNaN(accountBalance) ? 0 : accountBalance);
   }, 0);
 
+  // Calculate total credit card payable amount
+  const totalCreditCardPayable = accounts.reduce((sum, account) => {
+    if (account.type === 'credit_card' && account.payable_balance !== undefined) {
+      const payableBalance = Number(account.payable_balance) || 0;
+      return sum + payableBalance;
+    }
+    return sum;
+  }, 0);
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-full">
@@ -217,10 +226,21 @@ export default function Accounts({ isMobile }: AccountsProps) {
             {/* <h1 className="text-2xl font-bold">Accounts</h1> */}
           </div>
 
-          {/* Total Balance */}
-          <div className="card-dark">
-            <h2 className="text-base font-semibold mb-2 text-gray-200">Total Balance</h2>
-            <p className="text-xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
+          {/* Total Balance and Total Credit Card Payable Cards */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Total Balance */}
+            <div className="card-dark">
+              <h2 className="text-base font-semibold mb-2 text-gray-200">Total Balance</h2>
+              <p className="text-xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
+            </div>
+            
+            {/* Total Credit Card Payable */}
+            {totalCreditCardPayable > 0 && (
+              <div className="card-dark">
+                <h3 className="text-base font-semibold mb-2 text-gray-200">Credit Card Payable</h3>
+                <p className="text-xl font-bold text-red-400">{formatCurrency(totalCreditCardPayable)}</p>
+              </div>
+            )}
           </div>
 
           {/* Accounts List */}
@@ -477,10 +497,21 @@ export default function Accounts({ isMobile }: AccountsProps) {
           </button>
         </div>
 
-        {/* Total Balance */}
-        <div className="card-dark">
-          <h2 className="text-lg font-semibold mb-2 text-gray-200">Total Balance</h2>
-          <p className="text-3xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
+        {/* Total Balance and Total Credit Card Payable Cards */}
+        <div className="grid grid-cols-2 gap-6">
+          {/* Total Balance */}
+          <div className="card-dark">
+            <h2 className="text-lg font-semibold mb-2 text-gray-200">Total Balance</h2>
+            <p className="text-3xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
+          </div>
+          
+          {/* Total Credit Card Payable */}
+          {totalCreditCardPayable > 0 && (
+            <div className="card-dark">
+              <h2 className="text-lg font-semibold mb-2 text-gray-200">Credit Card Payable</h2>
+              <p className="text-3xl font-bold text-red-400">{formatCurrency(totalCreditCardPayable)}</p>
+            </div>
+          )}
         </div>
 
         {/* Accounts Table */}
