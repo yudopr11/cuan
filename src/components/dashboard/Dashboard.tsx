@@ -158,8 +158,9 @@ export default function Dashboard({ isMobile }: DashboardProps) {
     // Fetch transaction trends with appropriate grouping
     try {
       const groupBy = period === 'day' ? 'day' : 
-                     period === 'week' || period === 'month' ? 'day' : 
-                     period === 'year' ? 'month' : 'month';
+                     period === 'week' ? 'day' : 
+                     period === 'month' ? 'week' : 
+                     period === 'year' ? 'month' : 'year';
       
       const trendsData = await getTransactionTrends({ 
         period,

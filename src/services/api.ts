@@ -427,7 +427,7 @@ export const getTransactionTrends = async (
     start_date?: string;
     end_date?: string;
     period?: 'day' | 'week' | 'month' | 'year' | 'all';
-    group_by?: 'day' | 'week' | 'month';
+    group_by?: 'day' | 'week' | 'month' | 'year';
     transaction_types?: string[];
   } = {}
 ): Promise<TransactionTrends> => {
