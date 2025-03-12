@@ -124,6 +124,21 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
   // Process the data only if we have some
   const groupedTrends = hasData ? groupDataByWeek(trends.trends) : [];
   
+  // Calculate mean income and expense
+  const calculateMeans = () => {
+    if (!groupedTrends.length) return { meanIncome: 0, meanExpense: 0 };
+    
+    const totalIncome = groupedTrends.reduce((sum, item) => sum + item.income, 0);
+    const totalExpense = groupedTrends.reduce((sum, item) => sum + item.expense, 0);
+    
+    return {
+      meanIncome: totalIncome / groupedTrends.length,
+      meanExpense: totalExpense / groupedTrends.length
+    };
+  };
+  
+  const { meanIncome, meanExpense } = calculateMeans();
+  
   // If no data, show appropriate message
   if (!hasData || groupedTrends.length === 0) {
     return (
@@ -261,8 +276,22 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
   }
 
   return (
-    <div className="h-64 sm:h-72 md:h-80 w-full">
-      <Bar data={chartData} options={options} />
+    <div className="flex flex-col">
+      <div className="h-64 sm:h-72 md:h-80 w-full">
+        <Bar data={chartData} options={options} />
+      </div>
+      <div className="mt-4 flex justify-center gap-8 text-xs">
+        <div className="flex items-center">
+          <div className="w-2.5 h-2.5 rounded-full bg-green-500 mr-2"></div>
+          <span className="text-gray-300 mr-1">Mean Income:</span>
+          <span className="font-medium text-gray-200">{formatCurrency(meanIncome)}</span>
+        </div>
+        <div className="flex items-center">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-500 mr-2"></div>
+          <span className="text-gray-300 mr-1">Mean Expense:</span>
+          <span className="font-medium text-gray-200">{formatCurrency(meanExpense)}</span>
+        </div>
+      </div>
     </div>
   );
 };
