@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Transaction, TransactionCreate, Account, Category } from '../../services/api';
 import useCurrencyFormatter from '../../hooks/useCurrencyFormatter';
+import { TransactionsDesktopSkeleton } from '../common/SkeletonLoader';
 
 interface TransactionsDesktopProps {
   transactions: Transaction[];
@@ -90,6 +91,11 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
 }) => {
   // Use the currency formatter hook
   const { formatCurrency } = useCurrencyFormatter();
+
+  // Show skeleton loader while filtering
+  if (isFilterLoading) {
+    return <TransactionsDesktopSkeleton />;
+  }
 
   return (
     <>
@@ -280,11 +286,6 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
         
         {/* Transaction Table - Desktop */}
         <div className="bg-gray-900 shadow-md rounded-lg overflow-hidden mb-6 border border-gray-800 relative">
-          {isFilterLoading && (
-            <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-10">
-              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-indigo-500"></div>
-            </div>
-          )}
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-800">
               <thead className="bg-gray-800">

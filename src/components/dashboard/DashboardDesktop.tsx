@@ -9,6 +9,7 @@ import type {
 import { ArrowDownIcon, ArrowUpIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
 import TransactionChart from './TransactionChart';
 import CategoryChart from './CategoryChart';
+import { DashboardDesktopSkeleton } from '../common/SkeletonLoader';
 
 interface DashboardDesktopProps {
   isInitialLoading: boolean;
@@ -52,18 +53,19 @@ export default function DashboardDesktop({
   // Component to show loading overlay for refreshing data
   const LoadingOverlay = () => (
     isRefreshing ? (
-      <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center z-10 rounded-lg">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+      <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-10 rounded-lg backdrop-blur-sm">
+        <div className="px-6 py-4 bg-gray-800/90 rounded-xl shadow-xl">
+          <div className="flex items-center space-x-3">
+            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-[#30BDF2]"></div>
+            <p className="text-sm text-gray-200">Updating...</p>
+          </div>
+        </div>
       </div>
     ) : null
   );
 
   if (isInitialLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
-    );
+    return <DashboardDesktopSkeleton />;
   }
 
   return (

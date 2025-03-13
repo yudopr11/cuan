@@ -17,6 +17,7 @@ import type {
 import usePageTitle from '../../hooks/usePageTitle';
 import TransactionsDesktop from './TransactionsDesktop';
 import TransactionsMobile from './TransactionsMobile';
+import { TransactionsDesktopSkeleton, TransactionsMobileSkeleton } from '../common/SkeletonLoader';
 
 interface TransactionsProps {
   isMobile: boolean;
@@ -433,10 +434,10 @@ export default function Transactions({ isMobile }: TransactionsProps) {
 
   // Loading state handling - only show full loading screen on initial load
   if (initialLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
+    return isMobile ? (
+      <TransactionsMobileSkeleton />
+    ) : (
+      <TransactionsDesktopSkeleton />
     );
   }
 

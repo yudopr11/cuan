@@ -7,6 +7,7 @@ import {
   DeleteConfirmationModal, 
   FormModal 
 } from '../layout';
+import { TransactionsMobileSkeleton } from '../common/SkeletonLoader';
 
 interface TransactionsMobileProps {
   transactions: Transaction[];
@@ -100,6 +101,11 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
   const [transactionForAction, setTransactionForAction] = useState<Transaction | null>(null);
 
+  // Show skeleton loader while filtering
+  if (isFilterLoading) {
+    return <TransactionsMobileSkeleton />;
+  }
+
   // Handle transaction click to open the action menu
   const handleTransactionClick = (transaction: Transaction) => {
     setTransactionForAction(transaction);
@@ -135,15 +141,6 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
       setIsFilterModalOpen(true);
     }
   };
-
-  // Component to show loading overlay for refreshing data
-  const LoadingOverlay = () => (
-    isFilterLoading ? (
-      <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center z-10 rounded-xl">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
-    ) : null
-  );
 
   // Function to render transaction type icon with consistent styling
   const renderTransactionTypeIcon = (type: string) => {
@@ -259,8 +256,6 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
         
         {/* Transactions List with Native-like Card Styling */}
         <div className="relative px-2">
-          <LoadingOverlay />
-          
           {transactions.length === 0 ? (
             <div className="card-dark flex flex-col items-center justify-center p-8 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

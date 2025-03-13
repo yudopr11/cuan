@@ -11,6 +11,7 @@ import { ArrowDownIcon, ArrowUpIcon, ArrowsRightLeftIcon } from '@heroicons/reac
 import TransactionChart from './TransactionChart';
 import CategoryChart from './CategoryChart';
 import { BuildingLibraryIcon, CreditCardIcon, BanknotesIcon } from '@heroicons/react/24/outline';
+import { DashboardSkeleton } from '../common/SkeletonLoader';
 
 interface DashboardMobileProps {
   isInitialLoading: boolean;
@@ -56,18 +57,19 @@ export default function DashboardMobile({
   // Component to show loading overlay for refreshing data
   const LoadingOverlay = () => (
     isRefreshing ? (
-      <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center z-10 rounded-xl">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+      <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-10 rounded-xl backdrop-blur-sm">
+        <div className="px-6 py-4 bg-gray-800/90 rounded-xl shadow-xl">
+          <div className="flex items-center space-x-3">
+            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-[#30BDF2]"></div>
+            <p className="text-sm text-gray-200">Updating...</p>
+          </div>
+        </div>
       </div>
     ) : null
   );
 
   if (isInitialLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-14 w-14 border-t-3 border-b-3 border-[#30BDF2]"></div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return (
@@ -207,14 +209,16 @@ export default function DashboardMobile({
         <div className="px-3 pb-4">
           {/* Trends Content */}
           {activeStatsTab === 'trends' && (
-            <div>
+            <div className="relative">
+              <LoadingOverlay />
               <TransactionChart trends={trends || { period: { start_date: '', end_date: '', period_type: period, group_by: 'day' }, trends: [] }} period={period} />
             </div>
           )}
 
           {/* Categories Content */}
           {activeStatsTab === 'categories' && categoryData && (
-            <div>
+            <div className="relative">
+              <LoadingOverlay />
               <div className="flex justify-between items-center mb-4">
                 {/* iOS/Android style toggle */}
                 <div className="flex rounded-full overflow-hidden border border-gray-700 p-0.5 shadow-md">

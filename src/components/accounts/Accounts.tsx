@@ -7,6 +7,7 @@ import useCurrencyFormatter from '../../hooks/useCurrencyFormatter';
 import usePageTitle from '../../hooks/usePageTitle';
 import AccountsDesktop from './AccountsDesktop';
 import AccountsMobile from './AccountsMobile';
+import { AccountsDesktopSkeleton, AccountsMobileSkeleton } from '../common/SkeletonLoader';
 
 interface AccountsProps {
   isMobile: boolean;
@@ -212,10 +213,10 @@ export default function Accounts({ isMobile }: AccountsProps) {
   }, 0);
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
+    return isMobile ? (
+      <AccountsMobileSkeleton />
+    ) : (
+      <AccountsDesktopSkeleton />
     );
   }
 
