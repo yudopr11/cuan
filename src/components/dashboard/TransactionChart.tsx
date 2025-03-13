@@ -142,7 +142,7 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
   // If no data, show appropriate message
   if (!hasData || groupedTrends.length === 0) {
     return (
-      <div className="h-64 sm:h-72 md:h-80 w-full flex items-center justify-center">
+      <div className="h-64 sm:h-72 md:h-80 w-full flex items-center justify-center bg-gray-800/30 rounded-xl">
         <p className="text-gray-400 text-center">No transaction data available for this period</p>
       </div>
     );
