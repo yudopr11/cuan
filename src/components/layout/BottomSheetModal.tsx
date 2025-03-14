@@ -31,24 +31,28 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
         style={{ 
           boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.5)',
           maxHeight: '90vh',
-          overflowY: 'auto'
+          display: 'flex',
+          flexDirection: 'column'
         }}
       >
-        {/* Handle indicator for bottom sheet */}
-        <div className="flex justify-center mb-2">
+        {/* Handle indicator for bottom sheet - fixed at top */}
+        <div className="flex justify-center mb-2 flex-shrink-0">
           <div className="w-12 h-1.5 bg-gray-700 rounded-full my-2"></div>
         </div>
         
-        {/* Title (optional) */}
-        {title && (
-          <div className="px-4 mb-2 text-center">
-            <h2 className="text-xl font-bold text-gray-200">{title}</h2>
+        {/* Scrollable container for title and content */}
+        <div className="overflow-y-auto flex-grow">
+          {/* Title (optional) */}
+          {title && (
+            <div className="px-4 mb-2 text-center">
+              <h2 className="text-xl font-bold text-gray-200">{title}</h2>
+            </div>
+          )}
+          
+          {/* Content */}
+          <div className="px-4 py-2">
+            {children}
           </div>
-        )}
-        
-        {/* Content */}
-        <div className="px-4 py-2">
-          {children}
         </div>
       </div>
       

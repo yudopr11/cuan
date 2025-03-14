@@ -1,5 +1,35 @@
 import type { FormEvent } from 'react';
 import type { Account, AccountCreate, AccountBalance } from '../../services/api';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+
+// Custom Select Input component with consistent styling
+interface SelectInputProps {
+  id?: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  className?: string;
+  children: React.ReactNode;
+}
+
+const SelectInput: React.FC<SelectInputProps> = ({ id, name, value, onChange, className = '', children }) => {
+  return (
+    <div className="relative">
+      <select
+        id={id || name}
+        name={name}
+        value={value}
+        onChange={onChange}
+        className={`w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none ${className}`}
+      >
+        {children}
+      </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+        <ChevronDownIcon className="h-5 w-5 text-gray-500" aria-hidden="true" />
+      </div>
+    </div>
+  );
+};
 
 interface AccountsDesktopProps {
   accounts: Account[];
@@ -184,17 +214,14 @@ export default function AccountsDesktop({
               
               <div className="mb-4">
                 <label className="block text-gray-300 mb-2">Type</label>
-                <select
+                <SelectInput
                   name="type"
                   value={formData.type}
                   onChange={handleInputChange}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none"
-                  style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                 >
                   <option value="bank_account">Bank Account</option>
                   <option value="credit_card">Credit Card</option>
-                  <option value="other">Other</option>
-                </select>
+                </SelectInput>
               </div>
               
               {formData.type === 'credit_card' && (

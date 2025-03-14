@@ -257,7 +257,7 @@ export default function DashboardDesktop({
                     <div className="ml-3 sm:ml-4">
                       <div className="text-sm lg:text-base xl:text-lg font-medium text-white">{transaction.description}</div>
                       <div className="text-xs lg:text-sm text-gray-200">
-                        {formatDate(transaction.transaction_date)} · {transaction.category?.name || 'Uncategorized'}
+                        {formatDate(transaction.transaction_date)} · {transaction.transaction_type === 'transfer' ? 'Transfer' : (transaction.category?.name || 'Uncategorized')}
                       </div>
                     </div>
                   </div>
@@ -269,7 +269,9 @@ export default function DashboardDesktop({
                     {transaction.transaction_type === 'income' ? '+' : transaction.transaction_type === 'expense' ? '-' : ''}
                     {formatCurrency(transaction.amount)}
                     {transaction.transaction_type === 'transfer' && transaction.transfer_fee && transaction.transfer_fee > 0 && (
-                      <div className="text-xs text-gray-400">Fee: {formatCurrency(transaction.transfer_fee)}</div>
+                      <div className="text-xs text-yellow-400 text-right">
+                        Fee: {formatCurrency(transaction.transfer_fee)}
+                      </div>
                     )}
                   </div>
                 </div>

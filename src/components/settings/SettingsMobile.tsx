@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ChevronRightIcon, CheckIcon } from '@heroicons/react/24/solid';
 
 export default function SettingsMobile() {
   const [currency, setCurrency] = useState('IDR');
@@ -51,14 +52,10 @@ export default function SettingsMobile() {
           <span className="text-sm text-white font-medium">Currency</span>
           <div className="flex items-center text-gray-300">
             <span className="text-sm">{currentCurrencyLabel}</span>
-            <svg 
-              className={`h-5 w-5 ml-2 transition-transform duration-200 ${showCurrencyPicker ? 'rotate-90' : ''}`} 
-              xmlns="http://www.w3.org/2000/svg" 
-              viewBox="0 0 20 20" 
-              fill="currentColor"
-            >
-              <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
-            </svg>
+            <ChevronRightIcon 
+              className={`h-5 w-5 ml-2 transition-transform duration-200 ${showCurrencyPicker ? 'rotate-90' : ''}`}
+              aria-hidden="true"
+            />
           </div>
         </div>
         
@@ -77,9 +74,7 @@ export default function SettingsMobile() {
               >
                 <span className="text-xs">{option.label}</span>
                 {currency === option.value && (
-                  <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                  </svg>
+                  <CheckIcon className="h-4 w-4" aria-hidden="true" />
                 )}
               </div>
             ))}

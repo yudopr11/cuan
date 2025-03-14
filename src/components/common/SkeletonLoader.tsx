@@ -10,7 +10,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({ className = '' }) => {
   );
 };
 
-export const DashboardSkeleton: React.FC = () => {
+export const DashboardMobileSkeleton: React.FC = () => {
   return (
     <div className="space-y-5 px-1 pb-16">
       {/* Period Selector Skeleton */}
@@ -53,7 +53,7 @@ export const DashboardSkeleton: React.FC = () => {
           <Skeleton className="h-4 w-16" />
         </div>
         <div>
-          {[...Array(3)].map((_, i) => (
+          {[...Array(5)].map((_, i) => (
             <div key={i} className="py-3.5 px-4 flex items-center justify-between border-b border-gray-700/50">
               <div className="flex items-center">
                 <Skeleton className="w-10 h-10 rounded-full" />
@@ -70,13 +70,13 @@ export const DashboardSkeleton: React.FC = () => {
       
       {/* Accounts Skeleton */}
       <div className="card-dark rounded-xl shadow-lg overflow-hidden bg-gradient-to-b from-gray-800 to-gray-900 mx-2">
-        <div className="flex justify-between items-center p-4 border-b border-gray-700/50">
+        <div className="flex justify-between items-center p-4">
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-4 w-16" />
         </div>
         <div>
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="flex justify-between items-center p-4 border-b border-gray-700/50">
+            <div key={i} className="flex justify-between items-center p-4 border-t border-gray-700/50">
               <div className="flex items-center">
                 <Skeleton className="w-9 h-9 rounded-full mr-3" />
                 <div>
@@ -88,7 +88,7 @@ export const DashboardSkeleton: React.FC = () => {
             </div>
           ))}
         </div>
-        <div className="p-4 bg-gray-800/30">
+        <div className="p-4 bg-gray-800/30 rounded-lg">
           <div className="flex justify-between items-center">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-5 w-20" />
@@ -333,6 +333,11 @@ export const TransactionsMobileSkeleton: React.FC = () => {
         </div>
       </div>
       
+      {/* Section Title Skeleton */}
+      <div className="px-3 pt-2">
+        <Skeleton className="h-4 w-28" />
+      </div>
+      
       {/* Transactions List Skeleton */}
       <div className="px-2">
         <div className="space-y-3">
@@ -363,7 +368,8 @@ export const TransactionsMobileSkeleton: React.FC = () => {
       </div>
 
       {/* Floating Add Button Skeleton */}
-      <div className="fixed bottom-20 right-5 w-14 h-14 rounded-full bg-gray-700 animate-pulse"></div>
+      <div className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-gray-700 animate-pulse"></div>
+      
     </div>
   );
 };
@@ -504,7 +510,7 @@ export const AccountsMobileSkeleton: React.FC = () => {
       </div>
       
       {/* Floating Add Button Skeleton */}
-      <div className="fixed bottom-20 right-5 w-14 h-14 rounded-full bg-gray-700 animate-pulse"></div>
+      <div className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-gray-700 animate-pulse"></div>
     </div>
   );
 };
@@ -622,7 +628,7 @@ export const CategoryMobileSkeleton: React.FC = () => {
       </div>
       
       {/* Floating Add Button Skeleton */}
-      <div className="fixed bottom-20 right-5 w-14 h-14 rounded-full bg-gray-700 animate-pulse"></div>
+      <div className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-gray-700 animate-pulse"></div>
     </div>
   );
 };

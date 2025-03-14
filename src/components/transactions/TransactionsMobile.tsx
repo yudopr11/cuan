@@ -8,6 +8,19 @@ import {
   FormModal 
 } from '../layout';
 import { TransactionsMobileSkeleton } from '../common/SkeletonLoader';
+import { 
+  ArrowUpIcon, 
+  ArrowDownIcon, 
+  ArrowsRightLeftIcon, 
+  PencilSquareIcon, 
+  TrashIcon, 
+  FunnelIcon, 
+  DocumentDuplicateIcon, 
+  ChevronLeftIcon, 
+  ChevronRightIcon, 
+  PlusIcon,
+  ChevronDownIcon
+} from '@heroicons/react/24/outline';
 
 interface TransactionsMobileProps {
   transactions: Transaction[];
@@ -59,6 +72,35 @@ interface TransactionsMobileProps {
   setIsFilterModalOpen: (isOpen: boolean) => void;
   getUniqueCategories: (categories: Category[], transactionType?: string | null) => Category[];
 }
+
+// Create a SelectInput component like we did for the desktop version to replace SVG backgrounds
+interface SelectInputProps {
+  id?: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  className?: string;
+  children: React.ReactNode;
+}
+
+const SelectInput: React.FC<SelectInputProps> = ({ id, name, value, onChange, className = '', children }) => {
+  return (
+    <div className="relative">
+      <select
+        id={id || name}
+        name={name}
+        value={value}
+        onChange={onChange}
+        className={`appearance-none ${className}`}
+      >
+        {children}
+      </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+        <ChevronDownIcon className="h-5 w-5 text-gray-500" aria-hidden="true" />
+      </div>
+    </div>
+  );
+};
 
 const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
   transactions,
@@ -148,25 +190,19 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
       case 'income':
         return (
           <div className="w-10 h-10 rounded-full bg-green-500 bg-opacity-20 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
-            </svg>
+            <ArrowUpIcon className="h-5 w-5 text-green-400" />
           </div>
         );
       case 'expense':
         return (
           <div className="w-10 h-10 rounded-full bg-red-500 bg-opacity-20 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clipRule="evenodd" />
-            </svg>
+            <ArrowDownIcon className="h-5 w-5 text-red-400" />
           </div>
         );
       case 'transfer':
         return (
           <div className="w-10 h-10 rounded-full bg-blue-500 bg-opacity-20 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M8 5a1 1 0 100 2h5.586l-1.293 1.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L13.586 5H8zM12 15a1 1 0 100-2H6.414l1.293-1.293a1 1 0 10-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L6.414 15H12z" />
-            </svg>
+            <ArrowsRightLeftIcon className="h-5 w-5 text-blue-400" />
           </div>
         );
       default:
@@ -179,21 +215,13 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
     {
       id: 'edit',
       label: 'Edit Transaction',
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#30BDF2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-        </svg>
-      ),
+      icon: <PencilSquareIcon className="h-6 w-6 text-[#30BDF2]" />,
       onClick: handleEditClick,
     },
     {
       id: 'delete',
       label: 'Delete Transaction',
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-        </svg>
-      ),
+      icon: <TrashIcon className="h-6 w-6 text-red-500" />,
       onClick: handleDeleteClick,
       textColor: 'text-red-500',
     },
@@ -244,9 +272,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
               </div>
             </div>
             <div className={`ml-2 p-1.5 ${hasFilterChanges() ? 'text-[#30BDF2]' : 'text-gray-300'} rounded relative`}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
-              </svg>
+              <FunnelIcon className="h-4 w-4" />
               {hasFilterChanges() && (
                 <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-[#30BDF2]"></span>
               )}
@@ -254,13 +280,16 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
           </div>
         </div>
         
+        {/* Section Title */}
+        <div className="px-3 pt-2">
+          <p className="text-sm font-medium text-gray-400">MY TRANSACTIONS</p>
+        </div>
+        
         {/* Transactions List with Native-like Card Styling */}
         <div className="relative px-2">
           {transactions.length === 0 ? (
             <div className="card-dark flex flex-col items-center justify-center p-8 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
+              <DocumentDuplicateIcon className="h-12 w-12 text-gray-400 mb-2" />
               <p className="text-gray-400 text-center">No transactions found for the selected filters</p>
               <button
                 onClick={handleClearFilters}
@@ -281,19 +310,37 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                   
                   <div className="ml-3 flex-1">
                     <div className="flex justify-between">
-                      <p className="font-medium text-white truncate max-w-[170px]">
-                        {transaction.description}
-                      </p>
-                      <p className={`font-semibold ${
-                        transaction.transaction_type === 'income' 
-                          ? 'text-green-400' 
-                          : transaction.transaction_type === 'expense' 
-                            ? 'text-red-400' 
-                            : 'text-blue-400'
-                      }`}>
-                        {transaction.transaction_type === 'expense' ? '-' : ''}
-                        {formatCurrency(transaction.amount)}
-                      </p>
+                      <div>
+                        <p className="font-medium text-white truncate max-w-[170px]">
+                          {transaction.description}
+                        </p>
+                        {transaction.transaction_type === 'transfer' ? (
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            Transfer
+                          </p>
+                        ) : transaction.category && (
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            {transaction.category.name}
+                          </p>
+                        )}
+                      </div>
+                      <div>
+                        <p className={`font-semibold text-right ${
+                          transaction.transaction_type === 'income' 
+                            ? 'text-green-400' 
+                            : transaction.transaction_type === 'expense' 
+                              ? 'text-red-400' 
+                              : 'text-blue-400'
+                        }`}>
+                          {transaction.transaction_type === 'expense' ? '-' : ''}
+                          {formatCurrency(transaction.amount)}
+                        </p>
+                        {transaction.transaction_type === 'transfer' && transaction.transfer_fee && transaction.transfer_fee > 0 && (
+                          <p className="text-xs text-yellow-400 text-right">
+                            Fee: {formatCurrency(transaction.transfer_fee)}
+                          </p>
+                        )}
+                      </div>
                     </div>
                     
                     <div className="flex justify-between mt-1">
@@ -324,9 +371,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                       : 'bg-[#30BDF2] text-white hover:bg-[#28a8d8] active:bg-[#259cc8]'
                   }`}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
+                  <ChevronLeftIcon className="h-4 w-4 mr-1" />
                   Previous
                 </button>
                 <button
@@ -339,9 +384,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                   }`}
                 >
                   Next
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
+                  <ChevronRightIcon className="h-4 w-4 ml-1" />
                 </button>
               </div>
             </div>
@@ -352,14 +395,12 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
       {/* Floating Add Button */}
       <button
           onClick={() => handleOpenModal()}
-          className="fixed bottom-20 right-5 w-14 h-14 rounded-full bg-[#30BDF2] text-white shadow-lg flex items-center justify-center active:bg-[#28a8d8] transition-colors z-10"
+          className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-[#30BDF2] text-white flex items-center justify-center active:bg-[#259cc8] shadow-lg z-10"
           style={{
             boxShadow: '0 4px 10px rgba(48, 189, 242, 0.3)'
           }}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
+          <PlusIcon className="h-6 w-6" />
         </button>
 
       {/* Action Menu Modal */}
@@ -386,17 +427,16 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Type
               </label>
-              <select
+              <SelectInput
                 name="transaction_type"
                 value={formData.transaction_type}
                 onChange={handleInputChange}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-200 focus:border-[#30BDF2] appearance-none"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
+                className="w-full py-2 px-3 bg-gray-800 text-white rounded-md shadow-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#30BDF2]"
               >
                 <option value="expense">Expense</option>
                 <option value="income">Income</option>
                 <option value="transfer">Transfer</option>
-              </select>
+              </SelectInput>
             </div>
             
             <div>
@@ -447,21 +487,18 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Account
               </label>
-              <select
+              <SelectInput
                 name="account_id"
-                value={formData.account_id}
+                value={formData.account_id.toString()}
                 onChange={handleInputChange}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-200 focus:border-[#30BDF2] appearance-none"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
-                required
+                className="w-full py-2 px-3 bg-gray-800 text-white rounded-md shadow-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#30BDF2]"
               >
-                <option value="">Select Account</option>
                 {accounts.map(account => (
-                  <option key={account.account_id} value={account.account_id}>
+                  <option key={account.account_id} value={account.account_id.toString()}>
                     {account.name}
                   </option>
                 ))}
-              </select>
+              </SelectInput>
             </div>
             
             {formData.transaction_type !== 'transfer' && (
@@ -469,22 +506,22 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Category
                 </label>
-                <select
+                <SelectInput
                   name="category_id"
-                  value={formData.category_id || ''}
+                  value={formData.category_id?.toString() || ''}
                   onChange={handleInputChange}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-200 focus:border-[#30BDF2] appearance-none"
-                  style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
+                  className="w-full py-2 px-3 bg-gray-800 text-white rounded-md shadow-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#30BDF2]"
                 >
-                  <option value="">Select Category (Optional)</option>
-                  {getUniqueCategories(categories, formData.transaction_type)
+                  <option value="">-- Select Category --</option>
+                  {categories
+                    .filter(cat => cat.type === formData.transaction_type)
                     .map(category => (
-                      <option key={category.category_id} value={category.category_id}>
+                      <option key={category.category_id} value={category.category_id.toString()}>
                         {category.name}
                       </option>
                     ))
                   }
-                </select>
+                </SelectInput>
               </div>
             )}
             
@@ -494,24 +531,22 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     To Account
                   </label>
-                  <select
+                  <SelectInput
                     name="destination_account_id"
-                    value={formData.destination_account_id || ''}
+                    value={formData.destination_account_id?.toString() || ''}
                     onChange={handleInputChange}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-200 focus:border-[#30BDF2] appearance-none"
-                    style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
-                    required={formData.transaction_type === 'transfer'}
+                    className="w-full py-2 px-3 bg-gray-800 text-white rounded-md shadow-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#30BDF2]"
                   >
-                    <option value="">Select Destination Account</option>
+                    <option value="">-- Select Destination Account --</option>
                     {accounts
-                      .filter(account => account.account_id !== formData.account_id)
+                      .filter(acc => acc.account_id !== formData.account_id)
                       .map(account => (
-                        <option key={account.account_id} value={account.account_id}>
+                        <option key={account.account_id} value={account.account_id.toString()}>
                           {account.name}
                         </option>
                       ))
                     }
-                  </select>
+                  </SelectInput>
                 </div>
                 
                 <div>
@@ -606,30 +641,28 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
               <label className="block text-sm font-medium text-gray-300 mb-1">
                 Transaction Type
               </label>
-              <select
+              <SelectInput
                 name="transaction_type"
                 value={filters.transaction_type}
                 onChange={handleFilterChange}
-                className="w-full px-3 py-3 border border-gray-800 rounded-lg text-sm shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] appearance-none bg-no-repeat bg-right"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
+                className="w-full py-2 px-4 bg-gray-800 text-white text-sm rounded-md shadow-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#30BDF2]"
               >
                 <option value="">All Types</option>
                 <option value="income">Income</option>
                 <option value="expense">Expense</option>
                 <option value="transfer">Transfer</option>
-              </select>
+              </SelectInput>
             </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">
                 Account
               </label>
-              <select
+              <SelectInput
                 name="account_name"
                 value={filters.account_name}
                 onChange={handleFilterChange}
-                className="w-full px-3 py-3 border border-gray-800 rounded-lg shadow-sm text-sm bg-gray-800 text-white focus:border-[#30BDF2] appearance-none bg-no-repeat bg-right"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
+                className="w-full py-2 px-4 bg-gray-800 text-white text-sm rounded-md shadow-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#30BDF2]"
               >
                 <option value="">All Accounts</option>
                 {accounts.map(account => (
@@ -637,29 +670,26 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                     {account.name}
                   </option>
                 ))}
-              </select>
+              </SelectInput>
             </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">
                 Category
               </label>
-              <select
+              <SelectInput
                 name="category_name"
                 value={filters.category_name}
                 onChange={handleFilterChange}
-                className="w-full px-3 py-3 border border-gray-800 rounded-lg shadow-sm text-sm bg-gray-800 text-white focus:border-[#30BDF2] appearance-none bg-no-repeat bg-right"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
+                className="w-full py-2 px-4 bg-gray-800 text-white text-sm rounded-md shadow-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#30BDF2]"
               >
                 <option value="">All Categories</option>
-                {getUniqueCategories(categories, filters.transaction_type)
-                  .map(category => (
-                    <option key={category.category_id} value={category.name}>
-                      {category.name}
-                    </option>
-                  ))
-                }
-              </select>
+                {getUniqueCategories(categories, filters.transaction_type || null).map(category => (
+                  <option key={category.category_id} value={category.name}>
+                    {category.name}
+                  </option>
+                ))}
+              </SelectInput>
             </div>
           </div>
           

@@ -11,7 +11,7 @@ import { ArrowDownIcon, ArrowUpIcon, ArrowsRightLeftIcon } from '@heroicons/reac
 import TransactionChart from './TransactionChart';
 import CategoryChart from './CategoryChart';
 import { BuildingLibraryIcon, CreditCardIcon, BanknotesIcon } from '@heroicons/react/24/outline';
-import { DashboardSkeleton } from '../common/SkeletonLoader';
+import { DashboardMobileSkeleton } from '../common/SkeletonLoader';
 
 interface DashboardMobileProps {
   isInitialLoading: boolean;
@@ -69,7 +69,7 @@ export default function DashboardMobile({
   );
 
   if (isInitialLoading) {
-    return <DashboardSkeleton />;
+    return <DashboardMobileSkeleton />;
   }
 
   return (
@@ -290,7 +290,7 @@ export default function DashboardMobile({
                   <div className="ml-3.5">
                     <div className="text-base font-medium text-white">{transaction.description}</div>
                     <div className="text-xs text-gray-400">
-                      {formatDate(transaction.transaction_date)} · {transaction.category?.name || 'Uncategorized'}
+                      {formatDate(transaction.transaction_date)} · {transaction.transaction_type === 'transfer' ? 'Transfer' : (transaction.category?.name || 'Uncategorized')}
                     </div>
                   </div>
                 </div>
@@ -302,7 +302,9 @@ export default function DashboardMobile({
                   {transaction.transaction_type === 'income' ? '+' : transaction.transaction_type === 'expense' ? '-' : ''}
                   {formatCurrency(transaction.amount)}
                   {transaction.transaction_type === 'transfer' && transaction.transfer_fee && transaction.transfer_fee > 0 && (
-                    <div className="text-xs text-gray-400 text-right">Fee: {formatCurrency(transaction.transfer_fee)}</div>
+                    <div className="text-xs text-yellow-400 text-right">
+                      Fee: {formatCurrency(transaction.transfer_fee)}
+                    </div>
                   )}
                 </div>
               </div>

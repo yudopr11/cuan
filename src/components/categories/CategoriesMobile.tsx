@@ -5,6 +5,7 @@ import {
   DeleteConfirmationModal, 
   FormModal 
 } from '../layout';
+import { PencilSquareIcon, TrashIcon, ChevronRightIcon, DocumentPlusIcon, PlusIcon, ChevronDownIcon, TagIcon } from '@heroicons/react/24/outline';
 
 interface CategoriesMobileProps {
   incomeCategories: Category[];
@@ -24,6 +25,26 @@ interface CategoriesMobileProps {
   handleCloseDeleteModal: () => void;
   handleDeleteCategory: () => void;
 }
+
+// SelectInput component for consistent styling
+const SelectInput: React.FC<React.SelectHTMLAttributes<HTMLSelectElement> & { style?: React.CSSProperties }> = ({ 
+  className, 
+  style, 
+  ...props 
+}) => {
+  return (
+    <div className="relative">
+      <select
+        className={className}
+        style={{ paddingRight: '2.5rem', ...style }}
+        {...props}
+      />
+      <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+        <ChevronDownIcon className="h-5 w-5 text-gray-500" aria-hidden="true" />
+      </div>
+    </div>
+  );
+};
 
 const CategoriesMobile: React.FC<CategoriesMobileProps> = ({
   incomeCategories,
@@ -81,9 +102,7 @@ const CategoriesMobile: React.FC<CategoriesMobileProps> = ({
       id: 'edit',
       label: 'Edit Category',
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#30BDF2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-        </svg>
+        <PencilSquareIcon className="h-6 w-6 text-[#30BDF2]" />
       ),
       onClick: handleEditFromAction,
     },
@@ -91,12 +110,9 @@ const CategoriesMobile: React.FC<CategoriesMobileProps> = ({
       id: 'delete',
       label: 'Delete Category',
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-        </svg>
+        <TrashIcon className="h-6 w-6 text-red-500" />
       ),
       onClick: handleDeleteFromAction,
-      textColor: 'text-red-500',
     },
   ] : [];
 
@@ -142,23 +158,17 @@ const CategoriesMobile: React.FC<CategoriesMobileProps> = ({
                   onClick={() => handleCategoryPress(category)}
                 >
                   <div className="flex items-center">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center bg-red-500/10 text-red-400 shadow-md mr-3">
-                      <div className="w-2 h-2 rounded-full bg-red-400"></div>
-                    </div>
+                    <TagIcon className="h-5 w-5 text-red-400 mr-3" />
                     <h3 className="font-medium text-white text-base">{category.name}</h3>
                   </div>
                   <div className="flex items-center text-gray-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                    </svg>
+                    <ChevronRightIcon className="h-5 w-5" />
                   </div>
                 </div>
               ))
             ) : (
               <div className="flex flex-col items-center justify-center py-10">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+                <DocumentPlusIcon className="h-16 w-16 text-gray-600 mb-4" />
                 <p className="text-center text-gray-400 text-base">No expense categories found</p>
                 <button 
                   onClick={() => handleOpenModal()} 
@@ -177,23 +187,17 @@ const CategoriesMobile: React.FC<CategoriesMobileProps> = ({
                   onClick={() => handleCategoryPress(category)}
                 >
                   <div className="flex items-center">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center bg-green-500/10 text-green-400 shadow-md mr-3">
-                      <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                    </div>
+                    <TagIcon className="h-5 w-5 text-green-400 mr-3" />
                     <h3 className="font-medium text-white text-base">{category.name}</h3>
                   </div>
                   <div className="flex items-center text-gray-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                    </svg>
+                    <ChevronRightIcon className="h-5 w-5" />
                   </div>
                 </div>
               ))
             ) : (
               <div className="flex flex-col items-center justify-center py-10">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+                <DocumentPlusIcon className="h-16 w-16 text-gray-600 mb-4" />
                 <p className="text-center text-gray-400 text-base">No income categories found</p>
                 <button 
                   onClick={() => handleOpenModal()} 
@@ -207,16 +211,16 @@ const CategoriesMobile: React.FC<CategoriesMobileProps> = ({
         </div>
       </div>
 
-      {/* Material Design FAB (Floating Action Button) */}
+      {/* Floating Add Button */}
       <button
-        onClick={() => handleOpenModal()}
-        className="fixed bottom-20 right-5 w-14 h-14 rounded-full bg-[#30BDF2] text-white shadow-lg flex items-center justify-center hover:bg-[#28a8d8] focus:outline-none transition-all transform hover:scale-105 active:scale-95 z-10"
-        style={{ boxShadow: '0 4px 10px rgba(48, 189, 242, 0.5)' }}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-        </svg>
-      </button>
+          onClick={() => handleOpenModal()}
+          className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-[#30BDF2] text-white flex items-center justify-center active:bg-[#28a8d8] shadow-lg z-10"
+          style={{
+            boxShadow: '0 4px 10px rgba(48, 189, 242, 0.3)'
+          }}
+        >
+          <PlusIcon className="h-6 w-6" />
+        </button>
 
       {/* Category Action Modal */}
       <ActionSheetModal
@@ -255,16 +259,16 @@ const CategoriesMobile: React.FC<CategoriesMobileProps> = ({
           <label className="block text-sm font-medium text-gray-300 mb-2">
             Category Type
           </label>
-          <select
+          <SelectInput
             name="type"
+            id="type"
             value={formData.type}
             onChange={handleInputChange}
             className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-base text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none"
-            style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2388888B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
           >
             <option value="income">Income</option>
             <option value="expense">Expense</option>
-          </select>
+          </SelectInput>
         </div>
       </FormModal>
 

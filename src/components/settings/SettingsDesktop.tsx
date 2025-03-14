@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 export default function SettingsDesktop() {
   const [activeTab, setActiveTab] = useState('currency');
@@ -59,28 +60,26 @@ export default function SettingsDesktop() {
                 <label htmlFor="currency" className="block text-sm font-medium text-gray-300 mb-1">
                   Display Currency
                 </label>
-                <select
-                  id="currency"
-                  name="currency"
-                  className="w-64 px-3 py-2 bg-gray-800 border border-gray-600 rounded-md shadow-sm text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 appearance-none"
-                  value={currency}
-                  onChange={handleCurrencyChange}
-                  style={{ 
-                    backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, 
-                    backgroundPosition: 'right 0.5rem center', 
-                    backgroundRepeat: 'no-repeat', 
-                    backgroundSize: '1.5em 1.5em', 
-                    paddingRight: '2.5rem' 
-                  }}
-                >
-                  <option value="IDR">IDR (Rp)</option>
-                  <option value="USD">USD ($)</option>
-                  <option value="EUR">EUR (€)</option>
-                  <option value="GBP">GBP (£)</option>
-                  <option value="JPY">JPY (¥)</option>
-                  <option value="SGD">SGD (S$)</option>
-                  <option value="MYR">MYR (RM)</option>
-                </select>
+                <div className="relative w-64">
+                  <select
+                    id="currency"
+                    name="currency"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md shadow-sm text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 appearance-none pr-10"
+                    value={currency}
+                    onChange={handleCurrencyChange}
+                  >
+                    <option value="IDR">IDR (Rp)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                    <option value="JPY">JPY (¥)</option>
+                    <option value="SGD">SGD (S$)</option>
+                    <option value="MYR">MYR (RM)</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                    <ChevronDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </div>
+                </div>
                 <p className="mt-2 text-sm text-gray-400">
                   This setting only affects how currency is displayed, not the stored values.
                 </p>

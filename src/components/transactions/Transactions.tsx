@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import { toast } from 'react-hot-toast';
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import {
   getAllTransactions,
   createTransaction,
@@ -446,9 +447,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-4">
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 max-w-lg w-full text-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <ExclamationCircleIcon className="h-12 w-12 mx-auto text-red-500 mb-4" aria-hidden="true" />
           <h2 className="text-xl font-bold text-white mb-2">Error Loading Transactions</h2>
           <p className="text-gray-300 mb-4">{error}</p>
           <button
