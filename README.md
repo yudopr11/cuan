@@ -14,6 +14,7 @@ Cuan (Catat Uang, Analisis, Nikmati!) is a modern personal financial management 
 * 🔒 Secure user authentication with token-based security
 * 🎨 Modern dark-themed UI for reduced eye strain
 * 📱 Responsive design for desktop and mobile devices
+* 🔄 Progressive Web App (PWA) support for offline access and app-like experience
 
 ## Tech Stack
 
@@ -27,6 +28,10 @@ Cuan (Catat Uang, Analisis, Nikmati!) is a modern personal financial management 
 * **State Management**: React Hooks
 * **Routing**: React Router
 * **Notifications**: React Hot Toast
+* **PWA Support**:
+   * Vite PWA Plugin for service worker generation
+   * Workbox for offline caching
+   * Custom service worker implementation
 * **Security**:  
    * Token-based authentication  
    * Encryption for sensitive data  
@@ -45,6 +50,7 @@ Cuan features a modern, intuitive interface with a clean design that makes finan
 * Interactive charts and visualizations
 * Clean, uncluttered transaction views
 * Responsive design that works on all devices
+* Installable as a PWA on mobile and desktop devices
 
 ## Getting Started
 
@@ -83,6 +89,38 @@ npm run build
 
 The build output will be in the `dist` directory.
 
+## Progressive Web App (PWA)
+
+Cuan is available as a Progressive Web App, which means you can:
+
+* **Install on your device**: Add it to your home screen on mobile or desktop
+* **Work offline**: Continue using the app even without an internet connection
+* **Faster loading**: Cached resources for improved performance
+* **App-like experience**: Full-screen mode and native-like interface
+
+### Installing Cuan as a PWA
+
+1. On Chrome/Edge (desktop):
+   - Click the install icon in the address bar
+   - Follow the prompts to install
+
+2. On Safari (iOS):
+   - Tap the Share button
+   - Select "Add to Home Screen"
+   - Follow the prompts to install
+
+3. On Chrome (Android):
+   - Tap the menu button (three dots)
+   - Select "Add to Home Screen"
+   - Follow the prompts to install
+
+### PWA Features
+
+* **Offline Support**: Basic functionality is available even without an internet connection
+* **Auto Updates**: The app automatically updates when new versions are available
+* **Native Integration**: Access device features and receive notifications (where supported)
+* **Lightweight**: Smaller installation footprint than a traditional app
+
 ## Security Considerations
 
 1. **Environment Variables**
@@ -111,6 +149,8 @@ The build output will be in the `dist` directory.
 ```
 cuan/
 ├── public/               # Static assets
+│   ├── icons/            # PWA icons in various sizes
+│   └── manifest.json     # PWA manifest file
 ├── src/                  # Source code
 │   ├── components/       # React components
 │   │   ├── accounts/     # Account management components
@@ -124,13 +164,15 @@ cuan/
 │   ├── hooks/            # Custom React hooks
 │   ├── services/         # API and services
 │   ├── utils/            # Utility functions
-│   ├── App.tsx          # Main application component
-│   └── main.tsx         # Application entry point
-├── index.html           # HTML entry point
-├── package.json         # Project dependencies and scripts
-├── tailwind.config.js   # Tailwind CSS configuration
-├── tsconfig.json        # TypeScript configuration
-└── vite.config.ts       # Vite configuration
+│   ├── registerSW.ts     # Service Worker registration
+│   ├── sw.js             # Custom service worker implementation
+│   ├── App.tsx           # Main application component
+│   └── main.tsx          # Application entry point
+├── index.html            # HTML entry point
+├── package.json          # Project dependencies and scripts
+├── tailwind.config.js    # Tailwind CSS configuration
+├── tsconfig.json         # TypeScript configuration
+└── vite.config.ts        # Vite configuration with PWA settings
 ```
 
 ## Deployment
@@ -155,4 +197,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 * Created by [yudopr](https://github.com/yudopr11)
 * Built with [Vite](https://vitejs.dev/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), and [Tailwind CSS](https://tailwindcss.com/)
+* PWA support via [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) and [Workbox](https://developers.google.com/web/tools/workbox)
 * Deploy with [Railway](https://railway.app)
