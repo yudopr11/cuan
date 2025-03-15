@@ -19,14 +19,40 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       VitePWA({
+        // Base configuration
         registerType: 'autoUpdate',
-        strategies: 'injectManifest',
-        injectManifest: {
-          injectionPoint: undefined
+        // Workbox configuration for precaching
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+          // Runtime caching configuration for resources from CDN or external API
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'google-fonts-cache',
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 365 // 1 tahun
+                },
+                cacheableResponse: {
+                  statuses: [0, 200]
+                }
+              }
+            },
+            {
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'images-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24 * 30 // 30 hari
+                }
+              }
+            }
+          ]
         },
-        srcDir: 'src',
-        filename: 'sw.js',
-        includeAssets: ['yudopr.svg'],
         manifest: {
           name: 'Cuan - Money Manager',
           short_name: 'Cuan',

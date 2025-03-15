@@ -29,9 +29,9 @@ Cuan (Catat Uang, Analisis, Nikmati!) is a modern personal financial management 
 * **Routing**: React Router
 * **Notifications**: React Hot Toast
 * **PWA Support**:
-   * Vite PWA Plugin for service worker generation
-   * Workbox for offline caching
-   * Custom service worker implementation
+   * Vite PWA Plugin for full PWA functionality
+   * Automatic service worker generation
+   * Smart caching strategies
 * **Security**:  
    * Token-based authentication  
    * Encryption for sensitive data  
@@ -164,10 +164,8 @@ cuan/
 │   ├── hooks/            # Custom React hooks
 │   ├── services/         # API and services
 │   ├── utils/            # Utility functions
-│   ├── registerSW.ts     # Service Worker registration
-│   ├── sw.js             # Custom service worker implementation
 │   ├── App.tsx           # Main application component
-│   └── main.tsx          # Application entry point
+│   └── main.tsx          # Application entry point with PWA registration
 ├── index.html            # HTML entry point
 ├── package.json          # Project dependencies and scripts
 ├── tailwind.config.js    # Tailwind CSS configuration
@@ -197,5 +195,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 * Created by [yudopr](https://github.com/yudopr11)
 * Built with [Vite](https://vitejs.dev/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), and [Tailwind CSS](https://tailwindcss.com/)
-* PWA support via [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) and [Workbox](https://developers.google.com/web/tools/workbox)
+* PWA support via [vite-plugin-pwa](https://vite-pwa-org.netlify.app/)
 * Deploy with [Railway](https://railway.app)
