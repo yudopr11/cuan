@@ -208,9 +208,8 @@ export const DashboardDesktopSkeleton: React.FC = () => {
 export const TransactionsDesktopSkeleton: React.FC = () => {
   return (
     <div className="space-y-6">
-      {/* Header with Add Transaction Button */}
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex-1"></div>
+      {/* Add Transaction Button Skeleton */}
+      <div className="flex justify-between items-center">
         <Skeleton className="w-32 h-10 rounded-md" />
       </div>
       

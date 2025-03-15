@@ -25,7 +25,7 @@ const updateSW = registerSW({
               border: 'none',
               cursor: 'pointer'
             }}>
-            Perbarui
+            Update
           </button>
         </span>
       ),
@@ -49,7 +49,7 @@ const updateSW = registerSW({
         color: '#fff',
         padding: '16px',
       },
-      duration: 4000, // Durasi 4 detik
+      duration: 4000, 
     })
   }
 })
