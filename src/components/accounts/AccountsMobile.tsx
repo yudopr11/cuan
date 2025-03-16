@@ -15,7 +15,8 @@ import {
   PencilSquareIcon, 
   TrashIcon, 
   PlusIcon,
-  ChevronDownIcon
+  ChevronDownIcon,
+  DocumentPlusIcon
 } from '@heroicons/react/24/outline';
 
 // Custom Select Input component with consistent styling
@@ -178,7 +179,8 @@ export default function AccountsMobile({
 
         {/* Accounts List */}
         <div className="space-y-3 px-2">
-          {accounts.map(account => (
+          {accounts.length > 0 ? (
+            accounts.map(account => (
             <div 
               key={account.account_id} 
               className="card-dark rounded-xl shadow-lg p-4 bg-gradient-to-b from-gray-800 to-gray-900 active:bg-gray-700/20 transition-colors"
@@ -215,7 +217,17 @@ export default function AccountsMobile({
                 </div>
               )}
             </div>
-          ))}
+          ))): (
+            <div className="card-dark flex flex-col items-center justify-center p-8 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
+              <DocumentPlusIcon className="h-16 w-16 text-gray-600 mb-4" />
+              <p className="text-center text-gray-400 text-base">No accounts found</p>
+              <button 
+                onClick={() => handleOpenModal()} 
+                className="mt-4 px-4 py-2 bg-[#30BDF2] text-white rounded-lg text-sm font-medium"
+              >
+                Add Account
+              </button>
+            </div>)}
         </div>
         
         {/* Floating Add Button */}

@@ -108,7 +108,7 @@ export default function AccountsDesktop({
         </div>
 
         {/* Accounts Table */}
-        <div className="card-dark overflow-hidden">
+        <div className="bg-gray-900 shadow-md rounded-lg overflow-hidden mb-6 border border-gray-800 relative">
           <div className="overflow-x-auto">
             <table className="table-dark min-w-full">
               <thead>
@@ -136,7 +136,8 @@ export default function AccountsDesktop({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700">
-                {accounts.map(account => (
+                {accounts.length > 0 ? ( 
+                  accounts.map(account => (
                   <tr key={account.account_id} className="hover:bg-gray-800">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-gray-200">{account.name}</div>
@@ -184,7 +185,12 @@ export default function AccountsDesktop({
                       </button>
                     </td>
                   </tr>
-                ))}
+                ))) : (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-4 text-center text-gray-300">
+                      No accounts found
+                    </td>
+                  </tr>)}
               </tbody>
             </table>
           </div>

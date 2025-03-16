@@ -293,7 +293,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
               <p className="text-gray-400 text-center">No transactions found for the selected filters</p>
               <button
                 onClick={handleClearFilters}
-                className="mt-4 px-4 py-2 bg-[#30BDF2] text-white rounded-full text-sm font-medium hover:bg-[#28a8d8] focus:outline-none"
+                className="mt-4 px-4 py-2 bg-[#30BDF2] text-white rounded-lg text-sm font-medium hover:bg-[#28a8d8] focus:outline-none"
               >
                 Clear Filters
               </button>

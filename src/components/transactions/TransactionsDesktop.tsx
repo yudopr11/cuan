@@ -304,7 +304,7 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
         {/* Transaction Table - Desktop */}
         <div className="bg-gray-900 shadow-md rounded-lg overflow-hidden mb-6 border border-gray-800 relative">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-800">
+            <table className="table-dark min-w-full">
               <thead className="bg-gray-800">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Date</th>
