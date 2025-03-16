@@ -231,6 +231,38 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
           boxWidth: 12,
           padding: 10,
         },
+        onClick: function(_, legendItem, legend) {
+          // Get the default toggle behavior
+          const ci = legend.chart;
+          const index = legendItem.datasetIndex as number;
+          
+          // Toggle dataset visibility (default behavior)
+          const meta = ci.getDatasetMeta(index);
+          meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : !meta.hidden;
+          ci.update();
+          
+          // After updating, recalculate max value from visible datasets only
+          const visibleDatasets = ci.data.datasets.filter((_, i) => !ci.getDatasetMeta(i).hidden);
+          
+          if (visibleDatasets.length === 0) {
+            // If no datasets are visible, keep the current max
+            return;
+          }
+          
+          // Find the max value in the visible datasets
+          let newMax = 0;
+          visibleDatasets.forEach(dataset => {
+            const max = Math.max(...(dataset.data as number[]));
+            if (max > newMax) newMax = max;
+          });
+          
+          // Add 10% buffer
+          newMax = newMax * 1.1;
+          
+          // Update the y-axis max
+          ci.options.scales!.y!.max = newMax;
+          ci.update();
+        }
       },
       title: {
         display: true,
