@@ -21,9 +21,11 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         // Base configuration
         registerType: 'autoUpdate',
+        includeAssets: ['**/*'],
+        includeManifestIcons: true,
         // Workbox configuration for precaching
         workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}', 'icons/*.png'],
           navigateFallback: 'index.html',
           navigateFallbackDenylist: [/^\/api/, /^\/_/],
           // Runtime caching configuration for resources from CDN or external API
@@ -63,6 +65,20 @@ export default defineConfig(({ mode }) => {
                   maxAgeSeconds: 60 * 60 * 24 // 1 day
                 }
               }
+            },
+            {
+              urlPattern: /\/icons\/.*\.png$/,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'icon-cache',
+                expiration: {
+                  maxEntries: 20,
+                  maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+                },
+                cacheableResponse: {
+                  statuses: [0, 200]
+                }
+              }
             }
           ]
         },
@@ -76,44 +92,52 @@ export default defineConfig(({ mode }) => {
           background_color: '#0f172a',
           icons: [
             {
-              src: 'icons/icon-72x72.png',
+              src: '/icons/icon-72x72.png',
               sizes: '72x72',
-              type: 'image/png'
+              type: 'image/png',
+              purpose: 'any maskable'
             },
             {
-              src: 'icons/icon-96x96.png',
+              src: '/icons/icon-96x96.png',
               sizes: '96x96',
-              type: 'image/png'
+              type: 'image/png',
+              purpose: 'any maskable'
             },
             {
-              src: 'icons/icon-128x128.png',
+              src: '/icons/icon-128x128.png',
               sizes: '128x128',
-              type: 'image/png'
+              type: 'image/png',
+              purpose: 'any maskable'
             },
             {
-              src: 'icons/icon-144x144.png',
+              src: '/icons/icon-144x144.png',
               sizes: '144x144',
-              type: 'image/png'
+              type: 'image/png',
+              purpose: 'any maskable'
             },
             {
-              src: 'icons/icon-152x152.png',
+              src: '/icons/icon-152x152.png',
               sizes: '152x152',
-              type: 'image/png'
+              type: 'image/png',
+              purpose: 'any maskable'
             },
             {
-              src: 'icons/icon-192x192.png',
+              src: '/icons/icon-192x192.png',
               sizes: '192x192',
-              type: 'image/png'
+              type: 'image/png',
+              purpose: 'any maskable'
             },
             {
-              src: 'icons/icon-384x384.png',
+              src: '/icons/icon-384x384.png',
               sizes: '384x384',
-              type: 'image/png'
+              type: 'image/png',
+              purpose: 'any maskable'
             },
             {
-              src: 'icons/icon-512x512.png',
+              src: '/icons/icon-512x512.png',
               sizes: '512x512',
-              type: 'image/png'
+              type: 'image/png',
+              purpose: 'any maskable'
             }
           ]
         }
