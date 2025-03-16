@@ -53,8 +53,11 @@ export const DashboardMobileSkeleton: React.FC = () => {
           <Skeleton className="h-4 w-16" />
         </div>
         <div>
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="py-3.5 px-4 flex items-center justify-between border-b border-gray-700/50">
+          {[...Array(5)].map((_, i, arr) => (
+            <div 
+              key={i} 
+              className={`py-3.5 px-4 flex items-center justify-between ${i < arr.length - 1 ? 'border-b border-gray-700/50' : ''}`}
+            >
               <div className="flex items-center">
                 <Skeleton className="w-10 h-10 rounded-full" />
                 <div className="ml-3.5">
@@ -154,8 +157,8 @@ export const DashboardDesktopSkeleton: React.FC = () => {
             <Skeleton className="h-4 w-16" />
           </div>
           <div className="space-y-4">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="py-3 flex items-center justify-between border-b border-gray-700">
+            {[...Array(5)].map((_, i, arr) => (
+              <div key={i} className={`py-3 flex items-center justify-between ${i < arr.length - 1 ? 'border-b border-gray-700' : ''}`}>
                 <div className="flex items-center">
                   <Skeleton className="w-10 h-10 rounded-full" />
                   <div className="ml-4">
