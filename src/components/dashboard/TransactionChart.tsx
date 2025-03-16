@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -32,6 +32,15 @@ interface TransactionChartProps {
 const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) => {
   // Use the currency formatter hook
   const { formatCurrency } = useCurrencyFormatter();
+  
+  // Track visibility of datasets
+  const [datasetVisibility, setDatasetVisibility] = useState({
+    income: true,
+    expense: true
+  });
+
+  // Store the calculated Y-axis max value
+  const [yAxisMax, setYAxisMax] = useState<number>(100000);
   
   // Helper function to convert string values to numbers safely
   const parseNumber = (value: any): number => {
@@ -138,6 +147,36 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
   };
   
   const { meanIncome, meanExpense } = calculateMeans();
+
+  // Calculate Y-axis max based on visible datasets
+  useEffect(() => {
+    if (!hasData || groupedTrends.length === 0) {
+      setYAxisMax(100000);
+      return;
+    }
+
+    let newMax = 0;
+
+    if (datasetVisibility.income) {
+      const incomeMax = Math.max(...groupedTrends.map(item => item.income));
+      if (incomeMax > newMax) newMax = incomeMax;
+    }
+
+    if (datasetVisibility.expense) {
+      const expenseMax = Math.max(...groupedTrends.map(item => item.expense));
+      if (expenseMax > newMax) newMax = expenseMax;
+    }
+
+    // If no datasets are visible, set a default max
+    if (!datasetVisibility.income && !datasetVisibility.expense) {
+      newMax = 100000;
+    } else {
+      // Add buffer for better visualization
+      newMax = newMax * 1.1;
+    }
+
+    setYAxisMax(newMax);
+  }, [datasetVisibility, hasData, groupedTrends]);
   
   // If no data, show appropriate message
   if (!hasData || groupedTrends.length === 0) {
@@ -147,6 +186,15 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
       </div>
     );
   }
+
+  // Custom legend handler - we'll implement our own toggle functionality
+  const handleLegendClick = (datasetIndex: number) => {
+    if (datasetIndex === 0) { // Income
+      setDatasetVisibility(prev => ({ ...prev, income: !prev.income }));
+    } else if (datasetIndex === 1) { // Expense
+      setDatasetVisibility(prev => ({ ...prev, expense: !prev.expense }));
+    }
+  };
 
   const chartData = {
     labels: period === 'month' 
@@ -162,6 +210,7 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
         borderRadius: 4,
         barPercentage: 0.7,
         categoryPercentage: 0.8,
+        hidden: !datasetVisibility.income,
       },
       {
         label: 'Expense',
@@ -172,17 +221,10 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
         borderRadius: 4,
         barPercentage: 0.7,
         categoryPercentage: 0.8,
+        hidden: !datasetVisibility.expense,
       }
     ],
   };
-
-  // Calculate maximum value for y-axis
-  const maxValue = Math.max(
-    ...groupedTrends.map(item => Math.max(parseNumber(item.income), parseNumber(item.expense)))
-  );
-  
-  // Add a small buffer (10%) to the max value for better visualization
-  const yAxisMax = maxValue > 0 ? maxValue * 1.1 : 100000;
 
   const options: ChartOptions<'bar'> = {
     responsive: true,
@@ -231,37 +273,10 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
           boxWidth: 12,
           padding: 10,
         },
-        onClick: function(_, legendItem, legend) {
-          // Get the default toggle behavior
-          const ci = legend.chart;
+        onClick: (_, legendItem) => {
+          // Handle the click with our custom handler
           const index = legendItem.datasetIndex as number;
-          
-          // Toggle dataset visibility (default behavior)
-          const meta = ci.getDatasetMeta(index);
-          meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : !meta.hidden;
-          ci.update();
-          
-          // After updating, recalculate max value from visible datasets only
-          const visibleDatasets = ci.data.datasets.filter((_, i) => !ci.getDatasetMeta(i).hidden);
-          
-          if (visibleDatasets.length === 0) {
-            // If no datasets are visible, keep the current max
-            return;
-          }
-          
-          // Find the max value in the visible datasets
-          let newMax = 0;
-          visibleDatasets.forEach(dataset => {
-            const max = Math.max(...(dataset.data as number[]));
-            if (max > newMax) newMax = max;
-          });
-          
-          // Add 10% buffer
-          newMax = newMax * 1.1;
-          
-          // Update the y-axis max
-          ci.options.scales!.y!.max = newMax;
-          ci.update();
+          handleLegendClick(index);
         }
       },
       title: {
@@ -313,16 +328,18 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
         <Bar data={chartData} options={options} />
       </div>
       <div className="mt-4 flex justify-center gap-8 text-xs">
-        <div className="flex items-center">
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500 mr-2"></div>
-          <span className="text-gray-300 mr-1">Mean Income:</span>
-          <span className="font-medium text-gray-200">{formatCurrency(meanIncome)}</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-500 mr-2"></div>
-          <span className="text-gray-300 mr-1">Mean Expense:</span>
-          <span className="font-medium text-gray-200">{formatCurrency(meanExpense)}</span>
-        </div>
+        {datasetVisibility.income && (
+          <div className="flex items-center">
+            <span className="text-gray-300 mr-1">Mean Income:</span>
+            <span className="font-medium text-green-400">{formatCurrency(meanIncome)}</span>
+          </div>
+        )}
+        {datasetVisibility.expense && (
+          <div className="flex items-center">
+            <span className="text-gray-300 mr-1">Mean Expense:</span>
+            <span className="font-medium text-red-400">{formatCurrency(meanExpense)}</span>
+          </div>
+        )}
       </div>
     </div>
   );
