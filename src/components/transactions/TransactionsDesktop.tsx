@@ -141,7 +141,7 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
         </div>
         
         {/* Filter Section - Desktop */}
-        <div className="bg-gray-900 shadow-md rounded-lg mb-6 p-4 border border-gray-800">
+        <div className="card-dark ">
           {hasFilterChanges() && (
             <div className="px-3 py-2 bg-blue-900 bg-opacity-30 border border-blue-800 rounded-md mb-4">
               <p className="text-xs text-blue-300">
