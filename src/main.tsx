@@ -5,7 +5,32 @@ import './index.css'
 import { registerSW } from 'virtual:pwa-register'
 import toast from 'react-hot-toast'
 
+// Check every hour for service worker updates
+const intervalMS = 60 * 60 * 1000
+
 const updateSW = registerSW({
+  onRegistered(registration: ServiceWorkerRegistration | undefined) {
+    // Check for updates periodically
+    if (registration) {
+      setInterval(async () => {
+        if (registration.installing) return
+        
+        if ('connection' in navigator && !navigator.onLine) return
+          
+        const resp = await fetch(self.location.href, {
+          cache: 'no-store',
+          headers: {
+            'cache': 'no-store',
+            'cache-control': 'no-cache',
+          }
+        })
+        
+        if (resp?.status === 200) {
+          await registration.update()
+        }
+      }, intervalMS)
+    }
+  },
   onNeedRefresh() {
     toast(
       (t) => (
