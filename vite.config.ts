@@ -37,7 +37,7 @@ export default defineConfig(({ mode }) => {
                 cacheName: 'google-fonts-cache',
                 expiration: {
                   maxEntries: 10,
-                  maxAgeSeconds: 60 * 60 * 24 * 365 // 1 tahun
+                  maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
                 },
                 cacheableResponse: {
                   statuses: [0, 200]
@@ -51,7 +51,7 @@ export default defineConfig(({ mode }) => {
                 cacheName: 'images-cache',
                 expiration: {
                   maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 * 30 // 30 hari
+                  maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
                 }
               }
             },
