@@ -21,67 +21,14 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         // Base configuration
         registerType: 'autoUpdate',
-        includeAssets: ['**/*'],
+        includeAssets: ['**/*', 'index.html'],
         includeManifestIcons: true,
-        // Workbox configuration for precaching
-        workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg}', 'icons/*.png'],
-          navigateFallback: 'index.html',
-          navigateFallbackDenylist: [/^\/api/, /^\/_/],
-          // Runtime caching configuration for resources from CDN or external API
-          runtimeCaching: [
-            {
-              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'google-fonts-cache',
-                expiration: {
-                  maxEntries: 10,
-                  maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-                },
-                cacheableResponse: {
-                  statuses: [0, 200]
-                }
-              }
-            },
-            {
-              urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'images-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
-                }
-              }
-            },
-            {
-              urlPattern: ({ request }) => request.mode === 'navigate',
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'pages-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 // 1 day
-                }
-              }
-            },
-            {
-              urlPattern: /\/icons\/.*\.png$/,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'icon-cache',
-                expiration: {
-                  maxEntries: 20,
-                  maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
-                },
-                cacheableResponse: {
-                  statuses: [0, 200]
-                }
-              }
-            }
-          ]
-        },
+        injectRegister: 'auto',
+        strategies: 'injectManifest',
+        srcDir: 'src',
+        filename: 'sw-custom.js',
+        manifestFilename: 'manifest.webmanifest',
+        // Ensure index.html is precached explicitly
         manifest: {
           name: 'Cuan - Money Manager',
           short_name: 'Cuan',
@@ -138,6 +85,64 @@ export default defineConfig(({ mode }) => {
               sizes: '512x512',
               type: 'image/png',
               purpose: 'any maskable'
+            }
+          ]
+        },
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}', 'icons/*.png', 'index.html'],
+          navigateFallback: 'index.html',
+          navigateFallbackDenylist: [/^\/api/, /^\/_/],
+          // Runtime caching configuration for resources from CDN or external API
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'google-fonts-cache',
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+                },
+                cacheableResponse: {
+                  statuses: [0, 200]
+                }
+              }
+            },
+            {
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'images-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+                }
+              }
+            },
+            {
+              urlPattern: ({ request }) => request.mode === 'navigate',
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'pages-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24 // 1 day
+                }
+              }
+            },
+            {
+              urlPattern: /\/icons\/.*\.png$/,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'icon-cache',
+                expiration: {
+                  maxEntries: 20,
+                  maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+                },
+                cacheableResponse: {
+                  statuses: [0, 200]
+                }
+              }
             }
           ]
         }
