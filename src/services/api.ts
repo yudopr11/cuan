@@ -355,41 +355,6 @@ export const deleteTransaction = async (transactionId: number): Promise<DeleteRe
   }
 };
 
-export const createBulkTransactions = async (transactions: TransactionCreate[]): Promise<{
-  success_count: number;
-  error_count: number;
-  created_transactions: Transaction[];
-  errors: { index: number; description: string; error: string }[];
-}> => {
-  try {
-    const response = await axiosInstance.post('/personal-transactions/transactions/bulk', transactions);
-    return response.data;
-  } catch (error) {
-    throw handleApiError(error);
-  }
-};
-
-export const bulkCategorizeTransactions = async (
-  transactionIds: number[],
-  categoryId: number
-): Promise<{
-  success_count: number;
-  error_count: number;
-  updated_transaction_ids: number[];
-  errors: { transaction_id: number; error: string }[];
-  message: string;
-}> => {
-  try {
-    const response = await axiosInstance.put('/personal-transactions/transactions/bulk-categorize', {
-      transaction_ids: transactionIds,
-      category_id: categoryId
-    });
-    return response.data;
-  } catch (error) {
-    throw handleApiError(error);
-  }
-};
-
 // Statistics API Functions
 export const getFinancialSummary = async (
   params: {

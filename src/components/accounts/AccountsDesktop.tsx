@@ -227,6 +227,7 @@ export default function AccountsDesktop({
                 >
                   <option value="bank_account">Bank Account</option>
                   <option value="credit_card">Credit Card</option>
+                  <option value="other">Other</option>
                 </SelectInput>
               </div>
               

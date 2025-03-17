@@ -311,7 +311,10 @@ export default function Transactions({ isMobile }: TransactionsProps) {
       
       if (selectedTransaction) {
         // Update existing transaction
-        await updateTransaction(selectedTransaction.transaction_id, submissionData);
+        await updateTransaction(selectedTransaction.transaction_id, {
+          ...submissionData,
+          transaction_date: selectedTransaction.created_at
+        });
         toast.success('Transaction updated successfully');
       } else {
         // Create new transaction

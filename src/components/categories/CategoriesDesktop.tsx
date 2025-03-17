@@ -85,7 +85,7 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
             </div>
             
             {incomeCategories.length > 0 ? (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto border border-gray-800 rounded-lg">
                 <table className="min-w-full divide-y divide-gray-700 table-dark">
                   <thead className="bg-gray-800">
                     <tr>
@@ -136,7 +136,7 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
             </div>
             
             {expenseCategories.length > 0 ? (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto border border-gray-800 rounded-lg">
                 <table className="min-w-full divide-y divide-gray-700 table-dark">
                   <thead className="bg-gray-800">
                     <tr>
