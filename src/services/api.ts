@@ -171,6 +171,12 @@ export interface AccountSummary {
   }[];
 }
 
+// User Types
+export interface User {
+  username: string;
+  email: string;
+}
+
 interface ApiErrorResponse {
   detail?: string;
   message?: string;
@@ -424,6 +430,16 @@ export const getAccountSummary = async (
   } catch (error) {
     // Enhanced error handling with more specific error message
     console.error('Account summary API error:', error);
+    throw handleApiError(error);
+  }
+};
+
+// User API Functions
+export const getUserInfo = async (): Promise<User> => {
+  try {
+    const response = await axiosInstance.get('/auth/users/me');
+    return response.data;
+  } catch (error) {
     throw handleApiError(error);
   }
 };

@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
-import { ChevronRightIcon, CheckIcon } from '@heroicons/react/24/solid';
+import { ChevronRightIcon, CheckIcon, UserCircleIcon } from '@heroicons/react/24/solid';
+import type { User } from '../../services/api';
 
-export default function SettingsMobile() {
+interface SettingsMobileProps {
+  userInfo: User | null;
+  isLoading: boolean;
+}
+
+export default function SettingsMobile({ userInfo, isLoading }: SettingsMobileProps) {
   const [currency, setCurrency] = useState('IDR');
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   
@@ -37,6 +43,47 @@ export default function SettingsMobile() {
   
   return (
     <div className="space-y-5 px-1 pb-16">
+      
+      {/* Account Section */}
+      <div className="card-dark rounded-xl shadow-lg overflow-hidden bg-gradient-to-b from-gray-800 to-gray-900 mx-2">
+        <div className="flex justify-between items-center p-4 border-b border-gray-700/50">
+          <h2 className="text-base font-semibold text-white">Account</h2>
+        </div>
+        
+        {isLoading ? (
+          <div className="p-4">
+            <div className="bg-gray-800/30 rounded-xl p-4">
+              <div className="animate-pulse flex items-center">
+                <div className="rounded-full bg-gray-700 h-10 w-10 mr-3"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-700 rounded"></div>
+                  <div className="h-3 bg-gray-700 rounded w-3/4"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : userInfo ? (
+          <div className="p-4">
+            <div className="bg-gray-800/30 rounded-xl p-4">
+              <div className="flex items-center mb-2">
+                <UserCircleIcon className="h-10 w-10 text-indigo-400 mr-3" />
+                <div>
+                  <h3 className="text-white font-medium">{userInfo.username}</h3>
+                  <p className="text-gray-400 text-xs">{userInfo.email}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="p-4">
+            <div className="bg-gray-800/30 rounded-xl p-4 text-center">
+              <p className="text-gray-400 text-sm">
+                Failed to load user information
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
       
       {/* Display Section */}
       <div className="card-dark rounded-xl shadow-lg overflow-hidden bg-gradient-to-b from-gray-800 to-gray-900 mx-2">
@@ -80,21 +127,6 @@ export default function SettingsMobile() {
             ))}
           </div>
         )}
-      </div>
-      
-      {/* Account Section */}
-      <div className="card-dark rounded-xl shadow-lg overflow-hidden bg-gradient-to-b from-gray-800 to-gray-900 mx-2">
-        <div className="flex justify-between items-center p-4 border-b border-gray-700/50">
-          <h2 className="text-base font-semibold text-white">Account</h2>
-        </div>
-        
-        <div className="p-4">
-          <div className="bg-gray-800/30 rounded-xl p-4 text-center">
-            <p className="text-gray-400 text-sm">
-              Account settings will be available soon
-            </p>
-          </div>
-        </div>
       </div>
       
       {/* App info */}

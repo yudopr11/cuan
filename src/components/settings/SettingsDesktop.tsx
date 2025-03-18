@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import type { User } from '../../services/api';
+import { UserCircleIcon } from '@heroicons/react/24/solid';
 
-export default function SettingsDesktop() {
+interface SettingsDesktopProps {
+  userInfo: User | null;
+  isLoading: boolean;
+}
+
+export default function SettingsDesktop({ userInfo, isLoading }: SettingsDesktopProps) {
   const [activeTab, setActiveTab] = useState('currency');
   const [currency, setCurrency] = useState('IDR');
   
@@ -90,8 +97,22 @@ export default function SettingsDesktop() {
           {activeTab === 'account' && (
             <div className="space-y-4">
               <h3 className="text-lg font-medium text-white">Account Settings</h3>
-              {/* Account settings will go here in the future */}
-              <p className="text-gray-400">Account management options will be added in future updates.</p>
+              
+              {isLoading ? (
+                <div className="animate-pulse bg-gray-700 h-16 rounded-md"></div>
+              ) : userInfo ? (
+                <div className="bg-gray-800 rounded-lg p-4 space-y-3">
+                  <div className="flex items-center">
+                    <UserCircleIcon className="h-10 w-10 text-indigo-400 mr-3" />
+                    <div>
+                      <h4 className="text-white font-medium">{userInfo.username}</h4>
+                      <p className="text-gray-400 text-sm">{userInfo.email}</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-gray-400">Unable to load account information</p>
+              )}
             </div>
           )}
         </div>
