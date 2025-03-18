@@ -241,6 +241,11 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
             <div className="flex items-center space-x-2">
               <span className="text-gray-300 text-xs font-medium">Filters:</span>
               <div className="flex flex-wrap gap-1">
+                {activeFilters.date_filter_type && (
+                <span className="inline-flex items-center px-2 py-1 bg-indigo-500 bg-opacity-30 text-indigo-300 text-xs rounded-full">
+                  {dateFilterPresets.find(preset => preset.value === activeFilters.date_filter_type)?.label || activeFilters.date_filter_type}
+                </span>
+                )}
                 {activeFilters.transaction_type && (
                   <span className="inline-flex items-center px-2 py-1 bg-indigo-500 bg-opacity-30 text-indigo-300 text-xs rounded-full">
                     {activeFilters.transaction_type === 'income' ? 'Income' : 
