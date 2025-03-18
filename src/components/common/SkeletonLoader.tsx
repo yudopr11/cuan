@@ -384,18 +384,45 @@ export const AccountsDesktopSkeleton: React.FC = () => {
         <Skeleton className="w-32 h-10 rounded-md" />
       </div>
 
-      {/* Total Balance and Credit Card Payable Cards Skeleton */}
-      <div className="grid grid-cols-2 gap-6">
-        {/* Total Balance Skeleton */}
-        <div className="card-dark p-5">
-          <Skeleton className="h-5 w-32 mb-2" />
-          <Skeleton className="h-9 w-40" />
+      {/* Metrics Dashboard Layout Skeleton */}
+      <div className="grid grid-cols-2 gap-4">
+        {/* Account Summary Card Skeleton */}
+        <div className="card-dark p-4">
+          <Skeleton className="h-3 w-32 mb-3" />
+          
+          <div className="flex justify-start items-start gap-8">
+            <div>
+              <Skeleton className="h-3 w-24 mb-1" />
+              <Skeleton className="h-7 w-32" />
+            </div>
+            
+            <div>
+              <Skeleton className="h-3 w-32 mb-1" />
+              <Skeleton className="h-7 w-32" />
+            </div>
+          </div>
         </div>
         
-        {/* Credit Card Payable Skeleton */}
-        <div className="card-dark p-5">
-          <Skeleton className="h-5 w-40 mb-2" />
-          <Skeleton className="h-9 w-40" />
+        {/* Account Types Card Skeleton */}
+        <div className="card-dark p-4">
+          <Skeleton className="h-3 w-24 mb-3" />
+          
+          <div className="flex justify-start items-start gap-8">
+            <div>
+              <Skeleton className="h-3 w-12 mb-1" />
+              <Skeleton className="h-6 w-28" />
+            </div>
+            
+            <div>
+              <Skeleton className="h-3 w-12 mb-1" />
+              <Skeleton className="h-6 w-28" />
+            </div>
+            
+            <div>
+              <Skeleton className="h-3 w-16 mb-1" />
+              <Skeleton className="h-6 w-28" />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -458,22 +485,22 @@ export const AccountsDesktopSkeleton: React.FC = () => {
 
 export const AccountsMobileSkeleton: React.FC = () => {
   return (
-    <div className="space-y-5 px-1 pb-16">
-      {/* Summary Cards Skeleton */}
-      <div className="flex flex-col space-y-3 px-2 pt-3">
-        {/* Total Balance Card Skeleton */}
-        <div className="card-dark rounded-xl shadow-lg p-4 bg-gradient-to-br from-gray-800 to-gray-900">
-          <Skeleton className="h-3 w-24 mb-1.5" />
-          <Skeleton className="h-6 w-32" />
+    <div className="space-y-4 px-1 pb-24">
+      {/* Balance Card Skeleton */}
+      <div className="card-dark rounded-xl shadow-lg overflow-hidden mx-2 bg-gradient-to-b from-gray-800 to-gray-900">
+        <div className="p-4">
+          <Skeleton className="h-3 w-32 mb-1.5" />
+          <Skeleton className="h-6 w-40" />
         </div>
         
-        {/* Credit Card Payable Skeleton */}
-        <div className="card-dark rounded-xl shadow-lg p-4 bg-gradient-to-br from-gray-800 to-gray-900">
-          <Skeleton className="h-3 w-32 mb-1.5" />
-          <Skeleton className="h-6 w-32" />
+        <div className="border-t border-gray-800 p-4">
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-3 w-36" />
+            <Skeleton className="h-4 w-20" />
+          </div>
         </div>
       </div>
-
+      
       {/* Section Title Skeleton */}
       <div className="px-3 pt-2">
         <Skeleton className="h-4 w-28" />
@@ -491,18 +518,20 @@ export const AccountsMobileSkeleton: React.FC = () => {
               <div className="flex items-center">
                 <Skeleton className="w-9 h-9 rounded-full mr-3" />
                 <div>
-                  <Skeleton className="h-5 w-32 mb-1" />
+                  <Skeleton className="h-5 w-28 mb-1" />
                   <Skeleton className="h-3 w-24" />
                 </div>
               </div>
               <div className="text-right">
                 <Skeleton className="h-5 w-24 ml-auto mb-1" />
-                <Skeleton className="h-3 w-20 ml-auto" />
+                {i % 2 === 0 && (
+                  <Skeleton className="h-3 w-20 ml-auto" />
+                )}
               </div>
             </div>
             
             {/* Description Skeleton (displayed on some accounts) */}
-            {i % 2 === 0 && (
+            {i % 3 === 0 && (
               <div className="mt-2 pl-12">
                 <Skeleton className="h-3 w-48" />
               </div>
