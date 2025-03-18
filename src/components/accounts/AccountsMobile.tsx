@@ -52,6 +52,9 @@ interface AccountsMobileProps {
   accounts: Account[];
   totalBalance: number;
   totalCreditCardPayable: number;
+  totalBankAccount: number;
+  totalCreditCard: number;
+  totalOther: number;
   handleOpenModal: (account?: Account) => void;
   handleOpenDeleteModal: (account: Account) => void;
   handleViewDetails: (account: Account) => void;
@@ -76,6 +79,9 @@ export default function AccountsMobile({
   accounts,
   totalBalance,
   totalCreditCardPayable,
+  totalBankAccount,
+  totalCreditCard,
+  totalOther,
   handleOpenModal,
   handleOpenDeleteModal,
   handleViewDetails,
@@ -97,10 +103,19 @@ export default function AccountsMobile({
 }: AccountsMobileProps) {
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
   const [accountForAction, setAccountForAction] = useState<Account | null>(null);
+  const [isBalanceModalOpen, setIsBalanceModalOpen] = useState(false);
 
   const handleAccountClick = (account: Account) => {
     setAccountForAction(account);
     setIsActionMenuOpen(true);
+  };
+
+  const handleBalanceClick = () => {
+    setIsBalanceModalOpen(true);
+  };
+
+  const handleCloseBalanceModal = () => {
+    setIsBalanceModalOpen(false);
   };
 
   const handleCloseActionMenu = () => {
@@ -153,94 +168,95 @@ export default function AccountsMobile({
   ] : [];
 
   return (
-    <>
-      <div className="space-y-5 px-1 pb-16">
-        {/* Summary Cards */}
-        <div className="flex flex-col space-y-3 px-2 pt-3">
-          {/* Total Balance Card */}
-          <div className="card-dark rounded-xl shadow-lg p-4 bg-gradient-to-br from-gray-800 to-gray-900">
-            <p className="text-xs text-gray-300 mb-1.5 font-medium">Total Balance</p>
-            <p className="text-xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
-          </div>
-          
-          {/* Credit Card Payable */}
-          {totalCreditCardPayable > 0 && (
-            <div className="card-dark rounded-xl shadow-lg p-4 bg-gradient-to-br from-gray-800 to-gray-900">
-              <p className="text-xs text-gray-300 mb-1.5 font-medium">Credit Card Payable</p>
-              <p className="text-xl font-bold text-red-400">{formatCurrency(totalCreditCardPayable)}</p>
-            </div>
-          )}
-        </div>
-
-        {/* Section Title */}
-        <div className="px-3 pt-2">
-          <p className="text-sm font-medium text-gray-400">MY ACCOUNTS</p>
-        </div>
-
-        {/* Accounts List */}
-        <div className="space-y-3 px-2">
-          {accounts.length > 0 ? (
-            accounts.map(account => (
-            <div 
-              key={account.account_id} 
-              className="card-dark rounded-xl shadow-lg p-4 bg-gradient-to-b from-gray-800 to-gray-900 active:bg-gray-700/20 transition-colors"
-              onClick={() => handleAccountClick(account)}
-            >
-              {/* Account Info */}
-              <div className="flex justify-between items-start">
-                <div className="flex items-center">
-                  <div className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-800 mr-3 shadow-md">
-                    <span className="text-xl" role="img" aria-label={account.type}>
-                      {account.type === 'bank_account' ? <BuildingLibraryIcon className="h-6 w-6 text-blue-300" /> : 
-                       account.type === 'credit_card' ? <CreditCardIcon className="h-6 w-6 text-blue-300" /> : <BanknotesIcon className="h-6 w-6 text-blue-300" />}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-base font-medium text-white">{account.name}</p>
-                    <p className="text-xs text-gray-400 capitalize">{account.type.replace('_', ' ')}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-base font-bold text-white">{formatCurrency(account.balance || 0)}</p>
-                  {account.type === 'credit_card' && account.payable_balance !== undefined && (
-                    <p className="text-xs text-gray-400">
-                      Payable: {formatCurrency(account.payable_balance)}
-                    </p>
-                  )}
-                </div>
-              </div>
-              
-              {/* Description (if available) */}
-              {account.description && (
-                <div className="mt-2 pl-12">
-                  <p className="text-xs text-gray-400">{account.description}</p>
-                </div>
-              )}
-            </div>
-          ))): (
-            <div className="card-dark flex flex-col items-center justify-center p-8 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
-              <DocumentPlusIcon className="h-16 w-16 text-gray-600 mb-4" />
-              <p className="text-center text-gray-400 text-base">No accounts found</p>
-              <button 
-                onClick={() => handleOpenModal()} 
-                className="mt-4 px-4 py-2 bg-[#30BDF2] text-white rounded-lg text-sm font-medium"
-              >
-                Add Account
-              </button>
-            </div>)}
+    <div className="pb-24 space-y-4">
+      {/* Balance Cards */}
+      <div 
+        className="card-dark rounded-xl shadow-lg overflow-hidden mx-2 bg-gradient-to-b from-gray-800 to-gray-900"
+        onClick={handleBalanceClick}
+      >
+        <div className="p-4">
+          <h2 className="text-sm font-medium text-gray-300">Total Balance</h2>
+          <p className="text-2xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
         </div>
         
-        {/* Floating Add Button */}
-        <button
-          onClick={() => handleOpenModal()}
-          className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-[#30BDF2] text-white flex items-center justify-center active:bg-[#28a8d8] shadow-lg z-10"
-          style={{
-            boxShadow: '0 4px 10px rgba(48, 189, 242, 0.3)'
-          }}
-        >
-          <PlusIcon className="h-6 w-6" />
-        </button>
+        {totalCreditCardPayable > 0 && (
+          <div className="border-t border-gray-800 p-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xs font-medium text-gray-400">Credit Card Payable</h3>
+              <p className="text-sm font-bold text-red-400">{formatCurrency(totalCreditCardPayable)}</p>
+            </div>
+          </div>
+        )}
       </div>
+      
+      {/* Section Title */}
+      <div className="px-3 pt-2">
+          <p className="text-sm font-medium text-gray-400">MY ACCOUNTS</p>
+      </div>
+
+      {/* Account List */}
+      <div className="space-y-3 px-2">
+        {accounts.length > 0 ? (
+          accounts.map(account => (
+          <div 
+            key={account.account_id} 
+            className="card-dark rounded-xl shadow-lg p-4 bg-gradient-to-b from-gray-800 to-gray-900 active:bg-gray-700/20 transition-colors"
+            onClick={() => handleAccountClick(account)}
+          >
+            {/* Account Info */}
+            <div className="flex justify-between items-start">
+              <div className="flex items-center">
+                <div className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-800 mr-3 shadow-md">
+                  <span className="text-xl" role="img" aria-label={account.type}>
+                    {account.type === 'bank_account' ? <BuildingLibraryIcon className="h-6 w-6 text-blue-300" /> : 
+                     account.type === 'credit_card' ? <CreditCardIcon className="h-6 w-6 text-blue-300" /> : <BanknotesIcon className="h-6 w-6 text-blue-300" />}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-base font-medium text-white truncate max-w-[120px]">{account.name}</p>
+                  <p className="text-xs text-gray-400 capitalize">{account.type.replace('_', ' ')}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-base font-bold text-white">{formatCurrency(account.balance || 0)}</p>
+                {account.type === 'credit_card' && account.payable_balance !== undefined && (
+                  <p className="text-xs text-gray-400">
+                    Payable: {formatCurrency(account.payable_balance)}
+                  </p>
+                )}
+              </div>
+            </div>
+            
+            {/* Description (if available) */}
+            {account.description && (
+              <div className="mt-2 pl-12">
+                <p className="text-xs text-gray-400 truncate">{account.description}</p>
+              </div>
+            )}
+          </div>
+        ))): (
+          <div className="card-dark flex flex-col items-center justify-center p-8 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
+            <DocumentPlusIcon className="h-16 w-16 text-gray-600 mb-4" />
+            <p className="text-center text-gray-400 text-base">No accounts found</p>
+            <button 
+              onClick={() => handleOpenModal()} 
+              className="mt-4 px-4 py-2 bg-[#30BDF2] text-white rounded-lg text-sm font-medium"
+            >
+              Add Account
+            </button>
+          </div>)}
+      </div>
+      
+      {/* Floating Add Button */}
+      <button
+        onClick={() => handleOpenModal()}
+        className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-[#30BDF2] text-white flex items-center justify-center active:bg-[#28a8d8] shadow-lg z-10"
+        style={{
+          boxShadow: '0 4px 10px rgba(48, 189, 242, 0.3)'
+        }}
+      >
+        <PlusIcon className="h-6 w-6" />
+      </button>
 
       {/* MODALS */}
 
@@ -437,7 +453,80 @@ export default function AccountsMobile({
           </button>
         </BottomSheetModal>
       )}
-    </>
+
+      {/* Balance Detail Modal */}
+      <BottomSheetModal
+        isOpen={isBalanceModalOpen}
+        onClose={handleCloseBalanceModal}
+      >
+        <div className="space-y-5">
+          <h2 className="text-xl font-bold text-white text-center">Balance Details</h2>
+          
+          {/* Total Balance */}
+          <div className="card-dark rounded-xl p-5 bg-gradient-to-b from-gray-800 to-gray-900">
+            <h3 className="text-sm font-medium text-gray-300 mb-1">Total Balance</h3>
+            <p className="text-3xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
+          </div>
+          
+          {/* Individual Account Type Balances */}
+          <div className="space-y-3">
+            {/* Bank Account Balance */}
+            <div className="card-dark rounded-xl p-4 bg-gray-800">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center">
+                  <BuildingLibraryIcon className="h-5 w-5 text-blue-300 mr-2" />
+                  <span className="text-sm font-medium text-gray-300">Bank Accounts</span>
+                </div>
+                <span className="text-base font-bold text-white">{formatCurrency(totalBankAccount)}</span>
+              </div>
+            </div>
+            
+            {/* Other Balance */}
+            <div className="card-dark rounded-xl p-4 bg-gray-800">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center">
+                  <BanknotesIcon className="h-5 w-5 text-blue-300 mr-2" />
+                  <span className="text-sm font-medium text-gray-300">Other Accounts</span>
+                </div>
+                <span className="text-base font-bold text-white">{formatCurrency(totalOther)}</span>
+              </div>
+            </div>
+            
+            {/* Credit Card Balance */}
+            <div className="card-dark rounded-xl p-4 bg-gray-800">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center">
+                  <CreditCardIcon className="h-5 w-5 text-blue-300 mr-2" />
+                  <span className="text-sm font-medium text-gray-300">Credit Cards</span>
+                </div>
+                <span className="text-base font-bold text-white">{formatCurrency(totalCreditCard)}</span>
+              </div>
+            </div>
+            
+            {/* Credit Card Payable */}
+            {totalCreditCardPayable > 0 && (
+              <div className="card-dark rounded-xl p-4 bg-gray-800">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center">
+                    <CreditCardIcon className="h-5 w-5 text-red-400 mr-2" />
+                    <span className="text-sm font-medium text-gray-300">Credit Card Payable</span>
+                  </div>
+                  <span className="text-base font-bold text-red-400">{formatCurrency(totalCreditCardPayable)}</span>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Close Button */}
+          <button
+            onClick={handleCloseBalanceModal}
+            className="w-full py-3 px-4 bg-[#30BDF2] text-white rounded-full shadow-md active:bg-[#28a8d8] transition-colors font-medium mt-4"
+          >
+            Close
+          </button>
+        </div>
+      </BottomSheetModal>
+    </div>
   );
 }
 

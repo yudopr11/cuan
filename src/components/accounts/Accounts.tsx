@@ -211,6 +211,31 @@ export default function Accounts({ isMobile }: AccountsProps) {
     }
     return sum;
   }, 0);
+  
+  // Calculate totals by account type
+  const totalBankAccount = accounts.reduce((sum, account) => {
+    if (account.type === 'bank_account' && account.balance !== undefined) {
+      const balance = Number(account.balance) || 0;
+      return sum + (isNaN(balance) ? 0 : balance);
+    }
+    return sum;
+  }, 0);
+  
+  const totalCreditCard = accounts.reduce((sum, account) => {
+    if (account.type === 'credit_card' && account.balance !== undefined) {
+      const balance = Number(account.balance) || 0;
+      return sum + (isNaN(balance) ? 0 : balance);
+    }
+    return sum;
+  }, 0);
+  
+  const totalOther = accounts.reduce((sum, account) => {
+    if (account.type !== 'bank_account' && account.type !== 'credit_card' && account.balance !== undefined) {
+      const balance = Number(account.balance) || 0;
+      return sum + (isNaN(balance) ? 0 : balance);
+    }
+    return sum;
+  }, 0);
 
   if (isLoading) {
     return isMobile ? (
@@ -225,6 +250,9 @@ export default function Accounts({ isMobile }: AccountsProps) {
     accounts,
     totalBalance,
     totalCreditCardPayable,
+    totalBankAccount,
+    totalCreditCard, 
+    totalOther,
     handleOpenModal,
     handleOpenDeleteModal,
     handleViewDetails,

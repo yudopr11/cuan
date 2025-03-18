@@ -35,6 +35,9 @@ interface AccountsDesktopProps {
   accounts: Account[];
   totalBalance: number;
   totalCreditCardPayable: number;
+  totalBankAccount: number;
+  totalCreditCard: number;
+  totalOther: number;
   handleOpenModal: (account?: Account) => void;
   handleOpenDeleteModal: (account: Account) => void;
   handleViewDetails: (account: Account) => void;
@@ -59,6 +62,9 @@ export default function AccountsDesktop({
   accounts,
   totalBalance,
   totalCreditCardPayable,
+  totalBankAccount,
+  totalCreditCard,
+  totalOther,
   handleOpenModal,
   handleOpenDeleteModal,
   handleViewDetails,
@@ -90,21 +96,46 @@ export default function AccountsDesktop({
           </button>
         </div>
 
-        {/* Total Balance and Total Credit Card Payable Cards */}
-        <div className="grid grid-cols-2 gap-6">
-          {/* Total Balance */}
-          <div className="card-dark">
-            <h2 className="text-lg font-semibold mb-2 text-gray-200">Total Balance</h2>
-            <p className="text-3xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
+        {/* Metrics Dashboard Layout */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* Total Balance and Payable Card */}
+          <div className="card-dark p-4">
+            <p className="text-xs uppercase tracking-wider text-white mb-3">Account Summary</p>
+            
+            <div className="flex justify-start items-start gap-8">
+              <div>
+                <p className="text-xs text-gray-400 mb-1">Total Balance</p>
+                <p className="text-2xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
+              </div>
+              
+              <div>
+                <p className="text-xs text-gray-400 mb-1">Credit Card Payable</p>
+                <p className="text-2xl font-bold text-red-400">{formatCurrency(totalCreditCardPayable)}</p>
+              </div>
+            </div>
           </div>
           
-          {/* Total Credit Card Payable */}
-          {totalCreditCardPayable > 0 && (
-            <div className="card-dark">
-              <h2 className="text-lg font-semibold mb-2 text-gray-200">Credit Card Payable</h2>
-              <p className="text-3xl font-bold text-red-400">{formatCurrency(totalCreditCardPayable)}</p>
+          {/* Combined Account Types Card */}
+          <div className="card-dark p-4">
+            <p className="text-xs uppercase tracking-wider text-white mb-3">Account Types</p>
+            
+            <div className="flex justify-start items-start gap-8">
+              <div>
+                <p className="text-xs text-gray-400 mb-1">Bank</p>
+                <p className="text-2xl font-bold text-green-400">{formatCurrency(totalBankAccount)}</p>
+              </div>
+              
+              <div>
+                <p className="text-xs text-gray-400 mb-1">Other</p>
+                <p className="text-2xl font-bold text-purple-400">{formatCurrency(totalOther)}</p>
+              </div>
+              
+              <div>
+                <p className="text-xs text-gray-400 mb-1">Credit</p>
+                <p className="text-2xl font-bold text-blue-400">{formatCurrency(totalCreditCard)}</p>
+              </div>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Accounts Table */}
