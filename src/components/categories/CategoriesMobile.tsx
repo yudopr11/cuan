@@ -249,7 +249,6 @@ const CategoriesMobile: React.FC<CategoriesMobileProps> = ({
             value={formData.name}
             onChange={handleInputChange}
             className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-base text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
-            required
             placeholder="Enter category name"
             autoFocus
           />

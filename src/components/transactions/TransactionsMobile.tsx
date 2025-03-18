@@ -455,7 +455,6 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                 onChange={handleInputChange}
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-200 focus:border-[#30BDF2]"
                 placeholder="Enter amount"
-                required
               />
             </div>
             
@@ -469,7 +468,6 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                 value={formData.transaction_date}
                 onChange={handleInputChange}
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-200 focus:border-[#30BDF2]"
-                required
               />
             </div>
             
@@ -484,7 +482,6 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                 onChange={handleInputChange}
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-200 focus:border-[#30BDF2]"
                 placeholder="Enter description"
-                required
               />
             </div>
             

@@ -456,7 +456,6 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
                   value={formatAmount(formData.amount.toString())}
                   onChange={handleInputChange}
                   className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
-                  required
                 />
               </div>
               
@@ -470,7 +469,6 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
                   value={formData.transaction_date}
                   onChange={handleInputChange}
                   className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
-                  required
                 />
               </div>
               
@@ -484,7 +482,6 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
                   value={formData.description}
                   onChange={handleInputChange}
                   className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
-                  required
                 />
               </div>
               
