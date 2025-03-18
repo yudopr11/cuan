@@ -19,14 +19,12 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       VitePWA({
-        // Base configuration
         registerType: 'autoUpdate',
         includeAssets: ['**/*', 'index.html'],
         includeManifestIcons: true,
         injectRegister: 'auto',
         strategies: 'generateSW',
         manifestFilename: 'manifest.webmanifest',
-        // Ensure index.html is precached explicitly
         manifest: {
           name: 'Cuan - Money Manager',
           short_name: 'Cuan',
@@ -87,10 +85,14 @@ export default defineConfig(({ mode }) => {
           ]
         },
         workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg}', 'icons/*.png', 'index.html'],
-          navigateFallback: 'index.html',
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}', 'icons/*.png'],
+          // Set navigateFallback to match the precached URL exactly.
+          navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api/, /^\/_/],
-          // Runtime caching configuration for resources from CDN or external API
+          // Explicitly precache index.html
+          additionalManifestEntries: [
+            { url: '/index.html', revision: null }
+          ],
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -147,7 +149,7 @@ export default defineConfig(({ mode }) => {
       })
     ],
     server: {
-      port: 3000,
+      port: 3000
     },
     preview: {
       port: 3000,
