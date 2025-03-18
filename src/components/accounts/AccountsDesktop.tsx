@@ -122,17 +122,17 @@ export default function AccountsDesktop({
             <div className="flex justify-start items-start gap-8">
               <div>
                 <p className="text-xs text-gray-400 mb-1">Bank</p>
-                <p className="text-2xl font-bold text-green-400">{formatCurrency(totalBankAccount)}</p>
+                <p className="text-2xl font-bold text-[#30BDF2]">{formatCurrency(totalBankAccount)}</p>
               </div>
               
               <div>
                 <p className="text-xs text-gray-400 mb-1">Other</p>
-                <p className="text-2xl font-bold text-purple-400">{formatCurrency(totalOther)}</p>
+                <p className="text-2xl font-bold text-[#30BDF2]">{formatCurrency(totalOther)}</p>
               </div>
               
               <div>
                 <p className="text-xs text-gray-400 mb-1">Credit</p>
-                <p className="text-2xl font-bold text-blue-400">{formatCurrency(totalCreditCard)}</p>
+                <p className="text-2xl font-bold text-[#30BDF2]">{formatCurrency(totalCreditCard)}</p>
               </div>
             </div>
           </div>

@@ -468,6 +468,9 @@ export default function AccountsMobile({
             <p className="text-3xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
           </div>
           
+          {/* Account Type Balance Breakdown */}
+          <p className="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">BREAKDOWN</p>
+
           {/* Individual Account Type Balances */}
           <div className="space-y-3">
             {/* Bank Account Balance */}
@@ -503,18 +506,6 @@ export default function AccountsMobile({
               </div>
             </div>
             
-            {/* Credit Card Payable */}
-            {totalCreditCardPayable > 0 && (
-              <div className="card-dark rounded-xl p-4 bg-gray-800">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center">
-                    <CreditCardIcon className="h-5 w-5 text-red-400 mr-2" />
-                    <span className="text-sm font-medium text-gray-300">Credit Card Payable</span>
-                  </div>
-                  <span className="text-base font-bold text-red-400">{formatCurrency(totalCreditCardPayable)}</span>
-                </div>
-              </div>
-            )}
           </div>
           
           {/* Close Button */}
