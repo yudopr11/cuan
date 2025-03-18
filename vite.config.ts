@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => {
           name: 'Cuan - Money Manager',
           short_name: 'Cuan',
           description: 'Money Manager by yudopr',
-          theme_color: '#ffffff',
+          theme_color: '#0f172a',
           start_url: '/',
           display: 'standalone',
           background_color: '#0f172a',
