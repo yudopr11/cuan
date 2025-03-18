@@ -5,8 +5,11 @@ interface SkeletonProps {
 }
 
 export const Skeleton: React.FC<SkeletonProps> = ({ className = '' }) => {
+  const hasRoundedClass = className.includes('rounded');
+  const roundedClass = hasRoundedClass ? '' : 'rounded-md';
+  
   return (
-    <div className={`animate-pulse bg-gray-700/50 rounded-md ${className}`}></div>
+    <div className={`animate-pulse bg-gray-700/50 ${roundedClass} ${className}`}></div>
   );
 };
 
