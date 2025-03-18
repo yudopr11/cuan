@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { ChevronRightIcon, CheckIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import type { User } from '../../services/api';
+import { registerSW } from 'virtual:pwa-register';
+import toast from 'react-hot-toast';
 
 interface SettingsMobileProps {
   userInfo: User | null;
@@ -10,6 +12,13 @@ interface SettingsMobileProps {
 export default function SettingsMobile({ userInfo, isLoading }: SettingsMobileProps) {
   const [currency, setCurrency] = useState('IDR');
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
+  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+  
+  // Get the updateSW function
+  const updateSW = registerSW({
+    onNeedRefresh() {},
+    onOfflineReady() {}
+  });
   
   useEffect(() => {
     // Load saved currency setting from localStorage
@@ -41,6 +50,20 @@ export default function SettingsMobile({ userInfo, isLoading }: SettingsMobilePr
     option => option.value === currency
   )?.label || 'IDR (Rp)';
   
+  // Handle manual update check
+  const checkForUpdates = async () => {
+    setIsCheckingUpdate(true);
+    try {
+      await updateSW(true);
+      toast.success('App is up to date!');
+    } catch (error) {
+      console.error('Update check failed:', error);
+      toast.error('Failed to check for updates');
+    } finally {
+      setIsCheckingUpdate(false);
+    }
+  };
+
   return (
     <div className="space-y-5 px-1 pb-16">
       
@@ -127,6 +150,34 @@ export default function SettingsMobile({ userInfo, isLoading }: SettingsMobilePr
             ))}
           </div>
         )}
+      </div>
+      
+      {/* App Updates Section */}
+      <div className="card-dark rounded-xl shadow-lg overflow-hidden bg-gradient-to-b from-gray-800 to-gray-900 mx-2">
+        <div className="flex justify-between items-center p-4 border-b border-gray-700/50">
+          <h2 className="text-base font-semibold text-white">App Updates</h2>
+        </div>
+        
+        <div className="p-4 relative">
+          <button
+            onClick={checkForUpdates}
+            disabled={isCheckingUpdate}
+            className="w-full text-center py-3 bg-gray-800 text-gray-300 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors duration-200"
+          >
+            {!isCheckingUpdate && "Check for Updates"}
+          </button>
+          
+          {isCheckingUpdate && (
+            <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-10 rounded-lg backdrop-blur-sm">
+              <div className="px-6 py-4 bg-gray-800/90 rounded-xl shadow-xl">
+                <div className="flex items-center space-x-3">
+                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-[#30BDF2]"></div>
+                  <p className="text-sm text-gray-200">Updating...</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
       
       {/* App info */}

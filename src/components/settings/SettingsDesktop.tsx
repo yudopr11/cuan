@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import type { User } from '../../services/api';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
+import { registerSW } from 'virtual:pwa-register';
+import toast from 'react-hot-toast';
 
 interface SettingsDesktopProps {
   userInfo: User | null;
@@ -11,6 +13,13 @@ interface SettingsDesktopProps {
 export default function SettingsDesktop({ userInfo, isLoading }: SettingsDesktopProps) {
   const [activeTab, setActiveTab] = useState('currency');
   const [currency, setCurrency] = useState('IDR');
+  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+  
+  // Get the updateSW function
+  const updateSW = registerSW({
+    onNeedRefresh() {},
+    onOfflineReady() {}
+  });
   
   useEffect(() => {
     // Load saved currency setting from localStorage
@@ -24,6 +33,20 @@ export default function SettingsDesktop({ userInfo, isLoading }: SettingsDesktop
     const newCurrency = e.target.value;
     setCurrency(newCurrency);
     localStorage.setItem('currency', newCurrency);
+  };
+  
+  // Handle manual update check
+  const checkForUpdates = async () => {
+    setIsCheckingUpdate(true);
+    try {
+      await updateSW(true);
+      toast.success('App is up to date!');
+    } catch (error) {
+      console.error('Update check failed:', error);
+      toast.error('Failed to check for updates');
+    } finally {
+      setIsCheckingUpdate(false);
+    }
   };
   
   return (
@@ -55,6 +78,16 @@ export default function SettingsDesktop({ userInfo, isLoading }: SettingsDesktop
             onClick={() => setActiveTab('account')}
           >
             Account
+          </button>
+          <button
+            className={`px-4 py-3 font-medium text-sm ${
+              activeTab === 'updates'
+                ? 'border-b-2 border-indigo-500 text-indigo-400'
+                : 'text-gray-300 hover:text-gray-100'
+            }`}
+            onClick={() => setActiveTab('updates')}
+          >
+            Updates
           </button>
         </div>
         
@@ -113,6 +146,35 @@ export default function SettingsDesktop({ userInfo, isLoading }: SettingsDesktop
               ) : (
                 <p className="text-gray-400">Unable to load account information</p>
               )}
+            </div>
+          )}
+          
+          {activeTab === 'updates' && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium text-white">App Updates</h3>
+              <div className="relative w-48">
+                <button
+                  onClick={checkForUpdates}
+                  disabled={isCheckingUpdate}
+                  className="text-center py-3 px-6 bg-gray-800 text-gray-300 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors duration-200 w-full"
+                >
+                  {!isCheckingUpdate && "Check for Updates"}
+                </button>
+                
+                {isCheckingUpdate && (
+                  <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-10 rounded-lg backdrop-blur-sm">
+                    <div className="px-6 py-4 bg-gray-800/90 rounded-xl shadow-xl">
+                      <div className="flex items-center space-x-3">
+                        <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-[#30BDF2]"></div>
+                        <p className="text-sm text-gray-200">Updating...</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <p className="mt-2 text-sm text-gray-400">
+                Checking for updates will ensure you have the latest version of the app.
+              </p>
             </div>
           )}
         </div>

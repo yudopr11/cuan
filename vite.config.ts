@@ -67,8 +67,11 @@ export default defineConfig(({ mode }) => {
           navigateFallbackDenylist: [/^\/api/, /^\/_/],
           // Explicitly precache index.html
           additionalManifestEntries: [
-            { url: '/index.html', revision: null }
+            { url: '/index.html', revision: Date.now().toString() }
           ],
+          // Force update on each new build
+          skipWaiting: true,
+          clientsClaim: true,
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

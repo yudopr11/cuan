@@ -5,8 +5,8 @@ import './index.css'
 import { registerSW } from 'virtual:pwa-register'
 import toast from 'react-hot-toast'
 
-// Check every 5 minutes for service worker updates
-const intervalMS = 5 * 60 * 1000
+// Check every 60 minutes for service worker updates
+const intervalMS = 60 * 60 * 1000
 
 const updateSW = registerSW({
   onRegistered(registration: ServiceWorkerRegistration | undefined) {
