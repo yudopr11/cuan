@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import type { User } from '../../services/api';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
-import { registerSW } from 'virtual:pwa-register';
 import toast from 'react-hot-toast';
+import { updateSW } from './Settings';
 
 interface SettingsDesktopProps {
   userInfo: User | null;
@@ -14,12 +14,6 @@ export default function SettingsDesktop({ userInfo, isLoading }: SettingsDesktop
   const [activeTab, setActiveTab] = useState('currency');
   const [currency, setCurrency] = useState('IDR');
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
-  
-  // Get the updateSW function
-  const updateSW = registerSW({
-    onNeedRefresh() {},
-    onOfflineReady() {}
-  });
   
   useEffect(() => {
     // Load saved currency setting from localStorage

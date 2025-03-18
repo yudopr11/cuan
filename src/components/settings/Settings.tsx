@@ -4,6 +4,14 @@ import SettingsDesktop from './SettingsDesktop';
 import SettingsMobile from './SettingsMobile';
 import { getUserInfo, type User } from '../../services/api';
 import toast from 'react-hot-toast';
+import { registerSW } from 'virtual:pwa-register';
+
+// Initialize the updateSW function once and export it for use in components
+export const updateSW = registerSW({
+  onNeedRefresh() {},
+  onOfflineReady() {},
+  immediate: true
+});
 
 interface SettingsProps {
   isMobile: boolean;

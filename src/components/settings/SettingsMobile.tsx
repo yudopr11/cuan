@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { ChevronRightIcon, CheckIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import type { User } from '../../services/api';
-import { registerSW } from 'virtual:pwa-register';
 import toast from 'react-hot-toast';
+import { updateSW } from './Settings';
 
 interface SettingsMobileProps {
   userInfo: User | null;
@@ -13,12 +13,6 @@ export default function SettingsMobile({ userInfo, isLoading }: SettingsMobilePr
   const [currency, setCurrency] = useState('IDR');
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
-  
-  // Get the updateSW function
-  const updateSW = registerSW({
-    onNeedRefresh() {},
-    onOfflineReady() {}
-  });
   
   useEffect(() => {
     // Load saved currency setting from localStorage
