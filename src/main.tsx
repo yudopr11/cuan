@@ -35,7 +35,7 @@ const updateSW = registerSW({
     toast(
       (t) => (
         <span style={{ color: 'white' }}>
-          Versi baru aplikasi tersedia. 
+          New version is available. 
           <button 
             onClick={() => { 
               updateSW(true)

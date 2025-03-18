@@ -24,16 +24,14 @@ export default defineConfig(({ mode }) => {
         includeAssets: ['**/*', 'index.html'],
         includeManifestIcons: true,
         injectRegister: 'auto',
-        strategies: 'injectManifest',
-        srcDir: 'src',
-        filename: 'sw-custom.js',
+        strategies: 'generateSW',
         manifestFilename: 'manifest.webmanifest',
         // Ensure index.html is precached explicitly
         manifest: {
           name: 'Cuan - Money Manager',
           short_name: 'Cuan',
           description: 'Money Manager by yudopr',
-          theme_color: '#0f172a',
+          theme_color: '#ffffff',
           start_url: '/',
           display: 'standalone',
           background_color: '#0f172a',
