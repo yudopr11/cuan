@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Category, CategoryCreate } from '../../services/api';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 // Custom Select Input component with consistent styling
 interface SelectInputProps {
@@ -64,6 +64,62 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
   handleCloseDeleteModal,
   handleDeleteCategory,
 }) => {
+  // Pagination state for income categories
+  const [incomeCurrentPage, setIncomeCurrentPage] = useState(1);
+  const [isIncomeTableLoading, setIsIncomeTableLoading] = useState(false);
+  
+  // Pagination state for expense categories
+  const [expenseCurrentPage, setExpenseCurrentPage] = useState(1);
+  const [isExpenseTableLoading, setIsExpenseTableLoading] = useState(false);
+  
+  // Number of items to show per page
+  const itemsPerPage = 10;
+  
+  // Calculate pagination parameters
+  const incomeTotalPages = Math.ceil(incomeCategories.length / itemsPerPage);
+  const expenseTotalPages = Math.ceil(expenseCategories.length / itemsPerPage);
+  
+  // Paginate the categories arrays
+  const paginatedIncomeCategories = incomeCategories.slice(
+    (incomeCurrentPage - 1) * itemsPerPage,
+    incomeCurrentPage * itemsPerPage
+  );
+  
+  const paginatedExpenseCategories = expenseCategories.slice(
+    (expenseCurrentPage - 1) * itemsPerPage,
+    expenseCurrentPage * itemsPerPage
+  );
+  
+  // Handle page change for income categories
+  const handleIncomePageChange = (page: number) => {
+    setIsIncomeTableLoading(true);
+    setTimeout(() => {
+      setIncomeCurrentPage(page);
+      setIsIncomeTableLoading(false);
+    }, 100);
+  };
+  
+  // Handle page change for expense categories
+  const handleExpensePageChange = (page: number) => {
+    setIsExpenseTableLoading(true);
+    setTimeout(() => {
+      setExpenseCurrentPage(page);
+      setIsExpenseTableLoading(false);
+    }, 100);
+  };
+  
+  // Loading indicator component
+  const TableLoadingIndicator = () => (
+    <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-10 rounded-lg backdrop-blur-sm">
+      <div className="px-6 py-4 bg-gray-800/90 rounded-xl shadow-xl">
+        <div className="flex items-center space-x-3">
+          <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-[#30BDF2]"></div>
+          <p className="text-sm text-gray-200">Updating...</p>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <div className="space-y-6">
@@ -85,7 +141,8 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
             </div>
             
             {incomeCategories.length > 0 ? (
-              <div className="overflow-x-auto border border-gray-800 rounded-lg">
+              <div className="overflow-x-auto border border-gray-800 rounded-lg relative">
+                {isIncomeTableLoading && <TableLoadingIndicator />}
                 <table className="min-w-full divide-y divide-gray-700 table-dark">
                   <thead className="bg-gray-800">
                     <tr>
@@ -98,7 +155,7 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-700">
-                    {incomeCategories.map(category => (
+                    {paginatedIncomeCategories.map(category => (
                       <tr key={category.category_id} className="hover:bg-gray-800">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="font-medium text-green-400">{category.name}</div>
@@ -121,6 +178,60 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
                     ))}
                   </tbody>
                 </table>
+                
+                {/* Pagination Controls for Income */}
+                {incomeCategories.length > itemsPerPage && (
+                  <div className="flex items-center justify-between px-4 py-3 bg-gray-800 border-t border-gray-700">
+                    <div className="flex items-center">
+                      <p className="text-sm text-gray-400">
+                        Showing <span className="font-medium">{(incomeCurrentPage - 1) * itemsPerPage + 1}</span> to{' '}
+                        <span className="font-medium">
+                          {Math.min(incomeCurrentPage * itemsPerPage, incomeCategories.length)}
+                        </span> of{' '}
+                        <span className="font-medium">{incomeCategories.length}</span> results
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => handleIncomePageChange(incomeCurrentPage - 1)}
+                        disabled={incomeCurrentPage === 1}
+                        className={`px-3 py-1 rounded-md text-sm font-medium ${
+                          incomeCurrentPage === 1
+                            ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                            : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                        }`}
+                      >
+                        <ChevronLeftIcon className="h-5 w-5" />
+                      </button>
+                      <div className="flex space-x-1">
+                        {Array.from({ length: incomeTotalPages }, (_, i) => i + 1).map((page) => (
+                          <button
+                            key={page}
+                            onClick={() => handleIncomePageChange(page)}
+                            className={`px-3 py-1 rounded-md text-sm font-medium ${
+                              incomeCurrentPage === page
+                                ? 'bg-[#30BDF2] text-white'
+                                : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => handleIncomePageChange(incomeCurrentPage + 1)}
+                        disabled={incomeCurrentPage === incomeTotalPages}
+                        className={`px-3 py-1 rounded-md text-sm font-medium ${
+                          incomeCurrentPage === incomeTotalPages
+                            ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                            : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                        }`}
+                      >
+                        <ChevronRightIcon className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="p-6 text-center text-gray-400">
@@ -136,7 +247,8 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
             </div>
             
             {expenseCategories.length > 0 ? (
-              <div className="overflow-x-auto border border-gray-800 rounded-lg">
+              <div className="overflow-x-auto border border-gray-800 rounded-lg relative">
+                {isExpenseTableLoading && <TableLoadingIndicator />}
                 <table className="min-w-full divide-y divide-gray-700 table-dark">
                   <thead className="bg-gray-800">
                     <tr>
@@ -149,7 +261,7 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-700">
-                    {expenseCategories.map(category => (
+                    {paginatedExpenseCategories.map(category => (
                       <tr key={category.category_id} className="hover:bg-gray-800">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="font-medium text-red-400">{category.name}</div>
@@ -172,6 +284,60 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
                     ))}
                   </tbody>
                 </table>
+                
+                {/* Pagination Controls for Expense */}
+                {expenseCategories.length > itemsPerPage && (
+                  <div className="flex items-center justify-between px-4 py-3 bg-gray-800 border-t border-gray-700">
+                    <div className="flex items-center">
+                      <p className="text-sm text-gray-400">
+                        Showing <span className="font-medium">{(expenseCurrentPage - 1) * itemsPerPage + 1}</span> to{' '}
+                        <span className="font-medium">
+                          {Math.min(expenseCurrentPage * itemsPerPage, expenseCategories.length)}
+                        </span> of{' '}
+                        <span className="font-medium">{expenseCategories.length}</span> results
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => handleExpensePageChange(expenseCurrentPage - 1)}
+                        disabled={expenseCurrentPage === 1}
+                        className={`px-3 py-1 rounded-md text-sm font-medium ${
+                          expenseCurrentPage === 1
+                            ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                            : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                        }`}
+                      >
+                        <ChevronLeftIcon className="h-5 w-5" />
+                      </button>
+                      <div className="flex space-x-1">
+                        {Array.from({ length: expenseTotalPages }, (_, i) => i + 1).map((page) => (
+                          <button
+                            key={page}
+                            onClick={() => handleExpensePageChange(page)}
+                            className={`px-3 py-1 rounded-md text-sm font-medium ${
+                              expenseCurrentPage === page
+                                ? 'bg-[#30BDF2] text-white'
+                                : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => handleExpensePageChange(expenseCurrentPage + 1)}
+                        disabled={expenseCurrentPage === expenseTotalPages}
+                        className={`px-3 py-1 rounded-md text-sm font-medium ${
+                          expenseCurrentPage === expenseTotalPages
+                            ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                            : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                        }`}
+                      >
+                        <ChevronRightIcon className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="p-6 text-center text-gray-400">

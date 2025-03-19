@@ -190,13 +190,13 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
       case 'income':
         return (
           <div className="w-10 h-10 rounded-full bg-green-500 bg-opacity-20 flex items-center justify-center">
-            <ArrowUpIcon className="h-5 w-5 text-green-400" />
+            <ArrowDownIcon className="h-5 w-5 text-green-400" />
           </div>
         );
       case 'expense':
         return (
           <div className="w-10 h-10 rounded-full bg-red-500 bg-opacity-20 flex items-center justify-center">
-            <ArrowDownIcon className="h-5 w-5 text-red-400" />
+            <ArrowUpIcon className="h-5 w-5 text-red-400" />
           </div>
         );
       case 'transfer':

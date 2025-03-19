@@ -9,6 +9,7 @@ interface FormModalProps {
   onSubmit: (e: React.FormEvent) => void;
   submitText: string;
   cancelText?: string;
+  submitDisabled?: boolean;
   children: ReactNode;
 }
 
@@ -19,6 +20,7 @@ const FormModal: React.FC<FormModalProps> = ({
   onSubmit,
   submitText,
   cancelText = 'Cancel',
+  submitDisabled = false,
   children,
 }) => {
   return (
@@ -40,7 +42,12 @@ const FormModal: React.FC<FormModalProps> = ({
           </button>
           <button
             type="submit"
-            className="w-full py-3 bg-[#30BDF2] text-white rounded-lg font-medium active:bg-[#28a8d8] transition-colors"
+            disabled={submitDisabled}
+            className={`w-full py-3 rounded-lg font-medium transition-colors ${
+              submitDisabled 
+                ? 'bg-gray-700 text-gray-500 cursor-not-allowed' 
+                : 'bg-[#30BDF2] text-white active:bg-[#28a8d8]'
+            }`}
           >
             {submitText}
           </button>

@@ -299,21 +299,6 @@ export const TransactionsDesktopSkeleton: React.FC = () => {
           </table>
         </div>
       </div>
-      
-      {/* Pagination */}
-      <div className="flex items-center justify-between bg-gray-900 shadow-md rounded-lg p-4 border border-gray-800">
-        <div className="flex items-center">
-          <Skeleton className="h-8 w-24 rounded-md mr-2" />
-          <Skeleton className="h-8 w-32 rounded-md" />
-        </div>
-        <div className="flex items-center">
-          <Skeleton className="h-4 w-40" />
-        </div>
-        <div className="flex items-center">
-          <Skeleton className="h-8 w-24 rounded-md mr-2" />
-          <Skeleton className="h-8 w-24 rounded-md" />
-        </div>
-      </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import { toast } from 'react-hot-toast';
-import { getAllAccounts, createAccount, updateAccount, deleteAccount, getAccountBalance } from '../../services/api';
+import { getAllAccounts, createAccount, updateAccount, deleteAccount, getAccountBalance, createTransaction } from '../../services/api';
 import type { Account, AccountCreate, AccountBalance } from '../../services/api';
 import useCurrencyFormatter from '../../hooks/useCurrencyFormatter';
 import usePageTitle from '../../hooks/usePageTitle';
@@ -35,6 +35,11 @@ export default function Accounts({ isMobile }: AccountsProps) {
 
   // Use the currency formatter hook
   const { formatCurrency } = useCurrencyFormatter();
+
+  // Balance adjustment states
+  const [isAdjustmentModalOpen, setIsAdjustmentModalOpen] = useState(false);
+  const [accountToAdjust, setAccountToAdjust] = useState<Account | null>(null);
+  const [adjustmentAmount, setAdjustmentAmount] = useState('');
 
   // Fetch accounts on component mount
   useEffect(() => {
@@ -192,6 +197,39 @@ export default function Accounts({ isMobile }: AccountsProps) {
     setAccountDetails(null);
   };
 
+  const handleAdjustBalance = async (accountId: string, newBalance: number) => {
+    try {
+      // Get current account details
+      const account = accounts.find(a => a.account_id === parseInt(accountId));
+      if (!account) {
+        toast.error('Account not found');
+        return;
+      }
+
+      const currentBalance = account.balance || 0;
+      const difference = newBalance - currentBalance;
+
+      // Create a transaction for the balance adjustment
+      if (difference !== 0) {
+        const transactionData = {
+          amount: Math.abs(difference),
+          description: 'Balance Adjustment',
+          transaction_date: new Date().toISOString(),
+          transaction_type: difference > 0 ? 'income' : 'expense',
+          account_id: parseInt(accountId)
+        };
+
+        await createTransaction(transactionData);
+      }
+
+      toast.success('Balance adjusted successfully');
+      fetchAccounts();
+    } catch (error) {
+      console.error('Error adjusting balance:', error);
+      toast.error('Failed to adjust balance');
+    }
+  };
+
   // Calculate total balance
   const totalBalance = accounts.reduce((sum, account) => {
     // Ensure balance is treated as a number
@@ -237,6 +275,32 @@ export default function Accounts({ isMobile }: AccountsProps) {
     return sum;
   }, 0);
 
+  // Balance adjustment handlers
+  const handleOpenAdjustmentModal = (account: Account) => {
+    setAccountToAdjust(account);
+    setAdjustmentAmount(account.balance ? account.balance.toString() : '0');
+    setIsAdjustmentModalOpen(true);
+  };
+
+  const handleCloseAdjustmentModal = () => {
+    setIsAdjustmentModalOpen(false);
+    setAccountToAdjust(null);
+    setAdjustmentAmount('');
+  };
+
+  const handleAdjustmentInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    
+    // Format amount with thousand separator
+    const formattedValue = formatLimitValue(value);
+    const numericValue = parseFloat(value.replace(/,/g, '')) || 0;
+    
+    setAdjustmentAmount(numericValue.toString());
+    
+    // Update input display value with formatting
+    e.target.value = formattedValue;
+  };
+
   if (isLoading) {
     return isMobile ? (
       <AccountsMobileSkeleton />
@@ -270,7 +334,14 @@ export default function Accounts({ isMobile }: AccountsProps) {
     handleSubmit,
     handleDeleteAccount,
     formatLimitValue,
-    formatCurrency
+    formatCurrency,
+    handleAdjustBalance,
+    isAdjustmentModalOpen,
+    accountToAdjust,
+    adjustmentAmount,
+    handleOpenAdjustmentModal,
+    handleCloseAdjustmentModal,
+    handleAdjustmentInputChange
   };
 
   // Render the appropriate component based on isMobile prop

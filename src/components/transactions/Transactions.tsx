@@ -55,7 +55,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
   const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
   
   // State for pagination
-  const [limit, setLimit] = useState(20);
+  const limit = 10; // Fixed page size
   const [skip, setSkip] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   
@@ -414,25 +414,18 @@ export default function Transactions({ isMobile }: TransactionsProps) {
 
   const handlePrevPage = () => {
     if (skip > 0) {
-      setSkip(prev => Math.max(0, prev - limit));
+      setSkip(Math.max(0, skip - limit));
     }
   };
 
-  const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newLimit = parseInt(e.target.value, 10);
-    setLimit(newLimit);
-    setSkip(0); // Reset to first page when changing page size
-  };
-
-  // New helper function to check if filters have changed
   const hasFilterChanges = () => {
     return (
       filters.account_name !== activeFilters.account_name ||
       filters.category_name !== activeFilters.category_name ||
       filters.transaction_type !== activeFilters.transaction_type ||
-      filters.date_filter_type !== activeFilters.date_filter_type ||
       filters.start_date !== activeFilters.start_date ||
-      filters.end_date !== activeFilters.end_date
+      filters.end_date !== activeFilters.end_date ||
+      filters.date_filter_type !== activeFilters.date_filter_type
     );
   };
 
@@ -531,7 +524,6 @@ export default function Transactions({ isMobile }: TransactionsProps) {
       hasFilterChanges={hasFilterChanges}
       handleNextPage={handleNextPage}
       handlePrevPage={handlePrevPage}
-      handlePageSizeChange={handlePageSizeChange}
       formatAmount={formatAmount}
       getUniqueCategories={getUniqueCategories}
     />

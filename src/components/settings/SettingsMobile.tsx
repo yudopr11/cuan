@@ -176,7 +176,7 @@ export default function SettingsMobile({ userInfo, isLoading }: SettingsMobilePr
       
       {/* App info */}
       <div className="mt-8 text-center">
-        <p className="text-xs text-gray-500">Cuan App v1.0.0</p>
+        <p className="text-xs text-gray-500">Cuan App v1.0.1</p>
       </div>
     </div>
   );

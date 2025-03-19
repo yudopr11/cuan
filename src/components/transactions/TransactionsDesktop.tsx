@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Transaction, TransactionCreate, Account, Category } from '../../services/api';
 import useCurrencyFormatter from '../../hooks/useCurrencyFormatter';
 import { TransactionsDesktopSkeleton } from '../common/SkeletonLoader';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 interface TransactionsDesktopProps {
   transactions: Transaction[];
@@ -51,7 +51,6 @@ interface TransactionsDesktopProps {
   hasFilterChanges: () => boolean;
   handleNextPage: () => void;
   handlePrevPage: () => void;
-  handlePageSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   formatAmount: (value: string) => string;
   getUniqueCategories: (categories: Category[], transactionType?: string | null) => Category[];
 }
@@ -115,17 +114,47 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
   hasFilterChanges,
   handleNextPage,
   handlePrevPage,
-  handlePageSizeChange,
   formatAmount,
   getUniqueCategories
 }) => {
   // Use the currency formatter hook
   const { formatCurrency } = useCurrencyFormatter();
+  // Table-specific loading state
+  const [isTableLoading, setIsTableLoading] = useState(false);
 
-  // Show skeleton loader while filtering
-  if (isFilterLoading) {
+  useEffect(() => {
+    // When transactions change, table is done loading
+    setIsTableLoading(false);
+  }, [transactions]);
+
+  // Show skeleton loader while filtering the entire component
+  if (isFilterLoading && !isTableLoading) {
     return <TransactionsDesktopSkeleton />;
   }
+
+  const handleTablePageChange = (page: number) => {
+    // Set table-specific loading state
+    setIsTableLoading(true);
+    
+    const newSkip = (page - 1) * limit;
+    if (newSkip < skip) {
+      handlePrevPage();
+    } else if (newSkip > skip) {
+      handleNextPage();
+    }
+  };
+
+  // Table loading indicator component
+  const TableLoadingIndicator = () => (
+    <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-10 rounded-lg backdrop-blur-sm">
+        <div className="px-6 py-4 bg-gray-800/90 rounded-xl shadow-xl">
+          <div className="flex items-center space-x-3">
+            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-[#30BDF2]"></div>
+            <p className="text-sm text-gray-200">Updating...</p>
+          </div>
+        </div>
+      </div>
+  );
 
   return (
     <>
@@ -303,12 +332,14 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
         
         {/* Transaction Table - Desktop */}
         <div className="bg-gray-900 shadow-md rounded-lg overflow-hidden mb-6 border border-gray-800 relative">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto relative">
+            {isTableLoading && <TableLoadingIndicator />}
             <table className="table-dark min-w-full">
               <thead className="bg-gray-800">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Date</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Description</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Type</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Account</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Category</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Amount</th>
@@ -325,6 +356,10 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-white font-medium">
                         {transaction.description}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-300">
+                        {transaction.transaction_type === 'income' ? 'Income' : 
+                         transaction.transaction_type === 'expense' ? 'Expense' : 'Transfer'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-gray-300">
                         {transaction.account?.name || 'Unknown account'}
@@ -372,53 +407,61 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
               </tbody>
             </table>
           </div>
-        </div>
-        
-        {/* Pagination - Desktop */}
-        {transactions.length > 0 && (
-          <div className="bg-gray-900 shadow-md rounded-lg p-4 flex justify-between items-center border border-gray-800">
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-300">Show</span>
-              <SelectInput
-                name="pageSize"
-                value={limit.toString()}
-                onChange={handlePageSizeChange}
-              >
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </SelectInput>
-              <span className="text-sm text-gray-300">entries</span>
-            </div>
-            
-            <div className="flex items-center">
-              <span className="text-sm text-gray-300 mr-4">
-                Showing {skip + 1} to {Math.min(skip + transactions.length, totalCount)} of {totalCount} entries
-              </span>
-              <div className="flex space-x-2">
+          
+          {/* Pagination Controls */}
+          {totalCount > limit && (
+            <div className="flex items-center justify-between px-4 py-3 bg-gray-800 border-t border-gray-700">
+              <div className="flex items-center">
+                <p className="text-sm text-gray-400">
+                  Showing <span className="font-medium">{skip + 1}</span> to{' '}
+                  <span className="font-medium">
+                    {Math.min(skip + limit, totalCount)}
+                  </span> of{' '}
+                  <span className="font-medium">{totalCount}</span> results
+                </p>
+              </div>
+              <div className="flex items-center space-x-2">
                 <button
-                  onClick={handlePrevPage}
+                  onClick={() => handleTablePageChange(Math.floor(skip / limit))}
                   disabled={skip === 0}
-                  className={`px-4 py-2 rounded-md font-medium ${
-                    skip === 0 ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-[#30BDF2] text-white hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900'
+                  className={`px-3 py-1 rounded-md text-sm font-medium ${
+                    skip === 0
+                      ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                      : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
                   }`}
                 >
-                  Previous
+                  <ChevronLeftIcon className="h-5 w-5" />
                 </button>
+                <div className="flex space-x-1">
+                  {Array.from({ length: Math.ceil(totalCount / limit) }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => handleTablePageChange(page)}
+                      className={`px-3 py-1 rounded-md text-sm font-medium ${
+                        skip / limit + 1 === page
+                          ? 'bg-[#30BDF2] text-white'
+                          : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
                 <button
-                  onClick={handleNextPage}
+                  onClick={() => handleTablePageChange(Math.floor(skip / limit) + 2)}
                   disabled={!hasMore}
-                  className={`px-4 py-2 rounded-md font-medium ${
-                    !hasMore ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-[#30BDF2] text-white hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900'
+                  className={`px-3 py-1 rounded-md text-sm font-medium ${
+                    !hasMore
+                      ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                      : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
                   }`}
                 >
-                  Next
+                  <ChevronRightIcon className="h-5 w-5" />
                 </button>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
       
       {/* Modals for desktop - moved outside of the space-y-6 container */}

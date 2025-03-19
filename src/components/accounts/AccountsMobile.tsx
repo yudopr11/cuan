@@ -73,6 +73,13 @@ interface AccountsMobileProps {
   handleDeleteAccount: () => void;
   formatLimitValue: (value: string) => string;
   formatCurrency: (value: number) => string;
+  handleAdjustBalance: (accountId: string, newBalance: number) => Promise<void>;
+  isAdjustmentModalOpen: boolean;
+  accountToAdjust: Account | null;
+  adjustmentAmount: string;
+  handleOpenAdjustmentModal: (account: Account) => void;
+  handleCloseAdjustmentModal: () => void;
+  handleAdjustmentInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function AccountsMobile({
@@ -99,7 +106,14 @@ export default function AccountsMobile({
   handleSubmit,
   handleDeleteAccount,
   formatLimitValue,
-  formatCurrency
+  formatCurrency,
+  handleAdjustBalance,
+  isAdjustmentModalOpen,
+  accountToAdjust,
+  adjustmentAmount,
+  handleOpenAdjustmentModal,
+  handleCloseAdjustmentModal,
+  handleAdjustmentInputChange
 }: AccountsMobileProps) {
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
   const [accountForAction, setAccountForAction] = useState<Account | null>(null);
@@ -157,6 +171,17 @@ export default function AccountsMobile({
       label: 'Edit Account',
       icon: <PencilSquareIcon className="h-6 w-6 text-[#30BDF2]" />,
       onClick: handleEditClick,
+    },
+    {
+      id: 'adjust',
+      label: 'Adjust Balance',
+      icon: <BanknotesIcon className="h-6 w-6 text-amber-400" />,
+      onClick: () => {
+        if (accountForAction) {
+          handleOpenAdjustmentModal(accountForAction);
+          handleCloseActionMenu();
+        }
+      },
     },
     {
       id: 'delete',
@@ -447,12 +472,76 @@ export default function AccountsMobile({
           {/* Close Button */}
           <button
             onClick={handleCloseDetails}
-            className="w-full py-3.5 px-4 bg-[#30BDF2] text-white rounded-full shadow-md active:bg-[#28a8d8] transition-colors font-medium"
+            className="w-full py-3.5 px-4 bg-[#30BDF2] text-white rounded-lg shadow-md active:bg-[#28a8d8] transition-colors font-medium"
           >
             Close
           </button>
         </BottomSheetModal>
       )}
+
+      {/* Balance Adjustment Modal */}
+      <FormModal
+        isOpen={isAdjustmentModalOpen}
+        onClose={handleCloseAdjustmentModal}
+        title="Adjust Balance"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!accountToAdjust) return;
+          
+          const newBalance = parseFloat(adjustmentAmount);
+          handleAdjustBalance(accountToAdjust.account_id.toString(), newBalance)
+            .then(() => handleCloseAdjustmentModal())
+            .catch(error => console.error('Failed to adjust balance:', error));
+        }}
+        submitText="Adjust Balance"
+        submitDisabled={!accountToAdjust || !adjustmentAmount || isNaN(parseFloat(adjustmentAmount)) || (accountToAdjust?.balance !== undefined && parseFloat(adjustmentAmount) === accountToAdjust.balance)}
+      >
+        {accountToAdjust && (
+          <>
+            <div className="card-dark rounded-xl p-4 bg-gray-800 mb-5">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-sm font-medium text-gray-300">Account</h3>
+                <p className="text-base font-bold text-white">{accountToAdjust.name}</p>
+              </div>
+              <div className="flex justify-between items-center">
+                <h3 className="text-sm font-medium text-gray-300">Current Balance</h3>
+                <p className="text-base font-bold text-white">{formatCurrency(accountToAdjust.balance || 0)}</p>
+              </div>
+            </div>
+            
+            <div className="mb-5">
+              <label className="block text-sm font-medium text-gray-300 mb-2">New Balance</label>
+              <input
+                type="text" 
+                value={formatLimitValue(adjustmentAmount)}
+                onChange={handleAdjustmentInputChange}
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
+                placeholder="Enter new balance"
+              />
+            </div>
+            
+            {adjustmentAmount && !isNaN(parseFloat(adjustmentAmount)) && accountToAdjust.balance !== undefined && (
+              <div className="card-dark rounded-xl p-4 bg-gray-800 mb-4">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-sm font-medium text-gray-300">Adjustment Type:</span>
+                  <span className={`text-base font-medium ${parseFloat(adjustmentAmount) > accountToAdjust.balance ? 'text-green-400' : parseFloat(adjustmentAmount) < accountToAdjust.balance ? 'text-red-400' : 'text-gray-400'}`}>
+                    {parseFloat(adjustmentAmount) > accountToAdjust.balance ? 'Income' : 
+                     parseFloat(adjustmentAmount) < accountToAdjust.balance ? 'Expense' : 'No Change'}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-300">Adjustment Amount:</span>
+                  <span className={`text-base font-bold ${parseFloat(adjustmentAmount) > accountToAdjust.balance ? 'text-green-400' : parseFloat(adjustmentAmount) < accountToAdjust.balance ? 'text-red-400' : 'text-gray-400'}`}>
+                    {parseFloat(adjustmentAmount) !== accountToAdjust.balance 
+                      ? formatCurrency(Math.abs(parseFloat(adjustmentAmount) - accountToAdjust.balance))
+                      : '-'}
+                  </span>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </FormModal>
 
       {/* Balance Detail Modal */}
       <BottomSheetModal
@@ -511,7 +600,7 @@ export default function AccountsMobile({
           {/* Close Button */}
           <button
             onClick={handleCloseBalanceModal}
-            className="w-full py-3 px-4 bg-[#30BDF2] text-white rounded-full shadow-md active:bg-[#28a8d8] transition-colors font-medium mt-4"
+            className="w-full py-3 px-4 bg-[#30BDF2] text-white rounded-lg shadow-md active:bg-[#28a8d8] transition-colors font-medium mt-4"
           >
             Close
           </button>

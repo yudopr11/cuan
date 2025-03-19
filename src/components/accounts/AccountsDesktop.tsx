@@ -1,6 +1,7 @@
+import React, { useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Account, AccountCreate, AccountBalance } from '../../services/api';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 // Custom Select Input component with consistent styling
 interface SelectInputProps {
@@ -56,6 +57,13 @@ interface AccountsDesktopProps {
   handleDeleteAccount: () => void;
   formatLimitValue: (value: string) => string;
   formatCurrency: (value: number) => string;
+  handleAdjustBalance: (accountId: string, newBalance: number) => Promise<void>;
+  handleCloseAdjustmentModal: () => void;
+  adjustmentAmount: string;
+  accountToAdjust: Account | null;
+  handleOpenAdjustmentModal: (account: Account) => void;
+  isAdjustmentModalOpen: boolean;
+  handleAdjustmentInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function AccountsDesktop({
@@ -82,8 +90,62 @@ export default function AccountsDesktop({
   handleSubmit,
   handleDeleteAccount,
   formatLimitValue,
-  formatCurrency
+  formatCurrency,
+  handleAdjustBalance,
+  handleCloseAdjustmentModal,
+  adjustmentAmount,
+  accountToAdjust,
+  handleOpenAdjustmentModal,
+  isAdjustmentModalOpen,
+  handleAdjustmentInputChange
 }: AccountsDesktopProps) {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [isTableLoading, setIsTableLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(accounts.length / itemsPerPage);
+
+  const paginatedAccounts = accounts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (page: number) => {
+    setIsTableLoading(true);
+    setTimeout(() => {
+      setCurrentPage(page);
+      setIsTableLoading(false);
+    }, 100);
+  };
+  
+  // Loading indicator component
+  const TableLoadingIndicator = () => (
+    <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-10 rounded-lg backdrop-blur-sm">
+      <div className="px-6 py-4 bg-gray-800/90 rounded-xl shadow-xl">
+        <div className="flex items-center space-x-3">
+          <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-[#30BDF2]"></div>
+          <p className="text-sm text-gray-200">Updating...</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  const handleSubmitAdjustment = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!accountToAdjust || !handleAdjustBalance) return;
+    
+    setIsSubmitting(true);
+    try {
+      const newBalance = parseFloat(adjustmentAmount);
+      await handleAdjustBalance(accountToAdjust.account_id.toString(), newBalance);
+      handleCloseAdjustmentModal();
+    } catch (error) {
+      console.error('Failed to adjust balance:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <>
       <div className="space-y-6">
@@ -140,7 +202,8 @@ export default function AccountsDesktop({
 
         {/* Accounts Table */}
         <div className="bg-gray-900 shadow-md rounded-lg overflow-hidden mb-6 border border-gray-800 relative">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto relative">
+            {isTableLoading && <TableLoadingIndicator />}
             <table className="table-dark min-w-full">
               <thead>
                 <tr>
@@ -167,8 +230,8 @@ export default function AccountsDesktop({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700">
-                {accounts.length > 0 ? ( 
-                  accounts.map(account => (
+                {paginatedAccounts.length > 0 ? ( 
+                  paginatedAccounts.map(account => (
                   <tr key={account.account_id} className="hover:bg-gray-800">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-gray-200">{account.name}</div>
@@ -209,6 +272,12 @@ export default function AccountsDesktop({
                         Edit
                       </button>
                       <button 
+                        onClick={() => handleOpenAdjustmentModal(account)}
+                        className="text-amber-400 hover:text-amber-300 inline-block mx-2 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
+                      >
+                        Adjust
+                      </button>
+                      <button 
                         onClick={() => handleOpenDeleteModal(account)}
                         className="text-red-500 hover:text-red-400 inline-block focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                       >
@@ -225,6 +294,60 @@ export default function AccountsDesktop({
               </tbody>
             </table>
           </div>
+          
+          {/* Pagination Controls */}
+          {accounts.length > itemsPerPage && (
+            <div className="flex items-center justify-between px-4 py-3 bg-gray-800 border-t border-gray-700">
+              <div className="flex items-center">
+                <p className="text-sm text-gray-400">
+                  Showing <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> to{' '}
+                  <span className="font-medium">
+                    {Math.min(currentPage * itemsPerPage, accounts.length)}
+                  </span> of{' '}
+                  <span className="font-medium">{accounts.length}</span> results
+                </p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`px-3 py-1 rounded-md text-sm font-medium ${
+                    currentPage === 1
+                      ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                      : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                  }`}
+                >
+                  <ChevronLeftIcon className="h-5 w-5" />
+                </button>
+                <div className="flex space-x-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => handlePageChange(page)}
+                      className={`px-3 py-1 rounded-md text-sm font-medium ${
+                        currentPage === page
+                          ? 'bg-[#30BDF2] text-white'
+                          : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`px-3 py-1 rounded-md text-sm font-medium ${
+                    currentPage === totalPages
+                      ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                      : 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                  }`}
+                >
+                  <ChevronRightIcon className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       
@@ -430,6 +553,74 @@ export default function AccountsDesktop({
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Balance Adjustment Modal */}
+      {isAdjustmentModalOpen && accountToAdjust && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="modal-dark w-full max-w-md p-6">
+            <h2 className="text-xl font-bold mb-4 text-gray-200">Adjust Balance</h2>
+            
+            <form onSubmit={handleSubmitAdjustment} className="space-y-4">
+              <div className="mb-4">
+                <div className="flex justify-between mb-2">
+                  <label className="block text-gray-300">Account</label>
+                  <span className="text-gray-400">{accountToAdjust.name}</span>
+                </div>
+                <div className="flex justify-between mb-4">
+                  <label className="block text-gray-300">Current Balance</label>
+                  <span className="text-gray-200 font-medium">{formatCurrency(accountToAdjust.balance || 0)}</span>
+                </div>
+                <label className="block text-gray-300 mb-2">New Balance</label>
+                <input
+                  type="text"
+                  value={formatLimitValue(adjustmentAmount)}
+                  onChange={handleAdjustmentInputChange}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2]"
+                  placeholder="Enter new balance"
+                />
+                
+                {adjustmentAmount && !isNaN(parseFloat(adjustmentAmount)) && accountToAdjust.balance !== undefined && (
+                  <div className="mt-4 p-3 bg-gray-800 rounded-md">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-300">Adjustment Type:</span>
+                      <span className={`font-medium ${parseFloat(adjustmentAmount) > accountToAdjust.balance ? 'text-green-400' : parseFloat(adjustmentAmount) < accountToAdjust.balance ? 'text-red-400' : 'text-gray-400'}`}>
+                        {parseFloat(adjustmentAmount) > accountToAdjust.balance ? 'Income' : 
+                         parseFloat(adjustmentAmount) < accountToAdjust.balance ? 'Expense' : 'No Change'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-gray-300">Adjustment Amount:</span>
+                      <span className={`font-bold ${parseFloat(adjustmentAmount) > accountToAdjust.balance ? 'text-green-400' : parseFloat(adjustmentAmount) < accountToAdjust.balance ? 'text-red-400' : 'text-gray-400'}`}>
+                        {parseFloat(adjustmentAmount) !== accountToAdjust.balance 
+                          ? formatCurrency(Math.abs(parseFloat(adjustmentAmount) - accountToAdjust.balance))
+                          : '-'}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex justify-end space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={handleCloseAdjustmentModal}
+                  className="px-4 py-2 border border-gray-700 rounded-md text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900"
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-[#30BDF2] text-white rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
+                  disabled={!adjustmentAmount || isNaN(parseFloat(adjustmentAmount)) || isSubmitting || (accountToAdjust.balance !== undefined && parseFloat(adjustmentAmount) === accountToAdjust.balance)}
+                >
+                  {isSubmitting ? 'Processing...' : 'Adjust Balance'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
