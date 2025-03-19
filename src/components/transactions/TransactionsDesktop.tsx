@@ -73,7 +73,7 @@ const SelectInput: React.FC<SelectInputProps> = ({ id, name, value, onChange, cl
         name={name}
         value={value}
         onChange={onChange}
-        className={`w-full h-10 px-4 py-2 pr-8 border border-gray-700 rounded-md shadow-sm bg-gray-800 text-white focus:border-[#30BDF2] focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 appearance-none ${className}`}
+        className={`w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#30BDF2] appearance-none ${className}`}
       >
         {children}
       </select>

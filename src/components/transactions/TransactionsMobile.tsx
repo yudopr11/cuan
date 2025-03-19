@@ -453,7 +453,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                 name="amount"
                 value={formatAmount(formData.amount.toString())}
                 onChange={handleInputChange}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-200 focus:border-[#30BDF2]"
+                className="w-full py-2 px-3 bg-gray-800 text-white rounded-md shadow-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#30BDF2]"
                 placeholder="Enter amount"
               />
             </div>
@@ -467,7 +467,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                 name="transaction_date"
                 value={formData.transaction_date}
                 onChange={handleInputChange}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-200 focus:border-[#30BDF2]"
+                className="w-full py-2 px-3 bg-gray-800 text-white rounded-md shadow-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#30BDF2]"
               />
             </div>
             
@@ -480,7 +480,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-200 focus:border-[#30BDF2]"
+                className="w-full py-2 px-3 bg-gray-800 text-white rounded-md shadow-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#30BDF2]"
                 placeholder="Enter description"
               />
             </div>
