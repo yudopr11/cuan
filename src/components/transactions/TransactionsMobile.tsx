@@ -287,7 +287,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
         
         {/* Section Title */}
         <div className="px-3 pt-2">
-          <p className="text-sm font-medium text-gray-400">MY TRANSACTIONS</p>
+          <p className="text-sm font-medium text-gray-400 uppercase">My Transactions</p>
         </div>
         
         {/* Transactions List with Native-like Card Styling */}

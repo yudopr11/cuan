@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { ReactNode } from 'react';
 
 interface ActionItem {
@@ -24,6 +24,18 @@ const ActionSheetModal: React.FC<ActionSheetModalProps> = ({
   subtitle,
   actions,
 }) => {
+  useEffect(() => {
+    if (isOpen) {
+      // Prevent scrolling on body when modal is open
+      document.body.style.overflow = 'hidden';
+    }
+    
+    return () => {
+      // Re-enable scrolling when component unmounts or modal closes
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -57,10 +69,10 @@ const ActionSheetModal: React.FC<ActionSheetModalProps> = ({
         ))}
 
         {/* Cancel button */}
-        <div className="border-t border-gray-800 pt-2 pb-6">
+        <div className="border-t border-gray-800 p-6">
           <button
             onClick={onClose}
-            className="w-full py-4 px-5 text-center text-gray-200 font-medium active:bg-gray-800"
+            className="w-full py-3 border border-gray-700 rounded-lg text-gray-300 font-medium active:bg-gray-800 transition-colors"
           >
             Cancel
           </button>

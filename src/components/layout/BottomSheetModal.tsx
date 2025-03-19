@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { ReactNode } from 'react';
 
 interface BottomSheetModalProps {
@@ -16,6 +16,18 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
   children,
   closeOnBackdropClick = true,
 }) => {
+  useEffect(() => {
+    if (isOpen) {
+      // Prevent scrolling on body when modal is open
+      document.body.style.overflow = 'hidden';
+    }
+    
+    return () => {
+      // Re-enable scrolling when component unmounts or modal closes
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleBackdropClick = () => {

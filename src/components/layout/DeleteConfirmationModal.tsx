@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TrashIcon } from '@heroicons/react/24/outline';
 
 interface DeleteConfirmationModalProps {
@@ -18,6 +18,18 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   itemName = 'this item',
   itemType = 'item',
 }) => {
+  useEffect(() => {
+    if (isOpen) {
+      // Prevent scrolling on body when modal is open
+      document.body.style.overflow = 'hidden';
+    }
+    
+    return () => {
+      // Re-enable scrolling when component unmounts or modal closes
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (

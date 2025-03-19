@@ -191,7 +191,7 @@ export default function AccountsMobile({
       
       {/* Section Title */}
       <div className="px-3 pt-2">
-          <p className="text-sm font-medium text-gray-400">MY ACCOUNTS</p>
+          <p className="text-sm font-medium text-gray-400 uppercase">My Accounts</p>
       </div>
 
       {/* Account List */}
@@ -469,7 +469,7 @@ export default function AccountsMobile({
           </div>
           
           {/* Account Type Balance Breakdown */}
-          <p className="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">BREAKDOWN</p>
+          <p className="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">Balance Breakdown</p>
 
           {/* Individual Account Type Balances */}
           <div className="space-y-3">
