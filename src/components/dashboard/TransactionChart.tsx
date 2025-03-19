@@ -208,8 +208,8 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
         borderColor: 'rgb(34, 197, 94)',
         borderWidth: 1,
         borderRadius: 4,
-        barPercentage: 0.7,
-        categoryPercentage: 0.8,
+        barPercentage: 0.9,
+        categoryPercentage: 0.95,
         hidden: !datasetVisibility.income,
       },
       {
@@ -219,8 +219,8 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
         borderColor: 'rgb(239, 68, 68)',
         borderWidth: 1,
         borderRadius: 4,
-        barPercentage: 0.7,
-        categoryPercentage: 0.8,
+        barPercentage: 0.9,
+        categoryPercentage: 0.95,
         hidden: !datasetVisibility.expense,
       }
     ],
