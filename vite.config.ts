@@ -65,10 +65,6 @@ export default defineConfig(({ mode }) => {
           // Set navigateFallback to match the precached URL exactly.
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api/, /^\/_/],
-          // Explicitly precache index.html
-          additionalManifestEntries: [
-            { url: '/index.html', revision: Date.now().toString() }
-          ],
           // Force update on each new build
           skipWaiting: true,
           clientsClaim: true,
