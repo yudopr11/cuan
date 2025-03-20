@@ -260,15 +260,17 @@ export default function AccountsMobile({
             )}
           </div>
         ))): (
-          <div className="card-dark flex flex-col items-center justify-center p-8 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
-            <DocumentPlusIcon className="h-16 w-16 text-gray-600 mb-4" />
-            <p className="text-center text-gray-400 text-base">No accounts found</p>
-            <button 
-              onClick={() => handleOpenModal()} 
-              className="mt-4 px-4 py-2 bg-[#30BDF2] text-white rounded-lg text-sm font-medium"
-            >
-              Add Account
-            </button>
+          <div className="card-dark flex flex-col items-center justify-center rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
+            <div className="flex flex-col items-center justify-center py-10">
+              <DocumentPlusIcon className="h-16 w-16 text-gray-600 mb-4" />
+              <p className="text-center text-gray-400 text-base">No accounts found</p>
+              <button 
+                onClick={() => handleOpenModal()} 
+                className="mt-4 px-4 py-2 bg-[#30BDF2] text-white rounded-lg text-sm font-medium"
+              >
+                Add Account
+              </button>
+            </div>
           </div>)}
       </div>
       
@@ -548,63 +550,66 @@ export default function AccountsMobile({
         isOpen={isBalanceModalOpen}
         onClose={handleCloseBalanceModal}
       >
-        <div className="space-y-5">
-          <h2 className="text-xl font-bold text-white text-center">Balance Details</h2>
-          
-          {/* Total Balance */}
-          <div className="card-dark rounded-xl p-5 bg-gradient-to-b from-gray-800 to-gray-900">
-            <h3 className="text-sm font-medium text-gray-300 mb-1">Total Balance</h3>
-            <p className="text-3xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
-          </div>
-          
-          {/* Account Type Balance Breakdown */}
-          <p className="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">Balance Breakdown</p>
-
-          {/* Individual Account Type Balances */}
-          <div className="space-y-3">
-            {/* Bank Account Balance */}
-            <div className="card-dark rounded-xl p-4 bg-gray-800">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <BuildingLibraryIcon className="h-5 w-5 text-blue-300 mr-2" />
-                  <span className="text-sm font-medium text-gray-300">Bank Accounts</span>
-                </div>
-                <span className="text-base font-bold text-white">{formatCurrency(totalBankAccount)}</span>
-              </div>
-            </div>
-            
-            {/* Other Balance */}
-            <div className="card-dark rounded-xl p-4 bg-gray-800">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <BanknotesIcon className="h-5 w-5 text-blue-300 mr-2" />
-                  <span className="text-sm font-medium text-gray-300">Other Accounts</span>
-                </div>
-                <span className="text-base font-bold text-white">{formatCurrency(totalOther)}</span>
-              </div>
-            </div>
-            
-            {/* Credit Card Balance */}
-            <div className="card-dark rounded-xl p-4 bg-gray-800">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <CreditCardIcon className="h-5 w-5 text-blue-300 mr-2" />
-                  <span className="text-sm font-medium text-gray-300">Credit Cards</span>
-                </div>
-                <span className="text-base font-bold text-white">{formatCurrency(totalCreditCard)}</span>
-              </div>
-            </div>
-            
-          </div>
-          
-          {/* Close Button */}
-          <button
-            onClick={handleCloseBalanceModal}
-            className="w-full py-3.5 px-4 bg-[#30BDF2] text-white rounded-lg shadow-md active:bg-[#28a8d8] transition-colors font-medium mt-4"
-          >
-            Close
-          </button>
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-bold text-white">Balance Details</h2>
         </div>
+
+        {/* Total Balance */}
+        <div className="card-dark rounded-xl p-5 bg-gradient-to-b from-gray-800 to-gray-900">
+          <h3 className="text-sm font-medium text-gray-300 mb-1">Total Balance</h3>
+          <p className="text-3xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
+        </div>
+
+        <div className="mb-6"></div>
+
+        {/* Account Type Balance Breakdown */}
+        <p className="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">Balance Breakdown</p>
+
+        {/* Individual Account Type Balances */}
+        <div className="space-y-3">
+          {/* Bank Account Balance */}
+          <div className="card-dark rounded-xl p-4 bg-gray-800">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center">
+                <BuildingLibraryIcon className="h-5 w-5 text-blue-300 mr-2" />
+                <span className="text-sm font-medium text-gray-300">Bank Accounts</span>
+              </div>
+              <span className="text-base font-bold text-white">{formatCurrency(totalBankAccount)}</span>
+            </div>
+          </div>
+          
+          {/* Other Balance */}
+          <div className="card-dark rounded-xl p-4 bg-gray-800">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center">
+                <BanknotesIcon className="h-5 w-5 text-blue-300 mr-2" />
+                <span className="text-sm font-medium text-gray-300">Other Accounts</span>
+              </div>
+              <span className="text-base font-bold text-white">{formatCurrency(totalOther)}</span>
+            </div>
+          </div>
+          
+          {/* Credit Card Balance */}
+          <div className="card-dark rounded-xl p-4 bg-gray-800">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center">
+                <CreditCardIcon className="h-5 w-5 text-blue-300 mr-2" />
+                <span className="text-sm font-medium text-gray-300">Credit Cards</span>
+              </div>
+              <span className="text-base font-bold text-white">{formatCurrency(totalCreditCard)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-8"></div>
+
+        {/* Close Button */}
+        <button
+          onClick={handleCloseBalanceModal}
+          className="w-full py-3.5 px-4 bg-[#30BDF2] text-white rounded-lg shadow-md active:bg-[#28a8d8] transition-colors font-medium"
+        >
+          Close
+        </button>
       </BottomSheetModal>
     </div>
   );
