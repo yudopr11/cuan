@@ -62,8 +62,8 @@ export default defineConfig(({ mode }) => {
         },
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg}', 'icons/*.png'],
-          // Set navigateFallback to match the precached URL exactly.
-          navigateFallback: '/',
+          // Change navigateFallback to '/index.html' so that it matches the precached file
+          navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api/, /^\/_/],
           // Force update on each new build
           skipWaiting: true,
