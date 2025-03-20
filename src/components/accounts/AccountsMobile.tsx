@@ -600,7 +600,7 @@ export default function AccountsMobile({
           {/* Close Button */}
           <button
             onClick={handleCloseBalanceModal}
-            className="w-full py-3 px-4 bg-[#30BDF2] text-white rounded-lg shadow-md active:bg-[#28a8d8] transition-colors font-medium mt-4"
+            className="w-full py-3.5 px-4 bg-[#30BDF2] text-white rounded-lg shadow-md active:bg-[#28a8d8] transition-colors font-medium mt-4"
           >
             Close
           </button>
