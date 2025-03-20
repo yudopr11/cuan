@@ -20,7 +20,8 @@ export default defineConfig(({ mode }) => {
       react(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['**/*', 'index.html'],
+        // remove redundant includeAssets entry if necessary
+        includeAssets: ['**/*'],
         includeManifestIcons: true,
         injectRegister: 'auto',
         strategies: 'generateSW',
@@ -61,11 +62,15 @@ export default defineConfig(({ mode }) => {
           "description": "Money Manager by yudopr"
         },
         workbox: {
+          // Ensure all asset types are included
           globPatterns: ['**/*.{js,css,html,ico,png,svg}', 'icons/*.png'],
-          // Change navigateFallback to '/index.html' so that it matches the precached file
+          // Set the navigation fallback to /index.html...
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api/, /^\/_/],
-          // Force update on each new build
+          // Explicitly precache index.html
+          additionalManifestEntries: [
+            { url: '/index.html', revision: '1' }
+          ],
           skipWaiting: true,
           clientsClaim: true,
           runtimeCaching: [
