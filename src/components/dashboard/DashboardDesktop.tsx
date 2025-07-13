@@ -239,7 +239,7 @@ export default function DashboardDesktop({
           {recentTransactions.length > 0 ? (
             <div className="divide-y divide-gray-700">
               {recentTransactions.map((transaction) => (
-                <div key={transaction.transaction_id} className="py-3 flex items-center justify-between">
+                <div key={transaction.id} className="py-3 flex items-center justify-between">
                   <div className="flex items-center">
                     <div className={`w-8 sm:w-9 lg:w-10 h-8 sm:h-9 lg:h-10 rounded-full flex items-center justify-center ${
                       transaction.transaction_type === 'income' ? 'bg-green-950 text-green-400' :
@@ -296,7 +296,7 @@ export default function DashboardDesktop({
               <div className="space-y-3">
                 {accountSummary && accountSummary.accounts.length > 0 ? (
                   accountSummary.accounts.slice(0, 4).map((account) => (
-                    <div key={account.account_id} className="flex justify-between items-center p-2 border-b border-gray-700">
+                    <div key={account.id} className="flex justify-between items-center p-2 border-b border-gray-700">
                       <div>
                         <p className="text-sm lg:text-base xl:text-lg font-medium text-white">{account.name}</p>
                         <p className="text-xs lg:text-sm text-gray-200 capitalize">{account.type.replace('_', ' ')}</p>

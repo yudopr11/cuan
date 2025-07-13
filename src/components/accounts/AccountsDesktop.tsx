@@ -137,7 +137,7 @@ export default function AccountsDesktop({
     setIsSubmitting(true);
     try {
       const newBalance = parseFloat(adjustmentAmount);
-      await handleAdjustBalance(accountToAdjust.account_id.toString(), newBalance);
+      await handleAdjustBalance(accountToAdjust.id, newBalance);
       handleCloseAdjustmentModal();
     } catch (error) {
       console.error('Failed to adjust balance:', error);
@@ -232,7 +232,7 @@ export default function AccountsDesktop({
               <tbody className="divide-y divide-gray-700">
                 {paginatedAccounts.length > 0 ? ( 
                   paginatedAccounts.map(account => (
-                  <tr key={account.account_id} className="hover:bg-gray-800">
+                  <tr key={account.id} className="hover:bg-gray-800">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-gray-200">{account.name}</div>
                     </td>

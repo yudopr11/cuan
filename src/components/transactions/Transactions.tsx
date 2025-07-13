@@ -71,7 +71,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
     description: '',
     transaction_date: new Date().toISOString().split('T')[0],
     transaction_type: 'expense',
-    account_id: 0,
+    account_id: '',
     category_id: undefined,
     destination_account_id: undefined,
     transfer_fee: 0
@@ -229,7 +229,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
         description: '',
         transaction_date: todayStr,
         transaction_type: 'expense',
-        account_id: accounts.length > 0 ? accounts[0].account_id : 0,
+        account_id: accounts.length > 0 ? accounts[0].id : '',
         category_id: undefined,
         destination_account_id: undefined,
         transfer_fee: 0
@@ -311,7 +311,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
       
       if (selectedTransaction) {
         // Update existing transaction
-        await updateTransaction(selectedTransaction.transaction_id, {
+        await updateTransaction(selectedTransaction.id, {
           ...submissionData,
           transaction_date: selectedTransaction.created_at
         });
@@ -360,7 +360,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
     if (!transactionToDelete) return;
     
     try {
-      await deleteTransaction(transactionToDelete.transaction_id);
+      await deleteTransaction(transactionToDelete.id);
       toast.success('Transaction deleted successfully');
       fetchTransactions();
       handleCloseDeleteModal();
@@ -416,6 +416,10 @@ export default function Transactions({ isMobile }: TransactionsProps) {
     if (skip > 0) {
       setSkip(Math.max(0, skip - limit));
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setSkip((page - 1) * limit);
   };
 
   const hasFilterChanges = () => {
@@ -526,6 +530,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
       handlePrevPage={handlePrevPage}
       formatAmount={formatAmount}
       getUniqueCategories={getUniqueCategories}
+      handlePageChange={handlePageChange}
     />
   );
 } 

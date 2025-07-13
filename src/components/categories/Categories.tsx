@@ -97,7 +97,7 @@ export default function Categories({ isMobile }: CategoriesProps) {
     try {
       if (selectedCategory) {
         // Update existing category
-        await updateCategory(selectedCategory.category_id, formData);
+        await updateCategory(selectedCategory.id, formData);
         toast.success('Category updated successfully');
       } else {
         // Create new category
@@ -128,7 +128,7 @@ export default function Categories({ isMobile }: CategoriesProps) {
     if (!categoryToDelete) return;
     
     try {
-      await deleteCategory(categoryToDelete.category_id);
+      await deleteCategory(categoryToDelete.id);
       toast.success('Category deleted successfully');
       fetchCategories();
       handleCloseDeleteModal();

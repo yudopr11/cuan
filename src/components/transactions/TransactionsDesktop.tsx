@@ -53,6 +53,7 @@ interface TransactionsDesktopProps {
   handlePrevPage: () => void;
   formatAmount: (value: string) => string;
   getUniqueCategories: (categories: Category[], transactionType?: string | null) => Category[];
+  handlePageChange: (page: number) => void;
 }
 
 // Custom Select Input component with consistent styling
@@ -112,10 +113,9 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
   handleClearFilters,
   applyFilters,
   hasFilterChanges,
-  handleNextPage,
-  handlePrevPage,
   formatAmount,
-  getUniqueCategories
+  getUniqueCategories,
+  handlePageChange
 }) => {
   // Use the currency formatter hook
   const { formatCurrency } = useCurrencyFormatter();
@@ -133,15 +133,8 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
   }
 
   const handleTablePageChange = (page: number) => {
-    // Set table-specific loading state
     setIsTableLoading(true);
-    
-    const newSkip = (page - 1) * limit;
-    if (newSkip < skip) {
-      handlePrevPage();
-    } else if (newSkip > skip) {
-      handleNextPage();
-    }
+    handlePageChange(page);
   };
 
   // Table loading indicator component
@@ -287,7 +280,7 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
               >
                 <option value="">All Accounts</option>
                 {accounts.map(account => (
-                  <option key={account.account_id} value={account.name}>
+                  <option key={account.id} value={account.name}>
                     {account.name}
                   </option>
                 ))}
@@ -305,7 +298,7 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
               >
                 <option value="">All Categories</option>
                 {getUniqueCategories(categories, filters.transaction_type || null).map(category => (
-                  <option key={category.category_id} value={category.name}>
+                  <option key={category.id} value={category.name}>
                     {category.name}
                   </option>
                 ))}
@@ -350,7 +343,7 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
               <tbody className="bg-gray-900 divide-y divide-gray-800">
                 {transactions.length > 0 ? (
                   transactions.map(transaction => (
-                    <tr key={transaction.transaction_id} className="hover:bg-gray-800">
+                    <tr key={transaction.id} className="hover:bg-gray-800">
                       <td className="px-6 py-4 whitespace-nowrap text-gray-300">
                         {new Date(transaction.transaction_date).toLocaleDateString()}
                       </td>
@@ -534,11 +527,11 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
                 </label>
                 <SelectInput
                   name="account_id"
-                  value={formData.account_id.toString()}
+                  value={formData.account_id}
                   onChange={handleInputChange}
                 >
                   {accounts.map(account => (
-                    <option key={account.account_id} value={account.account_id.toString()}>
+                    <option key={account.id} value={account.id}>
                       {account.name}
                     </option>
                   ))}
@@ -559,7 +552,7 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
                     {categories
                       .filter(cat => cat.type === formData.transaction_type)
                       .map(category => (
-                        <option key={category.category_id} value={category.category_id.toString()}>
+                        <option key={category.id} value={category.id}>
                           {category.name}
                         </option>
                       ))}
@@ -580,9 +573,9 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
                     >
                       <option value="">-- Select Destination Account --</option>
                       {accounts
-                        .filter(acc => acc.account_id !== formData.account_id)
+                        .filter(acc => acc.id !== formData.account_id)
                         .map(account => (
-                          <option key={account.account_id} value={account.account_id.toString()}>
+                          <option key={account.id} value={account.id}>
                             {account.name}
                           </option>
                         ))}

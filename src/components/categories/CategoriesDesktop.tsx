@@ -156,7 +156,7 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
                   </thead>
                   <tbody className="divide-y divide-gray-700">
                     {paginatedIncomeCategories.map(category => (
-                      <tr key={category.category_id} className="hover:bg-gray-800">
+                      <tr key={category.id} className="hover:bg-gray-800">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="font-medium text-green-400">{category.name}</div>
                         </td>
@@ -262,7 +262,7 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
                   </thead>
                   <tbody className="divide-y divide-gray-700">
                     {paginatedExpenseCategories.map(category => (
-                      <tr key={category.category_id} className="hover:bg-gray-800">
+                      <tr key={category.id} className="hover:bg-gray-800">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="font-medium text-red-400">{category.name}</div>
                         </td>

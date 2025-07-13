@@ -4,8 +4,7 @@ import axios, { AxiosError } from 'axios';
 // Types
 // Account Types
 export interface Account {
-  account_id: number;
-  uuid: string;
+  id: string;
   name: string;
   type: string;
   description?: string;
@@ -25,7 +24,7 @@ export interface AccountCreate {
 }
 
 export interface AccountBalance {
-  account_id: number;
+  id: number;
   balance: number;
   total_income: number;
   total_expenses: number;
@@ -37,8 +36,7 @@ export interface AccountBalance {
 
 // Category Types
 export interface Category {
-  category_id: number;
-  uuid: string;
+  id: string;
   name: string;
   type: string;
   user_id: number;
@@ -53,31 +51,30 @@ export interface CategoryCreate {
 
 // Transaction Types
 export interface Transaction {
-  transaction_id: number;
-  uuid: string;
+  id: string;
   amount: number;
   description: string;
   transaction_date: string;
   transaction_type: string;
   transfer_fee?: number;
-  account_id: number;
-  category_id?: number;
-  destination_account_id?: number;
-  user_id: number;
+  account_id: string;
+  category_id?: string;
+  destination_account_id?: string;
+  user_id: string;
   created_at: string;
   updated_at: string;
   account?: {
-    account_id: number;
+    id: string;
     name: string;
     type: string;
   };
   category?: {
-    category_id: number;
+    id: string;
     name: string;
     type: string;
   };
   destination_account?: {
-    account_id: number;
+    id: string;
     name: string;
     type: string;
   };
@@ -88,9 +85,9 @@ export interface TransactionCreate {
   description: string;
   transaction_date: string;
   transaction_type: string;
-  account_id: number;
-  category_id?: number;
-  destination_account_id?: number;
+  account_id: string;
+  category_id?: string;
+  destination_account_id?: string;
   transfer_fee?: number;
 }
 
@@ -128,7 +125,7 @@ export interface CategoryDistribution {
   total: number;
   categories: {
     name: string;
-    uuid: string;
+    id: string;
     total: number;
     percentage: number;
   }[];
@@ -160,8 +157,7 @@ export interface AccountSummary {
     other: number;
   };
   accounts: {
-    account_id: number;
-    uuid: string;
+    id: string;
     name: string;
     type: string;
     balance: number;
@@ -186,8 +182,7 @@ interface ApiErrorResponse {
 export interface DeleteResponse {
   message: string;
   deleted_item: {
-    id: number;
-    uuid: string;
+    id: string;
     [key: string]: any;
   };
 }
@@ -230,7 +225,7 @@ export const getAllAccounts = async (accountType?: string): Promise<Account[]> =
     const params: Record<string, any> = {};
     if (accountType) params.account_type = accountType;
     
-    const response = await axiosInstance.get('/personal-transactions/accounts', { params });
+    const response = await axiosInstance.get('/cuan/accounts', { params });
     return response.data;
   } catch (error) {
     throw handleApiError(error);
@@ -239,34 +234,34 @@ export const getAllAccounts = async (accountType?: string): Promise<Account[]> =
 
 export const createAccount = async (accountData: AccountCreate): Promise<{ data: Account, message: string }> => {
   try {
-    const response = await axiosInstance.post('/personal-transactions/accounts', accountData);
+    const response = await axiosInstance.post('/cuan/accounts', accountData);
     return response.data;
   } catch (error) {
     throw handleApiError(error);
   }
 };
 
-export const updateAccount = async (accountId: number, accountData: AccountCreate): Promise<{ data: Account, message: string }> => {
+export const updateAccount = async (accountId: string, accountData: AccountCreate): Promise<{ data: Account, message: string }> => {
   try {
-    const response = await axiosInstance.put(`/personal-transactions/accounts/${accountId}`, accountData);
+    const response = await axiosInstance.put(`/cuan/accounts/${accountId}`, accountData);
     return response.data;
   } catch (error) {
     throw handleApiError(error);
   }
 };
 
-export const deleteAccount = async (accountId: number): Promise<DeleteResponse> => {
+export const deleteAccount = async (accountId: string): Promise<DeleteResponse> => {
   try {
-    const response = await axiosInstance.delete(`/personal-transactions/accounts/${accountId}`);
+    const response = await axiosInstance.delete(`/cuan/accounts/${accountId}`);
     return response.data;
   } catch (error) {
     throw handleApiError(error);
   }
 };
 
-export const getAccountBalance = async (accountId: number): Promise<{ data: AccountBalance, message: string }> => {
+export const getAccountBalance = async (accountId: string): Promise<{ data: AccountBalance, message: string }> => {
   try {
-    const response = await axiosInstance.get(`/personal-transactions/accounts/${accountId}/balance`);
+    const response = await axiosInstance.get(`/cuan/accounts/${accountId}/balance`);
     return response.data;
   } catch (error) {
     throw handleApiError(error);
@@ -279,7 +274,7 @@ export const getAllCategories = async (categoryType?: string): Promise<Category[
     const params: Record<string, any> = {};
     if (categoryType) params.category_type = categoryType;
     
-    const response = await axiosInstance.get('/personal-transactions/categories', { params });
+    const response = await axiosInstance.get('/cuan/categories', { params });
     return response.data;
   } catch (error) {
     throw handleApiError(error);
@@ -288,25 +283,25 @@ export const getAllCategories = async (categoryType?: string): Promise<Category[
 
 export const createCategory = async (categoryData: CategoryCreate): Promise<{ data: Category, message: string }> => {
   try {
-    const response = await axiosInstance.post('/personal-transactions/categories', categoryData);
+    const response = await axiosInstance.post('/cuan/categories', categoryData);
     return response.data;
   } catch (error) {
     throw handleApiError(error);
   }
 };
 
-export const updateCategory = async (categoryId: number, categoryData: CategoryCreate): Promise<{ data: Category, message: string }> => {
+export const updateCategory = async (categoryId: string, categoryData: CategoryCreate): Promise<{ data: Category, message: string }> => {
   try {
-    const response = await axiosInstance.put(`/personal-transactions/categories/${categoryId}`, categoryData);
+    const response = await axiosInstance.put(`/cuan/categories/${categoryId}`, categoryData);
     return response.data;
   } catch (error) {
     throw handleApiError(error);
   }
 };
 
-export const deleteCategory = async (categoryId: number): Promise<DeleteResponse> => {
+export const deleteCategory = async (categoryId: string): Promise<DeleteResponse> => {
   try {
-    const response = await axiosInstance.delete(`/personal-transactions/categories/${categoryId}`);
+    const response = await axiosInstance.delete(`/cuan/categories/${categoryId}`);
     return response.data;
   } catch (error) {
     throw handleApiError(error);
@@ -327,7 +322,7 @@ export const getAllTransactions = async (
   } = {}
 ): Promise<TransactionListResponse> => {
   try {
-    const response = await axiosInstance.get('/personal-transactions/transactions', { params });
+    const response = await axiosInstance.get('/cuan/transactions', { params });
     return response.data;
   } catch (error) {
     throw handleApiError(error);
@@ -336,25 +331,25 @@ export const getAllTransactions = async (
 
 export const createTransaction = async (transactionData: TransactionCreate): Promise<{ data: Transaction, message: string }> => {
   try {
-    const response = await axiosInstance.post('/personal-transactions/transactions', transactionData);
+    const response = await axiosInstance.post('/cuan/transactions', transactionData);
     return response.data;
   } catch (error) {
     throw handleApiError(error);
   }
 };
 
-export const updateTransaction = async (transactionId: number, transactionData: TransactionCreate): Promise<{ data: Transaction, message: string }> => {
+export const updateTransaction = async (transactionId: string, transactionData: TransactionCreate): Promise<{ data: Transaction, message: string }> => {
   try {
-    const response = await axiosInstance.put(`/personal-transactions/transactions/${transactionId}`, transactionData);
+    const response = await axiosInstance.put(`/cuan/transactions/${transactionId}`, transactionData);
     return response.data;
   } catch (error) {
     throw handleApiError(error);
   }
 };
 
-export const deleteTransaction = async (transactionId: number): Promise<DeleteResponse> => {
+export const deleteTransaction = async (transactionId: string): Promise<DeleteResponse> => {
   try {
-    const response = await axiosInstance.delete(`/personal-transactions/transactions/${transactionId}`);
+    const response = await axiosInstance.delete(`/cuan/transactions/${transactionId}`);
     return response.data;
   } catch (error) {
     throw handleApiError(error);
@@ -370,7 +365,7 @@ export const getFinancialSummary = async (
   } = {}
 ): Promise<FinancialSummary> => {
   try {
-    const response = await axiosInstance.get('/personal-transactions/statistics/summary', { params });
+    const response = await axiosInstance.get('/cuan/statistics/summary', { params });
     return response.data;
   } catch (error) {
     throw handleApiError(error);
@@ -386,7 +381,7 @@ export const getCategoryDistribution = async (
   } = {}
 ): Promise<CategoryDistribution> => {
   try {
-    const response = await axiosInstance.get('/personal-transactions/statistics/by-category', { params });
+    const response = await axiosInstance.get('/cuan/statistics/by-category', { params });
     return response.data;
   } catch (error) {
     throw handleApiError(error);
@@ -403,7 +398,7 @@ export const getTransactionTrends = async (
   } = {}
 ): Promise<TransactionTrends> => {
   try {
-    const response = await axiosInstance.get('/personal-transactions/statistics/trends', { params });
+    const response = await axiosInstance.get('/cuan/statistics/trends', { params });
     return response.data;
   } catch (error) {
     throw handleApiError(error);
@@ -423,7 +418,7 @@ export const getAccountSummary = async (
       // Include any default parameters here if needed
     };
     
-    const response = await axiosInstance.get('/personal-transactions/statistics/account-summary', { 
+    const response = await axiosInstance.get('/cuan/statistics/account-summary', { 
       params: requestParams
     });
     return response.data;
