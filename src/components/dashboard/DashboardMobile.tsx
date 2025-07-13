@@ -270,7 +270,7 @@ export default function DashboardMobile({
           <div className="divide-y divide-gray-700/50">
             {recentTransactions.map((transaction, index, arr) => (
               <div 
-                key={transaction.transaction_id} 
+                key={transaction.id} 
                 className={`py-3.5 px-4 flex items-center justify-between active:bg-gray-700/20 transition-colors ${index === arr.length - 1 ? 'border-b-0' : ''}`}
               >
                 <div className="flex items-center">
@@ -329,7 +329,7 @@ export default function DashboardMobile({
               {accountSummary && accountSummary.accounts.length > 0 ? (
                 accountSummary.accounts.slice(0, 3).map((account) => (
                   <div 
-                    key={account.account_id} 
+                    key={account.id} 
                     className="flex justify-between items-center p-4 active:bg-gray-700/20 transition-colors"
                   >
                     <div className="flex items-center">

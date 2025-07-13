@@ -140,7 +140,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
     try {
       if (selectedAccount) {
         // Update existing account
-        await updateAccount(selectedAccount.account_id, formData);
+        await updateAccount(selectedAccount.id, formData);
         toast.success('Account updated successfully');
       } else {
         // Create new account
@@ -171,7 +171,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
     if (!accountToDelete) return;
     
     try {
-      await deleteAccount(accountToDelete.account_id);
+      await deleteAccount(accountToDelete.id);
       toast.success('Account deleted successfully');
       fetchAccounts();
       handleCloseDeleteModal();
@@ -183,7 +183,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
 
   const handleViewDetails = async (account: Account) => {
     try {
-      const data = await getAccountBalance(account.account_id);
+      const data = await getAccountBalance(account.id);
       setAccountDetails(data.data);
       setIsViewingDetails(true);
     } catch (error) {
@@ -200,7 +200,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
   const handleAdjustBalance = async (accountId: string, newBalance: number) => {
     try {
       // Get current account details
-      const account = accounts.find(a => a.account_id === parseInt(accountId));
+      const account = accounts.find(a => a.id === accountId);
       if (!account) {
         toast.error('Account not found');
         return;
@@ -216,7 +216,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
           description: 'Balance Adjustment',
           transaction_date: new Date().toISOString(),
           transaction_type: difference > 0 ? 'income' : 'expense',
-          account_id: parseInt(accountId)
+          account_id: accountId
         };
 
         await createTransaction(transactionData);

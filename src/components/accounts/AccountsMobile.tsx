@@ -224,7 +224,7 @@ export default function AccountsMobile({
         {accounts.length > 0 ? (
           accounts.map(account => (
           <div 
-            key={account.account_id} 
+            key={account.id} 
             className="card-dark rounded-xl shadow-lg p-4 bg-gradient-to-b from-gray-800 to-gray-900 active:bg-gray-700/20 transition-colors"
             onClick={() => handleAccountClick(account)}
           >
@@ -491,7 +491,7 @@ export default function AccountsMobile({
           if (!accountToAdjust) return;
           
           const newBalance = parseFloat(adjustmentAmount);
-          handleAdjustBalance(accountToAdjust.account_id.toString(), newBalance)
+          handleAdjustBalance(accountToAdjust.id, newBalance)
             .then(() => handleCloseAdjustmentModal())
             .catch(error => console.error('Failed to adjust balance:', error));
         }}

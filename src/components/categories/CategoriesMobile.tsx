@@ -153,7 +153,7 @@ const CategoriesMobile: React.FC<CategoriesMobileProps> = ({
             expenseCategories.length > 0 ? (
               expenseCategories.map(category => (
                 <div 
-                  key={category.category_id} 
+                  key={category.id} 
                   className="p-4 flex justify-between items-center active:bg-gray-700/20 hover:bg-gray-750 transition-colors duration-150 cursor-pointer"
                   onClick={() => handleCategoryPress(category)}
                 >
@@ -182,7 +182,7 @@ const CategoriesMobile: React.FC<CategoriesMobileProps> = ({
             incomeCategories.length > 0 ? (
               incomeCategories.map(category => (
                 <div 
-                  key={category.category_id} 
+                  key={category.id} 
                   className="p-4 flex justify-between items-center active:bg-gray-700/20 hover:bg-gray-750 transition-colors duration-150 cursor-pointer"
                   onClick={() => handleCategoryPress(category)}
                 >

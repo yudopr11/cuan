@@ -309,7 +309,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
             <div className="space-y-3">
               {transactions.map((transaction) => (
                 <div
-                  key={transaction.transaction_id}
+                  key={transaction.id}
                   className="card-dark flex items-center p-3 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg active:bg-gray-750 transition-colors"
                   onClick={() => handleTransactionClick(transaction)}
                 >
@@ -493,12 +493,12 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
               </label>
               <SelectInput
                 name="account_id"
-                value={formData.account_id.toString()}
+                value={formData.account_id}
                 onChange={handleInputChange}
                 className="w-full py-2 px-3 bg-gray-800 text-white rounded-md shadow-sm border border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#30BDF2]"
               >
                 {accounts.map(account => (
-                  <option key={account.account_id} value={account.account_id.toString()}>
+                  <option key={account.id} value={account.id}>
                     {account.name}
                   </option>
                 ))}
@@ -520,7 +520,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                   {categories
                     .filter(cat => cat.type === formData.transaction_type)
                     .map(category => (
-                      <option key={category.category_id} value={category.category_id.toString()}>
+                      <option key={category.id} value={category.id}>
                         {category.name}
                       </option>
                     ))
@@ -543,9 +543,9 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                   >
                     <option value="">-- Select Destination Account --</option>
                     {accounts
-                      .filter(acc => acc.account_id !== formData.account_id)
+                      .filter(acc => acc.id !== formData.account_id)
                       .map(account => (
-                        <option key={account.account_id} value={account.account_id.toString()}>
+                        <option key={account.id} value={account.id}>
                           {account.name}
                         </option>
                       ))
@@ -670,7 +670,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
               >
                 <option value="">All Accounts</option>
                 {accounts.map(account => (
-                  <option key={account.account_id} value={account.name}>
+                  <option key={account.id} value={account.name}>
                     {account.name}
                   </option>
                 ))}
@@ -689,7 +689,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
               >
                 <option value="">All Categories</option>
                 {getUniqueCategories(categories, filters.transaction_type || null).map(category => (
-                  <option key={category.category_id} value={category.name}>
+                  <option key={category.id} value={category.name}>
                     {category.name}
                   </option>
                 ))}
