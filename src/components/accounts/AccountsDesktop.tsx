@@ -223,9 +223,9 @@ export default function AccountsDesktop({
               >
                 <BanknotesIcon className="h-4 w-4 text-[#30BDF2]" />
               </div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Balance</p>
+              <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">Total Balance</p>
             </div>
-            <p className="text-2xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
+            <p className="text-xl font-extrabold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
           </div>
 
           <div className="rounded-2xl p-5"
@@ -241,9 +241,9 @@ export default function AccountsDesktop({
               >
                 <CreditCardIcon className="h-4 w-4 text-red-400" />
               </div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">CC Payable</p>
+              <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">CC Payable</p>
             </div>
-            <p className="text-2xl font-bold text-red-400">{formatCurrency(totalCreditCardPayable)}</p>
+            <p className="text-xl font-extrabold text-red-400">{formatCurrency(totalCreditCardPayable)}</p>
           </div>
 
           <div className="rounded-2xl p-5"
@@ -259,9 +259,9 @@ export default function AccountsDesktop({
               >
                 <BuildingLibraryIcon className="h-4 w-4 text-[#30BDF2]" />
               </div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Bank</p>
+              <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">Bank</p>
             </div>
-            <p className="text-2xl font-bold text-white">{formatCurrency(totalBankAccount)}</p>
+            <p className="text-xl font-extrabold text-white">{formatCurrency(totalBankAccount)}</p>
           </div>
 
           <div className="rounded-2xl p-5"
@@ -277,9 +277,9 @@ export default function AccountsDesktop({
               >
                 <CreditCardIcon className="h-4 w-4 text-[#30BDF2]" />
               </div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Credit Card</p>
+              <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">Credit Card</p>
             </div>
-            <p className="text-2xl font-bold text-white">{formatCurrency(totalCreditCard)}</p>
+            <p className="text-xl font-extrabold text-white">{formatCurrency(totalCreditCard)}</p>
           </div>
 
           <div className="rounded-2xl p-5"
@@ -295,9 +295,9 @@ export default function AccountsDesktop({
               >
                 <BanknotesIcon className="h-4 w-4 text-amber-400" />
               </div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Other</p>
+              <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">Other</p>
             </div>
-            <p className="text-2xl font-bold text-white">{formatCurrency(totalOther)}</p>
+            <p className="text-xl font-extrabold text-white">{formatCurrency(totalOther)}</p>
           </div>
         </div>
 

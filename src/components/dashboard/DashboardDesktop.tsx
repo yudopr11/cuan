@@ -113,12 +113,12 @@ export default function DashboardDesktop({
             >
               <ArrowDownIcon className="h-4 w-4 text-emerald-400" />
             </div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Income</p>
+            <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Income</p>
           </div>
-          <p className="text-2xl font-bold text-emerald-400 leading-tight">
+          <p className="text-xl font-extrabold text-emerald-400 leading-tight">
             {financialSummary ? formatCurrency(financialSummary.totals.income) : '—'}
           </p>
-          <p className="text-xs text-emerald-700 mt-2">{periodLabel}</p>
+          <p className="text-xs text-emerald-500 mt-2">{periodLabel}</p>
         </div>
 
         {/* Expenses */}
@@ -130,12 +130,12 @@ export default function DashboardDesktop({
             >
               <ArrowUpIcon className="h-4 w-4 text-red-400" />
             </div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Expenses</p>
+            <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Expenses</p>
           </div>
-          <p className="text-2xl font-bold text-red-400 leading-tight">
+          <p className="text-xl font-extrabold text-red-400 leading-tight">
             {financialSummary ? formatCurrency(financialSummary.totals.expense) : '—'}
           </p>
-          <p className="text-xs text-red-900 mt-2">{periodLabel}</p>
+          <p className="text-xs text-red-400/60 mt-2">{periodLabel}</p>
         </div>
 
         {/* Transfers */}
@@ -147,12 +147,12 @@ export default function DashboardDesktop({
             >
               <ArrowsRightLeftIcon className="h-4 w-4 text-blue-400" />
             </div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Transfers</p>
+            <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Transfers</p>
           </div>
-          <p className="text-2xl font-bold text-blue-400 leading-tight">
+          <p className="text-xl font-extrabold text-blue-400 leading-tight">
             {financialSummary ? formatCurrency(financialSummary.totals.transfer) : '—'}
           </p>
-          <p className="text-xs text-blue-900 mt-2">{periodLabel}</p>
+          <p className="text-xs text-blue-400/60 mt-2">{periodLabel}</p>
         </div>
 
         {/* Net */}
@@ -170,12 +170,12 @@ export default function DashboardDesktop({
                     : <ArrowUpIcon className="h-4 w-4 text-red-400" />
                   }
                 </div>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Net</p>
+                <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Net</p>
               </div>
-              <p className={`text-2xl font-bold leading-tight ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+              <p className={`text-xl font-extrabold leading-tight ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                 {financialSummary ? formatCurrency(financialSummary.totals.net) : '—'}
               </p>
-              <p className={`text-xs mt-2 ${isPositive ? 'text-emerald-700' : 'text-red-900'}`}>{periodLabel}</p>
+              <p className={`text-xs mt-2 ${isPositive ? 'text-emerald-500' : 'text-red-400/60'}`}>{periodLabel}</p>
             </div>
           );
         })()}
@@ -187,7 +187,7 @@ export default function DashboardDesktop({
         <div className="relative card-dark col-span-7">
           <LoadingOverlay />
           <div className="flex justify-between items-center mb-5">
-            <h2 className="text-base font-semibold text-white">Transaction Trends</h2>
+            <h2 className="text-sm font-semibold text-white">Transaction Trends</h2>
           </div>
           <TransactionChart
             trends={trends || { period: { start_date: '', end_date: '', period_type: period, group_by: 'day' }, trends: [] }}
@@ -199,7 +199,7 @@ export default function DashboardDesktop({
         <div className="relative card-dark col-span-5">
           <LoadingOverlay />
           <div className="flex justify-between items-center mb-5">
-            <h2 className="text-base font-semibold text-white">By Category</h2>
+            <h2 className="text-sm font-semibold text-white">By Category</h2>
             <div className="flex rounded-xl overflow-hidden p-0.5 gap-0.5"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
             >
@@ -254,7 +254,7 @@ export default function DashboardDesktop({
         {/* Recent Transactions */}
         <div className="card-dark">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-base font-semibold text-white">Recent Transactions</h2>
+            <h2 className="text-sm font-semibold text-white">Recent Transactions</h2>
             <Link to="/transactions" className="text-xs text-[#30BDF2] hover:text-[#83e0ff] font-medium transition-colors">
               View All →
             </Link>
@@ -312,7 +312,7 @@ export default function DashboardDesktop({
         {/* Account Summary */}
         <div className="card-dark">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-base font-semibold text-white">Active Accounts</h2>
+            <h2 className="text-sm font-semibold text-white">Active Accounts</h2>
             <Link to="/accounts" className="text-xs text-[#30BDF2] hover:text-[#83e0ff] font-medium transition-colors">
               View All →
             </Link>
