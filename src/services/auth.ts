@@ -59,8 +59,9 @@ export const refreshToken = async (): Promise<LoginResponse> => {
       '/auth/refresh',
       {},
       {
-        withCredentials: true, // Important: needed to send cookies
-      }
+        withCredentials: true,
+        noAuth: true, // Prevent interceptor from trying to refresh again on failure
+      } as CustomAxiosRequestConfig
     );
     
     // Encrypt new token before storing

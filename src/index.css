@@ -14,12 +14,11 @@
   --primary-800: #036ba0;
   --primary-900: #075985;
   --primary-950: #082f49;
-  
-  /* Text colors */
-  --text-primary: #f8fafc;     /* for main text on dark */
-  --text-secondary: #cbd5e1;   /* for secondary text on dark */
-  --dark-bg-primary: #0f172a;  /* main dark background */
-  --dark-bg-secondary: #1e293b; /* secondary dark background */
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --dark-bg-primary: #0b1120;
+  --dark-bg-secondary: #1e293b;
 }
 
 body {
@@ -36,47 +35,42 @@ body {
 }
 
 .bg-grid-pattern {
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
   background-position: center center;
 }
 
 @layer base {
-  /* Light mode (default) */
   body {
     @apply bg-gray-50 text-gray-800;
   }
-  
-  /* Typography defaults */
+
   h1, h2, h3, h4, h5, h6 {
     @apply text-gray-900 font-bold;
   }
-  
+
   p {
     @apply text-gray-800;
   }
-  
+
   label {
     @apply text-gray-700 font-medium;
   }
-  
-  /* Form controls */
+
   input, select, textarea {
     @apply text-gray-800 placeholder-gray-500;
   }
-  
-  /* Links */
+
   a {
     @apply text-indigo-600 hover:text-indigo-800;
   }
-  
-  /* Table text */
+
   table th {
     @apply text-gray-700;
   }
-  
+
   table td {
     @apply text-gray-800;
   }
@@ -86,125 +80,246 @@ body {
   .btn-primary {
     @apply px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors;
   }
-  
+
   .input-field {
     @apply w-full px-4 py-2 bg-white text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-500;
   }
-  
+
   .card {
     @apply bg-white rounded-lg p-6 shadow-lg;
   }
-  
-  /* Common text styles */
+
   .text-title {
     @apply text-gray-900 font-bold;
   }
-  
+
   .text-body {
     @apply text-gray-800;
   }
-  
+
   .text-secondary {
     @apply text-gray-600;
   }
-  
+
   .text-muted {
     @apply text-gray-500;
   }
-  
-  /* Transaction type colors */
+
   .text-income {
-    @apply text-green-600;
+    @apply text-emerald-400;
   }
-  
+
   .text-expense {
-    @apply text-red-600;
+    @apply text-red-400;
   }
-  
+
   .text-transfer {
-    @apply text-blue-600;
+    @apply text-blue-400;
   }
 }
 
-/* Darkmode card and component styles */
+/* ========== CARD VARIANTS ========== */
+
 .card-dark {
-  @apply bg-[#111827] border border-gray-800 rounded-lg shadow-lg p-6 transition-all duration-200;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 1px rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #161e2e 0%, #111827 100%);
+  @apply border border-gray-800/60 rounded-xl shadow-lg p-6 transition-all duration-200;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 .card-dark:hover {
-  @apply bg-[#1a2032] border-[#38bdf8]/20;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 0 2px rgba(56, 189, 248, 0.3);
+  background: linear-gradient(135deg, #1a2540 0%, #151e2d 100%);
+  @apply border-sky-500/20;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(48, 189, 242, 0.15);
   transform: translateY(-1px);
 }
 
+/* Stat cards — colored tints */
+.stat-card-income {
+  background: linear-gradient(135deg, #0a2a1e 0%, #0d1f16 100%);
+  @apply border border-emerald-900/40 rounded-xl shadow-lg p-5 transition-all duration-200;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(16, 185, 129, 0.08);
+}
+
+.stat-card-expense {
+  background: linear-gradient(135deg, #2a0e0e 0%, #1f0d0d 100%);
+  @apply border border-red-900/40 rounded-xl shadow-lg p-5 transition-all duration-200;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(239, 68, 68, 0.08);
+}
+
+.stat-card-transfer {
+  background: linear-gradient(135deg, #0e1a2a 0%, #0d1520 100%);
+  @apply border border-blue-900/40 rounded-xl shadow-lg p-5 transition-all duration-200;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(59, 130, 246, 0.08);
+}
+
+.stat-card-net-positive {
+  background: linear-gradient(135deg, #0a2a1e 0%, #0d1f16 100%);
+  @apply border border-emerald-900/40 rounded-xl shadow-lg p-5 transition-all duration-200;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(16, 185, 129, 0.08);
+}
+
+.stat-card-net-negative {
+  background: linear-gradient(135deg, #2a0e0e 0%, #1f0d0d 100%);
+  @apply border border-red-900/40 rounded-xl shadow-lg p-5 transition-all duration-200;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(239, 68, 68, 0.08);
+}
+
+/* ========== TABLE ========== */
+
 .table-dark {
-  @apply bg-[#111827] rounded-lg overflow-hidden border border-gray-800;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 1px rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #0f1623 0%, #0d1520 100%);
+  @apply rounded-xl overflow-hidden border border-gray-800/60;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 .table-dark thead {
-  @apply bg-[#1e293b] text-gray-100;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(90deg, #1a2236 0%, #1e293b 100%);
+  @apply text-gray-100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .table-dark tbody tr {
-  @apply border-gray-700 text-gray-300 transition-colors duration-150;
+  @apply border-gray-800/50 text-gray-300 transition-colors duration-150;
 }
 
 .table-dark tbody tr:hover {
-  @apply bg-[#1a2032] text-white;
-  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.1);
+  background: linear-gradient(90deg, #1a2236 0%, #192035 100%);
+  @apply text-white;
+  box-shadow: inset 0 0 0 1px rgba(48, 189, 242, 0.08);
 }
 
 .table-dark th {
-  @apply px-6 py-3 text-left text-xs font-medium text-gray-100 uppercase tracking-wider;
+  @apply px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider;
 }
 
 .table-dark td {
   @apply px-6 py-4 whitespace-nowrap text-gray-200;
 }
 
+/* ========== INPUTS ========== */
+
 .input-dark {
-  @apply bg-[#1e293b] border-gray-700 text-gray-200 focus:border-[#30BDF2] focus:ring-[#30BDF2];
+  @apply bg-[#1e293b] border-gray-700/60 text-gray-200 focus:border-[#30BDF2] focus:ring-[#30BDF2]/30;
 }
+
+/* ========== MODALS ========== */
 
 .modal-dark {
-  @apply bg-[#111827] rounded-lg shadow-lg;
+  background: linear-gradient(135deg, #141c2c 0%, #111827 100%);
+  @apply rounded-2xl shadow-2xl border border-gray-700/40;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
-/* Form controls in dark mode */
+/* ========== FORMS ========== */
+
 .form-dark input,
 .form-dark select,
 .form-dark textarea {
-  @apply bg-[#1e293b] border-gray-700 text-gray-200 rounded-md focus:border-[#30BDF2] focus:ring-[#30BDF2];
+  @apply bg-[#1e293b] border-gray-700/60 text-gray-200 rounded-lg focus:border-[#30BDF2] focus:ring-[#30BDF2]/30;
 }
 
 .form-dark label {
   @apply text-gray-300;
 }
 
-/* Dark mode button variations */
+/* ========== BUTTONS ========== */
+
 .btn-primary-dark {
-  @apply bg-[#30BDF2] hover:bg-[#28a8d8] text-white;
+  background: linear-gradient(135deg, #30BDF2 0%, #2DAAE0 100%);
+  @apply text-white font-medium transition-all duration-200;
+  box-shadow: 0 4px 12px rgba(48, 189, 242, 0.25);
+}
+
+.btn-primary-dark:hover {
+  background: linear-gradient(135deg, #2DAAE0 0%, #0288c8 100%);
+  box-shadow: 0 6px 20px rgba(48, 189, 242, 0.4);
+  transform: translateY(-1px);
 }
 
 .btn-secondary-dark {
-  @apply bg-[#1e293b] hover:bg-[#2d3748] text-gray-200 border border-gray-700;
+  @apply bg-gray-800/80 hover:bg-gray-700/80 text-gray-200 border border-gray-700/60 transition-all duration-150;
 }
 
 .btn-danger-dark {
-  @apply bg-red-800 hover:bg-red-700 text-white;
+  @apply bg-red-800/80 hover:bg-red-700 text-white border border-red-700/40 transition-all duration-150;
 }
 
-/* Mobile-specific adjustments */
+/* ========== SIDEBAR NAV ========== */
+
+.nav-item-active {
+  background: linear-gradient(90deg, rgba(48, 189, 242, 0.15) 0%, rgba(48, 189, 242, 0.05) 100%);
+  @apply border-l-2 border-[#30BDF2] text-white font-medium;
+  box-shadow: inset 0 0 0 1px rgba(48, 189, 242, 0.1);
+}
+
+.nav-item-inactive {
+  @apply text-gray-400 border-l-2 border-transparent hover:text-gray-100;
+  transition: all 0.15s ease;
+}
+
+.nav-item-inactive:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ========== BOTTOM NAV MOBILE ========== */
+
+.bottom-nav-item-active {
+  @apply text-[#30BDF2];
+}
+
+.bottom-nav-item-inactive {
+  @apply text-gray-500;
+}
+
+/* ========== SCROLLBAR ========== */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0b1120;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2d3748;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4a5568;
+}
+
+/* ========== MOBILE ADJUSTMENTS ========== */
+
 @media (max-width: 768px) {
   .card-dark {
     @apply p-4 mb-0;
     margin-bottom: 0 !important;
   }
-  
+
   .divide-y > :last-child {
     border-bottom: none !important;
   }
-} 
+}
+
+/* ========== ANIMATIONS ========== */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.25s ease-out;
+}

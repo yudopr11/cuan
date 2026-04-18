@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Account, AccountCreate, AccountBalance } from '../../services/api';
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import {
+  ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon,
+  BuildingLibraryIcon, CreditCardIcon, BanknotesIcon,
+  EyeIcon, PencilSquareIcon, AdjustmentsHorizontalIcon, TrashIcon
+} from '@heroicons/react/24/outline';
 
 // Custom Select Input component with consistent styling
 interface SelectInputProps {
@@ -64,6 +68,9 @@ interface AccountsDesktopProps {
   handleOpenAdjustmentModal: (account: Account) => void;
   isAdjustmentModalOpen: boolean;
   handleAdjustmentInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  selectedYear: string;
+  yearOptions: number[];
+  handleYearChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export default function AccountsDesktop({
@@ -97,7 +104,10 @@ export default function AccountsDesktop({
   accountToAdjust,
   handleOpenAdjustmentModal,
   isAdjustmentModalOpen,
-  handleAdjustmentInputChange
+  handleAdjustmentInputChange,
+  selectedYear,
+  yearOptions,
+  handleYearChange
 }: AccountsDesktopProps) {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [isTableLoading, setIsTableLoading] = useState(false);
@@ -148,149 +158,279 @@ export default function AccountsDesktop({
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-5">
+        {/* Top bar: Add + Year filter */}
         <div className="flex justify-between items-center">
           <button
             onClick={() => handleOpenModal()}
-            className="bg-[#30BDF2] text-white px-4 py-2 rounded-md hover:bg-[#28a8d8] focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900"
+            className="text-white px-4 py-2 rounded-xl font-medium text-sm transition-all"
+            style={{
+              background: 'linear-gradient(135deg, #30BDF2 0%, #2DAAE0 100%)',
+              boxShadow: '0 4px 12px rgba(48,189,242,0.25)'
+            }}
           >
-            Add Account
+            + Add Account
           </button>
+
+          {/* Year Filter */}
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl"
+            style={{
+              background: 'linear-gradient(135deg, #161e2e 0%, #111827 100%)',
+              border: '1px solid rgba(255,255,255,0.07)',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.3)'
+            }}
+          >
+            <span className="text-xs font-medium text-gray-400">Year:</span>
+            {selectedYear && (
+              <>
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                  style={{ background: 'rgba(48,189,242,0.15)', color: '#30BDF2', border: '1px solid rgba(48,189,242,0.25)' }}
+                >
+                  {selectedYear}
+                </span>
+                <button
+                  onClick={() => handleYearChange({ target: { value: '' } } as React.ChangeEvent<HTMLSelectElement>)}
+                  className="text-xs text-gray-400 hover:text-gray-200 transition-colors px-1.5 py-1 rounded-lg"
+                  style={{ background: 'rgba(255,255,255,0.06)' }}
+                >
+                  Clear
+                </button>
+              </>
+            )}
+            <SelectInput id="yearFilter" name="yearFilter" value={selectedYear} onChange={handleYearChange}
+              className="pl-2 pr-7 py-1 text-xs rounded-lg"
+            >
+              <option value="">Current</option>
+              {yearOptions.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </SelectInput>
+          </div>
         </div>
 
-        {/* Metrics Dashboard Layout */}
-        <div className="grid grid-cols-2 gap-4">
-          {/* Total Balance and Payable Card */}
-          <div className="card-dark p-4">
-            <p className="text-xs uppercase tracking-wider text-white mb-3">Account Summary</p>
-            
-            <div className="flex justify-start items-start gap-8">
-              <div>
-                <p className="text-xs text-gray-400 mb-1">Total Balance</p>
-                <p className="text-2xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
+        {/* Stat cards — 5 across */}
+        <div className="grid grid-cols-5 gap-4">
+          <div className="rounded-2xl p-5"
+            style={{
+              background: 'linear-gradient(135deg, #0e1a2e 0%, #0a1423 100%)',
+              border: '1px solid rgba(48,189,242,0.15)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+            }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                style={{ background: 'rgba(48,189,242,0.12)' }}
+              >
+                <BanknotesIcon className="h-4 w-4 text-[#30BDF2]" />
               </div>
-              
-              <div>
-                <p className="text-xs text-gray-400 mb-1">Credit Card Payable</p>
-                <p className="text-2xl font-bold text-red-400">{formatCurrency(totalCreditCardPayable)}</p>
-              </div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Balance</p>
             </div>
+            <p className="text-2xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
           </div>
-          
-          {/* Combined Account Types Card */}
-          <div className="card-dark p-4">
-            <p className="text-xs uppercase tracking-wider text-white mb-3">Account Types</p>
-            
-            <div className="flex justify-start items-start gap-8">
-              <div>
-                <p className="text-xs text-gray-400 mb-1">Bank</p>
-                <p className="text-2xl font-bold text-[#30BDF2]">{formatCurrency(totalBankAccount)}</p>
+
+          <div className="rounded-2xl p-5"
+            style={{
+              background: 'linear-gradient(135deg, #2a0e0e 0%, #1f0d0d 100%)',
+              border: '1px solid rgba(239,68,68,0.15)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+            }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                style={{ background: 'rgba(239,68,68,0.12)' }}
+              >
+                <CreditCardIcon className="h-4 w-4 text-red-400" />
               </div>
-              
-              <div>
-                <p className="text-xs text-gray-400 mb-1">Other</p>
-                <p className="text-2xl font-bold text-[#30BDF2]">{formatCurrency(totalOther)}</p>
-              </div>
-              
-              <div>
-                <p className="text-xs text-gray-400 mb-1">Credit</p>
-                <p className="text-2xl font-bold text-[#30BDF2]">{formatCurrency(totalCreditCard)}</p>
-              </div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">CC Payable</p>
             </div>
+            <p className="text-2xl font-bold text-red-400">{formatCurrency(totalCreditCardPayable)}</p>
+          </div>
+
+          <div className="rounded-2xl p-5"
+            style={{
+              background: 'linear-gradient(135deg, #161e2e 0%, #111827 100%)',
+              border: '1px solid rgba(255,255,255,0.07)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+            }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                style={{ background: 'rgba(255,255,255,0.06)' }}
+              >
+                <BuildingLibraryIcon className="h-4 w-4 text-[#30BDF2]" />
+              </div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Bank</p>
+            </div>
+            <p className="text-2xl font-bold text-white">{formatCurrency(totalBankAccount)}</p>
+          </div>
+
+          <div className="rounded-2xl p-5"
+            style={{
+              background: 'linear-gradient(135deg, #161e2e 0%, #111827 100%)',
+              border: '1px solid rgba(255,255,255,0.07)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+            }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                style={{ background: 'rgba(255,255,255,0.06)' }}
+              >
+                <CreditCardIcon className="h-4 w-4 text-[#30BDF2]" />
+              </div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Credit Card</p>
+            </div>
+            <p className="text-2xl font-bold text-white">{formatCurrency(totalCreditCard)}</p>
+          </div>
+
+          <div className="rounded-2xl p-5"
+            style={{
+              background: 'linear-gradient(135deg, #161e2e 0%, #111827 100%)',
+              border: '1px solid rgba(255,255,255,0.07)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+            }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                style={{ background: 'rgba(255,255,255,0.06)' }}
+              >
+                <BanknotesIcon className="h-4 w-4 text-amber-400" />
+              </div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Other</p>
+            </div>
+            <p className="text-2xl font-bold text-white">{formatCurrency(totalOther)}</p>
           </div>
         </div>
 
         {/* Accounts Table */}
-        <div className="bg-gray-900 shadow-md rounded-lg overflow-hidden mb-6 border border-gray-800 relative">
+        <div className="rounded-2xl overflow-hidden relative"
+          style={{
+            background: 'linear-gradient(135deg, #0f1623 0%, #0d1520 100%)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+          }}
+        >
           <div className="overflow-x-auto relative">
             {isTableLoading && <TableLoadingIndicator />}
-            <table className="table-dark min-w-full">
+            <table className="min-w-full">
               <thead>
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Account Name
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Type
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Description
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
-                    Balance
-                  </th>
+                <tr style={{ background: 'linear-gradient(90deg, #1a2236 0%, #1e293b 100%)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                  <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Account</th>
+                  <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Type</th>
+                  <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Description</th>
+                  <th className="px-5 py-3.5 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Balance</th>
                   {accounts.some(a => a.type === 'credit_card') && (
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
-                      Payable
-                    </th>
+                    <th className="px-5 py-3.5 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Payable</th>
                   )}
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <th className="px-5 py-3.5 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
-                {paginatedAccounts.length > 0 ? ( 
-                  paginatedAccounts.map(account => (
-                  <tr key={account.id} className="hover:bg-gray-800">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-200">{account.name}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-gray-300 capitalize">{account.type.replace('_', ' ')}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-400 truncate max-w-xs">
-                        {account.description || '-'}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <div className="text-sm font-medium text-gray-200">
-                        {formatCurrency(account.balance || 0)}
-                      </div>
-                    </td>
-                    {accounts.some(a => a.type === 'credit_card') && (
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
-                        <div className="text-sm text-gray-400">
-                          {account.type === 'credit_card' && account.payable_balance !== undefined
-                            ? formatCurrency(account.payable_balance)
-                            : '-'}
+              <tbody>
+                {paginatedAccounts.length > 0 ? (
+                  paginatedAccounts.map((account, idx) => (
+                    <tr key={account.id}
+                      style={{
+                        borderBottom: idx < paginatedAccounts.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none'
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.03)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      {/* Account name + icon */}
+                      <td className="px-5 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                            style={{ background: 'rgba(48,189,242,0.08)', border: '1px solid rgba(48,189,242,0.12)' }}
+                          >
+                            {account.type === 'bank_account'
+                              ? <BuildingLibraryIcon className="h-4 w-4 text-[#30BDF2]" />
+                              : account.type === 'credit_card'
+                                ? <CreditCardIcon className="h-4 w-4 text-[#30BDF2]" />
+                                : <BanknotesIcon className="h-4 w-4 text-[#30BDF2]" />
+                            }
+                          </div>
+                          <span className="text-sm font-semibold text-gray-100">{account.name}</span>
                         </div>
                       </td>
-                    )}
-                    <td className="px-6 py-4 whitespace-nowrap text-right space-x-2">
-                      <button 
-                        onClick={() => handleViewDetails(account)}
-                        className="text-[#30BDF2] hover:text-[#28a8d8] inline-block focus:outline-none focus:ring-2 focus:ring-[#30BDF2] focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
-                      >
-                        View
-                      </button>
-                      <button 
-                        onClick={() => handleOpenModal(account)}
-                        className="text-indigo-400 hover:text-indigo-300 inline-block mx-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
-                      >
-                        Edit
-                      </button>
-                      <button 
-                        onClick={() => handleOpenAdjustmentModal(account)}
-                        className="text-amber-400 hover:text-amber-300 inline-block mx-2 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
-                      >
-                        Adjust
-                      </button>
-                      <button 
-                        onClick={() => handleOpenDeleteModal(account)}
-                        className="text-red-500 hover:text-red-400 inline-block focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))) : (
+
+                      {/* Type badge */}
+                      <td className="px-5 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium capitalize"
+                          style={
+                            account.type === 'bank_account'
+                              ? { background: 'rgba(48,189,242,0.1)', color: '#30BDF2' }
+                              : account.type === 'credit_card'
+                                ? { background: 'rgba(239,68,68,0.1)', color: '#f87171' }
+                                : { background: 'rgba(255,255,255,0.07)', color: '#94a3b8' }
+                          }
+                        >
+                          {account.type.replace('_', ' ')}
+                        </span>
+                      </td>
+
+                      <td className="px-5 py-4">
+                        <span className="text-sm text-gray-500 truncate max-w-xs block">
+                          {account.description || <span className="text-gray-700">—</span>}
+                        </span>
+                      </td>
+
+                      <td className="px-5 py-4 whitespace-nowrap text-right">
+                        <span className="text-sm font-semibold text-gray-100">{formatCurrency(account.balance || 0)}</span>
+                      </td>
+
+                      {accounts.some(a => a.type === 'credit_card') && (
+                        <td className="px-5 py-4 whitespace-nowrap text-right">
+                          {account.type === 'credit_card' && account.payable_balance !== undefined
+                            ? <span className="text-sm font-medium text-red-400">{formatCurrency(account.payable_balance)}</span>
+                            : <span className="text-gray-700">—</span>
+                          }
+                        </td>
+                      )}
+
+                      {/* Icon action buttons */}
+                      <td className="px-5 py-4 whitespace-nowrap text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <button title="View" onClick={() => handleViewDetails(account)}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
+                            style={{ background: 'rgba(48,189,242,0.08)' }}
+                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(48,189,242,0.18)')}
+                            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(48,189,242,0.08)')}
+                          >
+                            <EyeIcon className="h-4 w-4 text-[#30BDF2]" />
+                          </button>
+                          <button title="Edit" onClick={() => handleOpenModal(account)}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
+                            style={{ background: 'rgba(99,102,241,0.08)' }}
+                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(99,102,241,0.18)')}
+                            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(99,102,241,0.08)')}
+                          >
+                            <PencilSquareIcon className="h-4 w-4 text-indigo-400" />
+                          </button>
+                          <button title="Adjust balance" onClick={() => handleOpenAdjustmentModal(account)}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
+                            style={{ background: 'rgba(245,158,11,0.08)' }}
+                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(245,158,11,0.18)')}
+                            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(245,158,11,0.08)')}
+                          >
+                            <AdjustmentsHorizontalIcon className="h-4 w-4 text-amber-400" />
+                          </button>
+                          <button title="Delete" onClick={() => handleOpenDeleteModal(account)}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
+                            style={{ background: 'rgba(239,68,68,0.08)' }}
+                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(239,68,68,0.18)')}
+                            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(239,68,68,0.08)')}
+                          >
+                            <TrashIcon className="h-4 w-4 text-red-400" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
                   <tr>
-                    <td colSpan={7} className="px-6 py-4 text-center text-gray-300">
+                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500 text-sm">
                       No accounts found
                     </td>
-                  </tr>)}
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -354,8 +494,10 @@ export default function AccountsDesktop({
       {/* Modals - moved outside of the space-y-6 container */}
       {/* Account Form Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="modal-dark w-full max-w-md p-6">
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50 animate-fadeIn"
+          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}
+        >
+          <div className="modal-dark w-full max-w-md p-6 animate-slideUp">
             <h2 className="text-xl font-bold mb-4 text-gray-200">
               {selectedAccount ? 'Edit Account' : 'Add Account'}
             </h2>
@@ -431,8 +573,10 @@ export default function AccountsDesktop({
 
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && accountToDelete && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="modal-dark w-full max-w-md p-6">
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50 animate-fadeIn"
+          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}
+        >
+          <div className="modal-dark w-full max-w-md p-6 animate-slideUp">
             <h2 className="text-xl font-bold mb-4 text-gray-200">Delete Account</h2>
             <p className="mb-6 text-gray-300">
               Are you sure you want to delete the account "<span className="text-white font-medium">{accountToDelete.name}</span>"? This action cannot be undone.
@@ -457,8 +601,10 @@ export default function AccountsDesktop({
 
       {/* Account Details Modal */}
       {isViewingDetails && accountDetails && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="modal-dark w-full max-w-2xl p-6">
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50 animate-fadeIn"
+          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}
+        >
+          <div className="modal-dark w-full max-w-2xl p-6 animate-slideUp">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-200">{accountDetails.account.name} Details</h2>
               <div className="px-3 py-1 rounded-lg bg-gray-800 text-sm capitalize text-gray-300">
@@ -559,8 +705,10 @@ export default function AccountsDesktop({
 
       {/* Balance Adjustment Modal */}
       {isAdjustmentModalOpen && accountToAdjust && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="modal-dark w-full max-w-md p-6">
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50 animate-fadeIn"
+          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}
+        >
+          <div className="modal-dark w-full max-w-md p-6 animate-slideUp">
             <h2 className="text-xl font-bold mb-4 text-gray-200">Adjust Balance</h2>
             
             <form onSubmit={handleSubmitAdjustment} className="space-y-4">

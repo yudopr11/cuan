@@ -17,61 +17,48 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
   closeOnBackdropClick = true,
 }) => {
   useEffect(() => {
-    if (isOpen) {
-      // Prevent scrolling on body when modal is open
-      document.body.style.overflow = 'hidden';
-    }
-    
-    return () => {
-      // Re-enable scrolling when component unmounts or modal closes
-      document.body.style.overflow = '';
-    };
+    if (isOpen) document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handleBackdropClick = () => {
-    if (closeOnBackdropClick) {
-      onClose();
-    }
-  };
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col justify-end z-50 animate-fadeIn">
-      <div 
-        className="bg-gray-900 rounded-t-2xl px-2 pt-2 pb-6 transform transition-all animate-slideUp"
-        style={{ 
-          boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.5)',
+    <div className="fixed inset-0 flex flex-col justify-end z-50 animate-fadeIn"
+      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
+    >
+      <div
+        className="rounded-t-3xl px-2 pt-2 pb-8 animate-slideUp flex flex-col"
+        style={{
+          background: 'linear-gradient(180deg, #161e2e 0%, #111827 100%)',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderBottom: 'none',
+          boxShadow: '0 -8px 40px rgba(0,0,0,0.6)',
           maxHeight: '90vh',
-          display: 'flex',
-          flexDirection: 'column'
         }}
       >
-        {/* Handle indicator for bottom sheet - fixed at top */}
-        <div className="flex justify-center mb-2 flex-shrink-0">
-          <div className="w-12 h-1.5 bg-gray-700 rounded-full my-2"></div>
+        {/* Handle */}
+        <div className="flex justify-center mb-3 flex-shrink-0">
+          <div className="w-10 h-1 rounded-full"
+            style={{ background: 'rgba(255,255,255,0.15)' }}
+          />
         </div>
-        
-        {/* Scrollable container for title and content */}
+
         <div className="overflow-y-auto flex-grow">
-          {/* Title (optional) */}
           {title && (
-            <div className="px-4 mb-2 text-center">
-              <h2 className="text-xl font-bold text-gray-200">{title}</h2>
+            <div className="px-4 mb-4 text-center">
+              <h2 className="text-lg font-bold text-white">{title}</h2>
             </div>
           )}
-          
-          {/* Content */}
           <div className="px-4 py-2">
             {children}
           </div>
         </div>
       </div>
-      
-      {/* Backdrop for closing by tapping outside */}
-      <div className="absolute inset-0 -z-10" onClick={handleBackdropClick}></div>
+
+      <div className="absolute inset-0 -z-10" onClick={closeOnBackdropClick ? onClose : undefined} />
     </div>
   );
 };
 
-export default BottomSheetModal; 
+export default BottomSheetModal;

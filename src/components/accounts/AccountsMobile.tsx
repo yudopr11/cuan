@@ -7,16 +7,17 @@ import {
   DeleteConfirmationModal, 
   FormModal 
 } from '../layout';
-import { 
-  BuildingLibraryIcon, 
-  CreditCardIcon, 
-  BanknotesIcon, 
-  DocumentDuplicateIcon, 
-  PencilSquareIcon, 
-  TrashIcon, 
+import {
+  BuildingLibraryIcon,
+  CreditCardIcon,
+  BanknotesIcon,
+  DocumentDuplicateIcon,
+  PencilSquareIcon,
+  TrashIcon,
   PlusIcon,
   ChevronDownIcon,
-  DocumentPlusIcon
+  DocumentPlusIcon,
+  CalendarDaysIcon
 } from '@heroicons/react/24/outline';
 
 // Custom Select Input component with consistent styling
@@ -80,6 +81,9 @@ interface AccountsMobileProps {
   handleOpenAdjustmentModal: (account: Account) => void;
   handleCloseAdjustmentModal: () => void;
   handleAdjustmentInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  selectedYear: string;
+  yearOptions: number[];
+  handleYearChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export default function AccountsMobile({
@@ -113,11 +117,15 @@ export default function AccountsMobile({
   adjustmentAmount,
   handleOpenAdjustmentModal,
   handleCloseAdjustmentModal,
-  handleAdjustmentInputChange
+  handleAdjustmentInputChange,
+  selectedYear,
+  yearOptions,
+  handleYearChange
 }: AccountsMobileProps) {
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
   const [accountForAction, setAccountForAction] = useState<Account | null>(null);
   const [isBalanceModalOpen, setIsBalanceModalOpen] = useState(false);
+  const [isYearFilterModalOpen, setIsYearFilterModalOpen] = useState(false);
 
   const handleAccountClick = (account: Account) => {
     setAccountForAction(account);
@@ -194,20 +202,73 @@ export default function AccountsMobile({
 
   return (
     <div className="pb-24 space-y-4">
-      {/* Balance Cards */}
-      <div 
-        className="card-dark rounded-xl shadow-lg overflow-hidden mx-2 bg-gradient-to-b from-gray-800 to-gray-900"
+      {/* Year Filter Bar — matches Transactions style */}
+      <div className="px-2">
+        <div
+          className="flex justify-between items-center rounded-2xl p-3 cursor-pointer"
+          style={{
+            background: 'linear-gradient(135deg, #161e2e 0%, #111827 100%)',
+            border: '1px solid rgba(255,255,255,0.07)',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.3)'
+          }}
+          onClick={() => setIsYearFilterModalOpen(true)}
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400 text-xs font-medium">Year:</span>
+            {selectedYear ? (
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                style={{ background: 'rgba(48,189,242,0.15)', color: '#30BDF2', border: '1px solid rgba(48,189,242,0.25)' }}
+              >
+                {selectedYear}
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                style={{ background: 'rgba(255,255,255,0.06)', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.08)' }}
+              >
+                Current
+              </span>
+            )}
+            {selectedYear && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleYearChange({ target: { value: '' } } as React.ChangeEvent<HTMLSelectElement>);
+                }}
+                className="inline-flex items-center px-2 py-1 rounded-full text-xs text-gray-400"
+                style={{ background: 'rgba(255,255,255,0.06)' }}
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <div className="p-1.5 rounded-lg"
+            style={{ background: selectedYear ? 'rgba(48,189,242,0.1)' : 'transparent' }}
+          >
+            <CalendarDaysIcon className={`h-4 w-4 ${selectedYear ? 'text-[#30BDF2]' : 'text-gray-400'}`} />
+          </div>
+        </div>
+      </div>
+      {/* Balance Card */}
+      <div
+        className="mx-2 rounded-2xl overflow-hidden cursor-pointer"
+        style={{
+          background: 'linear-gradient(135deg, #0e1a2e 0%, #0a1423 100%)',
+          border: '1px solid rgba(48,189,242,0.15)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.4), 0 0 0 1px rgba(48,189,242,0.05)'
+        }}
         onClick={handleBalanceClick}
       >
-        <div className="p-4">
-          <h2 className="text-sm font-medium text-gray-300">Total Balance</h2>
-          <p className="text-2xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
+        <div className="p-5">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Total Balance</p>
+          <p className="text-3xl font-bold text-[#30BDF2]">{formatCurrency(totalBalance)}</p>
         </div>
-        
+
         {totalCreditCardPayable > 0 && (
-          <div className="border-t border-gray-800 p-4">
+          <div className="px-5 py-3.5"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.06)', background: 'rgba(0,0,0,0.15)' }}
+          >
             <div className="flex justify-between items-center">
-              <h3 className="text-xs font-medium text-gray-400">Credit Card Payable</h3>
+              <p className="text-xs font-medium text-gray-500">Credit Card Payable</p>
               <p className="text-sm font-bold text-red-400">{formatCurrency(totalCreditCardPayable)}</p>
             </div>
           </div>
@@ -611,14 +672,72 @@ export default function AccountsMobile({
           Close
         </button>
       </BottomSheetModal>
+
+      {/* Year Filter Modal */}
+      <BottomSheetModal
+        isOpen={isYearFilterModalOpen}
+        onClose={() => setIsYearFilterModalOpen(false)}
+        title="Filter by Year"
+      >
+        <div className="space-y-4 pb-4">
+          <div className="grid grid-cols-3 gap-2">
+            {/* Current option */}
+            <button
+              type="button"
+              onClick={() => {
+                handleYearChange({ target: { value: '' } } as React.ChangeEvent<HTMLSelectElement>);
+                setIsYearFilterModalOpen(false);
+              }}
+              className="py-2.5 px-2 text-sm font-medium rounded-xl transition-all"
+              style={!selectedYear ? {
+                background: 'linear-gradient(135deg, #30BDF2 0%, #2DAAE0 100%)',
+                color: 'white',
+                boxShadow: '0 2px 8px rgba(48,189,242,0.35)'
+              } : {
+                background: 'rgba(255,255,255,0.05)',
+                color: '#94a3b8',
+                border: '1px solid rgba(255,255,255,0.08)'
+              }}
+            >
+              Current
+            </button>
+            {yearOptions.map(year => (
+              <button
+                key={year}
+                type="button"
+                onClick={() => {
+                  handleYearChange({ target: { value: String(year) } } as React.ChangeEvent<HTMLSelectElement>);
+                  setIsYearFilterModalOpen(false);
+                }}
+                className="py-2.5 px-2 text-sm font-medium rounded-xl transition-all"
+                style={selectedYear === String(year) ? {
+                  background: 'linear-gradient(135deg, #30BDF2 0%, #2DAAE0 100%)',
+                  color: 'white',
+                  boxShadow: '0 2px 8px rgba(48,189,242,0.35)'
+                } : {
+                  background: 'rgba(255,255,255,0.05)',
+                  color: '#94a3b8',
+                  border: '1px solid rgba(255,255,255,0.08)'
+                }}
+              >
+                {year}
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsYearFilterModalOpen(false)}
+            className="w-full py-3.5 rounded-2xl text-sm font-semibold text-gray-300 transition-all mt-2"
+            style={{
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.08)'
+            }}
+          >
+            Close
+          </button>
+        </div>
+      </BottomSheetModal>
     </div>
   );
 }
-
-// Add this to your global CSS or add it inline if needed
-// .animate-fadeIn { animation: fadeIn 0.2s ease-out; }
-// .animate-slideUp { animation: slideUp 0.3s ease-out; }
-// .animate-scaleIn { animation: scaleIn 0.2s ease-out; }
-// @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-// @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-// @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } } 

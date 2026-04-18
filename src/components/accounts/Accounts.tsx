@@ -24,6 +24,9 @@ export default function Accounts({ isMobile }: AccountsProps) {
   const [accountToDelete, setAccountToDelete] = useState<Account | null>(null);
   const [accountDetails, setAccountDetails] = useState<AccountBalance | null>(null);
   const [isViewingDetails, setIsViewingDetails] = useState(false);
+  const [selectedYear, setSelectedYear] = useState<string>('');
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: 6 }, (_, idx) => currentYear - idx);
   
   // Form state
   const [formData, setFormData] = useState<AccountCreate>({
@@ -46,10 +49,10 @@ export default function Accounts({ isMobile }: AccountsProps) {
     fetchAccounts();
   }, []);
 
-  const fetchAccounts = async () => {
+  const fetchAccounts = async (year?: number) => {
     setIsLoading(true);
     try {
-      const data = await getAllAccounts();
+      const data = await getAllAccounts(undefined, year);
       setAccounts(data);
     } catch (error) {
       console.error('Error fetching accounts:', error);
@@ -57,6 +60,12 @@ export default function Accounts({ isMobile }: AccountsProps) {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleYearChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const yearValue = e.target.value;
+    setSelectedYear(yearValue);
+    await fetchAccounts(yearValue ? Number(yearValue) : undefined);
   };
 
   const handleOpenModal = (account?: Account) => {
@@ -183,7 +192,8 @@ export default function Accounts({ isMobile }: AccountsProps) {
 
   const handleViewDetails = async (account: Account) => {
     try {
-      const data = await getAccountBalance(account.id);
+      const yearValue = selectedYear ? Number(selectedYear) : undefined;
+      const data = await getAccountBalance(account.id, yearValue);
       setAccountDetails(data.data);
       setIsViewingDetails(true);
     } catch (error) {
@@ -341,7 +351,10 @@ export default function Accounts({ isMobile }: AccountsProps) {
     adjustmentAmount,
     handleOpenAdjustmentModal,
     handleCloseAdjustmentModal,
-    handleAdjustmentInputChange
+    handleAdjustmentInputChange,
+    selectedYear,
+    yearOptions,
+    handleYearChange
   };
 
   // Render the appropriate component based on isMobile prop

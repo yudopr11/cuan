@@ -6,7 +6,7 @@ import type {
   CategoryDistribution,
   TransactionTrends
 } from '../../services/api';
-import { ArrowDownIcon, ArrowUpIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
+import { ArrowDownIcon, ArrowUpIcon, ArrowsRightLeftIcon, BuildingLibraryIcon, CreditCardIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 import TransactionChart from './TransactionChart';
 import CategoryChart from './CategoryChart';
 import { DashboardDesktopSkeleton } from '../common/SkeletonLoader';
@@ -50,176 +50,198 @@ export default function DashboardDesktop({
   formatDate,
   formatCurrency
 }: DashboardDesktopProps) {
-  // Component to show loading overlay for refreshing data
   const LoadingOverlay = () => (
     isRefreshing ? (
-      <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-10 rounded-lg backdrop-blur-sm">
-        <div className="px-6 py-4 bg-gray-800/90 rounded-xl shadow-xl">
-          <div className="flex items-center space-x-3">
-            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-[#30BDF2]"></div>
-            <p className="text-sm text-gray-200">Updating...</p>
-          </div>
+      <div className="absolute inset-0 bg-black/30 flex items-center justify-center z-10 rounded-xl backdrop-blur-sm">
+        <div className="flex items-center gap-3 px-5 py-3 rounded-xl"
+          style={{ background: 'rgba(13,21,40,0.9)', border: '1px solid rgba(255,255,255,0.08)' }}
+        >
+          <div className="w-4 h-4 rounded-full border-2 border-[#30BDF2]/30 border-t-[#30BDF2] animate-spin" />
+          <p className="text-sm text-gray-200">Updating...</p>
         </div>
       </div>
     ) : null
   );
 
-  if (isInitialLoading) {
-    return <DashboardDesktopSkeleton />;
-  }
+  if (isInitialLoading) return <DashboardDesktopSkeleton />;
+
+  const periodLabel = period === 'all' ? 'All Time' : `This ${period.charAt(0).toUpperCase() + period.slice(1)}`;
+  const periods: Array<{ value: typeof period; label: string }> = [
+    { value: 'day', label: 'Day' },
+    { value: 'week', label: 'Week' },
+    { value: 'month', label: 'Month' },
+    { value: 'year', label: 'Year' },
+    { value: 'all', label: 'All' },
+  ];
 
   return (
     <div className="space-y-6">
       {/* Period Selector */}
       <div className="flex justify-end">
-        <div className="flex bg-slate-800 rounded-lg p-1">
-          <button
-            onClick={() => handlePeriodChange('day')}
-            className={`py-2 px-4 rounded-md ${
-              period === 'day' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
-            }`}
-            disabled={isRefreshing}
-          >
-            Day
-          </button>
-          <button
-            onClick={() => handlePeriodChange('week')}
-            className={`py-2 px-4 rounded-md ${
-              period === 'week' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
-            }`}
-            disabled={isRefreshing}
-          >
-            Week
-          </button>
-          <button
-            onClick={() => handlePeriodChange('month')}
-            className={`py-2 px-4 rounded-md ${
-              period === 'month' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
-            }`}
-            disabled={isRefreshing}
-          >
-            Month
-          </button>
-          <button
-            onClick={() => handlePeriodChange('year')}
-            className={`py-2 px-4 rounded-md ${
-              period === 'year' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
-            }`}
-            disabled={isRefreshing}
-          >
-            Year
-          </button>
-          <button
-            onClick={() => handlePeriodChange('all')}
-            className={`py-2 px-4 rounded-md ${
-              period === 'all' ? 'bg-[#30BDF2] text-white' : 'text-gray-300'
-            }`}
-            disabled={isRefreshing}
-          >
-            All Time
-          </button>
+        <div className="flex rounded-xl p-1 gap-0.5"
+          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+        >
+          {periods.map(({ value, label }) => (
+            <button
+              key={value}
+              onClick={() => handlePeriodChange(value)}
+              disabled={isRefreshing}
+              className={`py-1.5 px-4 rounded-lg text-sm font-medium transition-all duration-150 ${
+                period === value
+                  ? 'text-white'
+                  : 'text-gray-400 hover:text-gray-200'
+              }`}
+              style={period === value ? {
+                background: 'linear-gradient(135deg, #30BDF2 0%, #2DAAE0 100%)',
+                boxShadow: '0 2px 8px rgba(48,189,242,0.3)'
+              } : {}}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 
       {/* Row 1: Financial Summary */}
-      <div className="grid grid-cols-4 gap-6">
-        <div className="relative card-dark">
+      <div className="grid grid-cols-4 gap-4">
+        {/* Income */}
+        <div className="relative stat-card-income">
           <LoadingOverlay />
-          <p className="text-xs sm:text-sm lg:text-base text-gray-200 mb-1">Income</p>
-          <p className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-green-400">
-            {financialSummary ? formatCurrency(financialSummary.totals.income) : '$0.00'}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ background: 'rgba(16,185,129,0.15)' }}
+            >
+              <ArrowDownIcon className="h-4 w-4 text-emerald-400" />
+            </div>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Income</p>
+          </div>
+          <p className="text-2xl font-bold text-emerald-400 leading-tight">
+            {financialSummary ? formatCurrency(financialSummary.totals.income) : '—'}
           </p>
-          <p className="text-xs lg:text-sm text-gray-200 mt-2">
-            {period === 'all' ? 'All Time' : `This ${period.charAt(0).toUpperCase() + period.slice(1)}`}
-          </p>
+          <p className="text-xs text-emerald-700 mt-2">{periodLabel}</p>
         </div>
-        <div className="relative card-dark">
+
+        {/* Expenses */}
+        <div className="relative stat-card-expense">
           <LoadingOverlay />
-          <p className="text-xs sm:text-sm lg:text-base text-gray-200 mb-1">Expenses</p>
-          <p className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-red-400">
-            {financialSummary ? formatCurrency(financialSummary.totals.expense) : '$0.00'}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ background: 'rgba(239,68,68,0.15)' }}
+            >
+              <ArrowUpIcon className="h-4 w-4 text-red-400" />
+            </div>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Expenses</p>
+          </div>
+          <p className="text-2xl font-bold text-red-400 leading-tight">
+            {financialSummary ? formatCurrency(financialSummary.totals.expense) : '—'}
           </p>
-          <p className="text-xs lg:text-sm text-gray-200 mt-2">
-            {period === 'all' ? 'All Time' : `This ${period.charAt(0).toUpperCase() + period.slice(1)}`}
-          </p>
+          <p className="text-xs text-red-900 mt-2">{periodLabel}</p>
         </div>
-        <div className="relative card-dark">
+
+        {/* Transfers */}
+        <div className="relative stat-card-transfer">
           <LoadingOverlay />
-          <p className="text-xs sm:text-sm lg:text-base text-gray-200 mb-1">Transfers</p>
-          <p className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-blue-400">
-            {financialSummary ? formatCurrency(financialSummary.totals.transfer) : '$0.00'}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ background: 'rgba(59,130,246,0.15)' }}
+            >
+              <ArrowsRightLeftIcon className="h-4 w-4 text-blue-400" />
+            </div>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Transfers</p>
+          </div>
+          <p className="text-2xl font-bold text-blue-400 leading-tight">
+            {financialSummary ? formatCurrency(financialSummary.totals.transfer) : '—'}
           </p>
-          <p className="text-xs lg:text-sm text-gray-200 mt-2">
-            {period === 'all' ? 'All Time' : `This ${period.charAt(0).toUpperCase() + period.slice(1)}`}
-          </p>
+          <p className="text-xs text-blue-900 mt-2">{periodLabel}</p>
         </div>
-        <div className="relative card-dark">
-          <LoadingOverlay />
-          <p className="text-xs sm:text-sm lg:text-base text-gray-200 mb-1">Net</p>
-          <p className={`text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold ${financialSummary && financialSummary.totals.net >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-            {financialSummary ? formatCurrency(financialSummary.totals.net) : '$0.00'}
-          </p>
-          <p className="text-xs lg:text-sm text-gray-200 mt-2">
-            {period === 'all' ? 'All Time' : `This ${period.charAt(0).toUpperCase() + period.slice(1)}`}
-          </p>
-        </div>
+
+        {/* Net */}
+        {(() => {
+          const isPositive = !financialSummary || financialSummary.totals.net >= 0;
+          return (
+            <div className={`relative ${isPositive ? 'stat-card-net-positive' : 'stat-card-net-negative'}`}>
+              <LoadingOverlay />
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                  style={{ background: isPositive ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)' }}
+                >
+                  {isPositive
+                    ? <ArrowDownIcon className="h-4 w-4 text-emerald-400" />
+                    : <ArrowUpIcon className="h-4 w-4 text-red-400" />
+                  }
+                </div>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Net</p>
+              </div>
+              <p className={`text-2xl font-bold leading-tight ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+                {financialSummary ? formatCurrency(financialSummary.totals.net) : '—'}
+              </p>
+              <p className={`text-xs mt-2 ${isPositive ? 'text-emerald-700' : 'text-red-900'}`}>{periodLabel}</p>
+            </div>
+          );
+        })()}
       </div>
-      
-      {/* Row 2: Transaction Trends and Category Distribution */}
-      <div className="grid grid-cols-12 gap-6">
+
+      {/* Row 2: Charts */}
+      <div className="grid grid-cols-12 gap-5">
         {/* Transaction Trends */}
         <div className="relative card-dark col-span-7">
           <LoadingOverlay />
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Transaction Trends</h2>
+          <div className="flex justify-between items-center mb-5">
+            <h2 className="text-base font-semibold text-white">Transaction Trends</h2>
           </div>
-          
-          <div>
-            <TransactionChart trends={trends || { period: { start_date: '', end_date: '', period_type: period, group_by: 'day' }, trends: [] }} period={period} />
-          </div>
+          <TransactionChart
+            trends={trends || { period: { start_date: '', end_date: '', period_type: period, group_by: 'day' }, trends: [] }}
+            period={period}
+          />
         </div>
 
         {/* Category Distribution */}
         <div className="relative card-dark col-span-5">
           <LoadingOverlay />
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Categories</h2>
-            
-            <div className="flex rounded-md overflow-hidden border border-gray-700">
+          <div className="flex justify-between items-center mb-5">
+            <h2 className="text-base font-semibold text-white">By Category</h2>
+            <div className="flex rounded-xl overflow-hidden p-0.5 gap-0.5"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+            >
               <button
                 onClick={() => handleCategoryTypeChange('expense')}
-                className={`px-3 py-1 text-sm ${
-                  categoryType === 'expense' ? 'bg-red-500 text-white' : 'bg-slate-800 text-gray-300'
+                className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${
+                  categoryType === 'expense' ? 'text-white' : 'text-gray-400 hover:text-gray-200'
                 }`}
+                style={categoryType === 'expense' ? {
+                  background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                  boxShadow: '0 1px 6px rgba(239,68,68,0.3)'
+                } : {}}
               >
-                Expenses
+                Expense
               </button>
               <button
                 onClick={() => handleCategoryTypeChange('income')}
-                className={`px-3 py-1 text-sm ${
-                  categoryType === 'income' ? 'bg-green-500 text-white' : 'bg-slate-800 text-gray-300'
+                className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${
+                  categoryType === 'income' ? 'text-white' : 'text-gray-400 hover:text-gray-200'
                 }`}
+                style={categoryType === 'income' ? {
+                  background: 'linear-gradient(135deg, #10b981, #059669)',
+                  boxShadow: '0 1px 6px rgba(16,185,129,0.3)'
+                } : {}}
               >
                 Income
               </button>
             </div>
           </div>
-          
+
           {categoryData && (
             <>
-              <div className="text-right mb-4">
-                <div className="text-sm lg:text-base xl:text-lg font-medium text-gray-200">
-                  {formatCurrency(categoryData.total)}
-                </div>
+              <div className="text-right mb-3">
+                <span className="text-sm font-medium text-gray-300">{formatCurrency(categoryData.total)}</span>
               </div>
-              
               {categoryData.categories.length > 0 ? (
-                <div>
-                  <CategoryChart categoryData={categoryData} type={categoryType} />
-                </div>
+                <CategoryChart categoryData={categoryData} type={categoryType} />
               ) : (
-                <div className="h-64 sm:h-72 md:h-80 w-full flex items-center justify-center bg-gray-800/30 rounded-xl">
-                  <p className="text-gray-400">No data available for this period</p>
+                <div className="h-64 flex items-center justify-center rounded-xl"
+                  style={{ background: 'rgba(255,255,255,0.02)' }}
+                >
+                  <p className="text-gray-500 text-sm">No data for this period</p>
                 </div>
               )}
             </>
@@ -227,107 +249,130 @@ export default function DashboardDesktop({
         </div>
       </div>
 
-      {/* Row 3: Accounts and Recent Transactions */}
-      <div className="grid grid-cols-2 gap-6">
+      {/* Row 3: Recent Transactions & Accounts */}
+      <div className="grid grid-cols-2 gap-5">
         {/* Recent Transactions */}
         <div className="card-dark">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Recent Transactions</h2>
-            <Link to="/transactions" className="text-xs sm:text-sm lg:text-base text-[#30BDF2] hover:text-[#28a8d8]">View All</Link>
+            <h2 className="text-base font-semibold text-white">Recent Transactions</h2>
+            <Link to="/transactions" className="text-xs text-[#30BDF2] hover:text-[#83e0ff] font-medium transition-colors">
+              View All →
+            </Link>
           </div>
-          
+
           {recentTransactions.length > 0 ? (
-            <div className="divide-y divide-gray-700">
-              {recentTransactions.map((transaction) => (
-                <div key={transaction.id} className="py-3 flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className={`w-8 sm:w-9 lg:w-10 h-8 sm:h-9 lg:h-10 rounded-full flex items-center justify-center ${
-                      transaction.transaction_type === 'income' ? 'bg-green-950 text-green-400' :
-                      transaction.transaction_type === 'expense' ? 'bg-red-950 text-red-400' :
-                      'bg-blue-950 text-blue-400'
+            <div className="space-y-1">
+              {recentTransactions.map((tx) => (
+                <div key={tx.id} className="flex items-center justify-between py-2.5 px-3 rounded-xl transition-colors"
+                  style={{ ':hover': { background: 'rgba(255,255,255,0.03)' } } as React.CSSProperties}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.03)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                      tx.transaction_type === 'income' ? 'bg-emerald-500/10' :
+                      tx.transaction_type === 'expense' ? 'bg-red-500/10' :
+                      'bg-blue-500/10'
                     }`}>
-                      {transaction.transaction_type === 'income' ? (
-                        <ArrowDownIcon className="h-4 sm:h-4 lg:h-5 w-4 sm:w-4 lg:w-5" />
-                      ) : transaction.transaction_type === 'expense' ? (
-                        <ArrowUpIcon className="h-4 sm:h-4 lg:h-5 w-4 sm:w-4 lg:w-5" />
-                      ) : (
-                        <ArrowsRightLeftIcon className="h-4 sm:h-4 lg:h-5 w-4 sm:w-4 lg:w-5" />
-                      )}
+                      {tx.transaction_type === 'income'
+                        ? <ArrowDownIcon className="h-4 w-4 text-emerald-400" />
+                        : tx.transaction_type === 'expense'
+                          ? <ArrowUpIcon className="h-4 w-4 text-red-400" />
+                          : <ArrowsRightLeftIcon className="h-4 w-4 text-blue-400" />
+                      }
                     </div>
-                    <div className="ml-3 sm:ml-4">
-                      <div className="text-sm lg:text-base xl:text-lg font-medium text-white">{transaction.description}</div>
-                      <div className="text-xs lg:text-sm text-gray-200">
-                        {formatDate(transaction.transaction_date)} · {transaction.transaction_type === 'transfer' ? 'Transfer' : (transaction.category?.name || 'Uncategorized')}
-                      </div>
+                    <div>
+                      <p className="text-sm font-medium text-white leading-tight">{tx.description}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {formatDate(tx.transaction_date)} · {tx.transaction_type === 'transfer' ? 'Transfer' : (tx.category?.name || 'Uncategorized')}
+                      </p>
                     </div>
                   </div>
-                  <div className={`text-sm lg:text-base xl:text-lg font-medium ${
-                    transaction.transaction_type === 'income' ? 'text-green-400' :
-                    transaction.transaction_type === 'expense' ? 'text-red-400' :
-                    'text-blue-400'
-                  }`}>
-                    {transaction.transaction_type === 'income' ? '+' : transaction.transaction_type === 'expense' ? '-' : ''}
-                    {formatCurrency(transaction.amount)}
-                    {transaction.transaction_type === 'transfer' && transaction.transfer_fee && transaction.transfer_fee > 0 && (
-                      <div className="text-xs text-yellow-400 text-right">
-                        Fee: {formatCurrency(transaction.transfer_fee)}
-                      </div>
+                  <div className="text-right">
+                    <p className={`text-sm font-semibold ${
+                      tx.transaction_type === 'income' ? 'text-emerald-400' :
+                      tx.transaction_type === 'expense' ? 'text-red-400' :
+                      'text-blue-400'
+                    }`}>
+                      {tx.transaction_type === 'income' ? '+' : tx.transaction_type === 'expense' ? '-' : ''}
+                      {formatCurrency(tx.amount)}
+                    </p>
+                    {tx.transaction_type === 'transfer' && tx.transfer_fee && tx.transfer_fee > 0 && (
+                      <p className="text-xs text-yellow-500">Fee: {formatCurrency(tx.transfer_fee)}</p>
                     )}
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="py-8 text-center text-sm lg:text-base text-gray-300">
-              No recent transactions
-            </div>
+            <div className="py-8 text-center text-sm text-gray-500">No recent transactions</div>
           )}
         </div>
 
         {/* Account Summary */}
         <div className="card-dark">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-white">Active Accounts</h2>
-            <Link to="/accounts" className="text-xs sm:text-sm lg:text-base text-[#30BDF2]">View All</Link>
+            <h2 className="text-base font-semibold text-white">Active Accounts</h2>
+            <Link to="/accounts" className="text-xs text-[#30BDF2] hover:text-[#83e0ff] font-medium transition-colors">
+              View All →
+            </Link>
           </div>
-          
+
           {!errors.accounts ? (
             <>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {accountSummary && accountSummary.accounts.length > 0 ? (
                   accountSummary.accounts.slice(0, 4).map((account) => (
-                    <div key={account.id} className="flex justify-between items-center p-2 border-b border-gray-700">
-                      <div>
-                        <p className="text-sm lg:text-base xl:text-lg font-medium text-white">{account.name}</p>
-                        <p className="text-xs lg:text-sm text-gray-200 capitalize">{account.type.replace('_', ' ')}</p>
+                    <div key={account.id} className="flex justify-between items-center py-2.5 px-3 rounded-xl transition-colors"
+                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.03)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                          style={{ background: 'rgba(48,189,242,0.08)', border: '1px solid rgba(48,189,242,0.12)' }}
+                        >
+                          {account.type === 'bank_account'
+                            ? <BuildingLibraryIcon className="h-4 w-4 text-[#30BDF2]" />
+                            : account.type === 'credit_card'
+                              ? <CreditCardIcon className="h-4 w-4 text-[#30BDF2]" />
+                              : <BanknotesIcon className="h-4 w-4 text-[#30BDF2]" />
+                          }
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-white leading-tight">{account.name}</p>
+                          <p className="text-xs text-gray-500 capitalize mt-0.5">{account.type.replace('_', ' ')}</p>
+                        </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm lg:text-base xl:text-lg font-bold text-white">{formatCurrency(account.balance)}</p>
+                        <p className="text-sm font-bold text-white">{formatCurrency(account.balance)}</p>
                         {account.type === 'credit_card' && account.payable_balance !== undefined && (
-                          <p className="text-xs lg:text-sm text-gray-200">
-                            Payable: {formatCurrency(account.payable_balance)}
-                          </p>
+                          <p className="text-xs text-gray-500">Payable: {formatCurrency(account.payable_balance)}</p>
                         )}
                       </div>
                     </div>
                   ))
                 ) : (
-                  <p className="text-center text-sm lg:text-base text-gray-300 py-4">No accounts found</p>
+                  <p className="text-center text-sm text-gray-500 py-4">No accounts found</p>
                 )}
               </div>
-              <div className="mt-3 pt-3">
+
+              <div className="mt-4 pt-4"
+                style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+              >
                 <div className="flex justify-between items-center">
-                  <p className="text-sm lg:text-base xl:text-lg font-medium text-white">Total Balance:</p>
-                  <p className="text-sm lg:text-base xl:text-lg font-bold text-[#30BDF2]">{accountSummary ? formatCurrency(accountSummary.total_balance) : '$0.00'}</p>
+                  <p className="text-sm text-gray-400">Total Balance</p>
+                  <p className="text-base font-bold text-[#30BDF2]">
+                    {accountSummary ? formatCurrency(accountSummary.total_balance) : '—'}
+                  </p>
                 </div>
-                {accountSummary && accountSummary.accounts.some(account => account.type === 'credit_card' && account.payable_balance !== undefined) && (
+                {accountSummary?.accounts.some(a => a.type === 'credit_card' && a.payable_balance !== undefined) && (
                   <div className="flex justify-between items-center mt-2">
-                    <p className="text-sm lg:text-base xl:text-lg font-medium text-white">Credit Card Payable:</p>
-                    <p className="text-sm lg:text-base xl:text-lg font-bold text-red-400">
+                    <p className="text-sm text-gray-400">CC Payable</p>
+                    <p className="text-base font-bold text-red-400">
                       {formatCurrency(
                         accountSummary.accounts
-                          .filter(account => account.type === 'credit_card' && account.payable_balance !== undefined)
-                          .reduce((sum, account) => sum + (Number(account.payable_balance) || 0), 0)
+                          .filter(a => a.type === 'credit_card' && a.payable_balance !== undefined)
+                          .reduce((sum, a) => sum + (Number(a.payable_balance) || 0), 0)
                       )}
                     </p>
                   </div>
@@ -336,9 +381,9 @@ export default function DashboardDesktop({
             </>
           ) : (
             <div className="py-4 text-center">
-              <p className="text-sm lg:text-base text-gray-300">Could not load account data</p>
-              <button 
-                className="mt-2 text-xs sm:text-sm lg:text-base text-gray-200 hover:text-white"
+              <p className="text-sm text-gray-400">Could not load account data</p>
+              <button
+                className="mt-2 text-xs text-[#30BDF2] hover:text-[#83e0ff] transition-colors"
                 onClick={() => window.location.reload()}
               >
                 Try Again
@@ -349,4 +394,4 @@ export default function DashboardDesktop({
       </div>
     </div>
   );
-} 
+}

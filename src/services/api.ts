@@ -220,10 +220,11 @@ const handleApiError = (error: unknown): never => {
 };
 
 // Account API Functions
-export const getAllAccounts = async (accountType?: string): Promise<Account[]> => {
+export const getAllAccounts = async (accountType?: string, year?: number): Promise<Account[]> => {
   try {
     const params: Record<string, any> = {};
     if (accountType) params.account_type = accountType;
+    if (year) params.year = year;
     
     const response = await axiosInstance.get('/cuan/accounts', { params });
     return response.data;
@@ -259,9 +260,11 @@ export const deleteAccount = async (accountId: string): Promise<DeleteResponse> 
   }
 };
 
-export const getAccountBalance = async (accountId: string): Promise<{ data: AccountBalance, message: string }> => {
+export const getAccountBalance = async (accountId: string, year?: number): Promise<{ data: AccountBalance, message: string }> => {
   try {
-    const response = await axiosInstance.get(`/cuan/accounts/${accountId}/balance`);
+    const params: Record<string, any> = {};
+    if (year) params.year = year;
+    const response = await axiosInstance.get(`/cuan/accounts/${accountId}/balance`, { params });
     return response.data;
   } catch (error) {
     throw handleApiError(error);

@@ -24,30 +24,32 @@ const FormModal: React.FC<FormModalProps> = ({
   children,
 }) => {
   return (
-    <BottomSheetModal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={title}
-    >
+    <BottomSheetModal isOpen={isOpen} onClose={onClose} title={title}>
       <form onSubmit={onSubmit} className="space-y-4">
         {children}
-        
-        <div className="grid grid-cols-2 gap-3 pt-4">
+
+        <div className="grid grid-cols-2 gap-3 pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="w-full py-3 border border-gray-700 rounded-lg text-gray-300 font-medium active:bg-gray-800 transition-colors"
+            className="w-full py-3.5 rounded-2xl text-sm font-semibold text-gray-300 transition-all"
+            style={{
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.08)'
+            }}
           >
             {cancelText}
           </button>
           <button
             type="submit"
             disabled={submitDisabled}
-            className={`w-full py-3 rounded-lg font-medium transition-colors ${
-              submitDisabled 
-                ? 'bg-gray-700 text-gray-500 cursor-not-allowed' 
-                : 'bg-[#30BDF2] text-white active:bg-[#28a8d8]'
-            }`}
+            className="w-full py-3.5 rounded-2xl text-sm font-semibold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            style={!submitDisabled ? {
+              background: 'linear-gradient(135deg, #30BDF2 0%, #2DAAE0 100%)',
+              boxShadow: '0 4px 12px rgba(48,189,242,0.3)'
+            } : {
+              background: 'rgba(255,255,255,0.08)'
+            }}
           >
             {submitText}
           </button>
@@ -57,4 +59,4 @@ const FormModal: React.FC<FormModalProps> = ({
   );
 };
 
-export default FormModal; 
+export default FormModal;

@@ -7,10 +7,9 @@ import type {
   CategoryDistribution,
   TransactionTrends
 } from '../../services/api';
-import { ArrowDownIcon, ArrowUpIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
+import { ArrowDownIcon, ArrowUpIcon, ArrowsRightLeftIcon, BuildingLibraryIcon, CreditCardIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 import TransactionChart from './TransactionChart';
 import CategoryChart from './CategoryChart';
-import { BuildingLibraryIcon, CreditCardIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 import { DashboardMobileSkeleton } from '../common/SkeletonLoader';
 
 interface DashboardMobileProps {
@@ -54,323 +53,371 @@ export default function DashboardMobile({
 }: DashboardMobileProps) {
   const [activeStatsTab, setActiveStatsTab] = useState<'categories' | 'trends'>('trends');
 
-  // Component to show loading overlay for refreshing data
   const LoadingOverlay = () => (
     isRefreshing ? (
-      <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-10 rounded-xl backdrop-blur-sm">
-        <div className="px-6 py-4 bg-gray-800/90 rounded-xl shadow-xl">
-          <div className="flex items-center space-x-3">
-            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-[#30BDF2]"></div>
-            <p className="text-sm text-gray-200">Updating...</p>
-          </div>
+      <div className="absolute inset-0 bg-black/30 flex items-center justify-center z-10 rounded-xl backdrop-blur-sm">
+        <div className="flex items-center gap-3 px-5 py-3 rounded-xl"
+          style={{ background: 'rgba(13,21,40,0.9)', border: '1px solid rgba(255,255,255,0.08)' }}
+        >
+          <div className="w-4 h-4 rounded-full border-2 border-[#30BDF2]/30 border-t-[#30BDF2] animate-spin" />
+          <p className="text-sm text-gray-200">Updating...</p>
         </div>
       </div>
     ) : null
   );
 
-  if (isInitialLoading) {
-    return <DashboardMobileSkeleton />;
-  }
+  if (isInitialLoading) return <DashboardMobileSkeleton />;
+
+  const periods: Array<{ value: typeof period; label: string }> = [
+    { value: 'day', label: 'Day' },
+    { value: 'week', label: 'Week' },
+    { value: 'month', label: 'Month' },
+    { value: 'year', label: 'Year' },
+    { value: 'all', label: 'All' },
+  ];
 
   return (
-    <div className="space-y-5 px-1 pb-16">
-      {/* Period Selector - iOS/Android style segmented control */}
-      <div className="px-2 py-3">
-        <div className="flex w-full bg-slate-800/80 rounded-full p-1.5 shadow-lg">
-          <button
-            onClick={() => handlePeriodChange('day')}
-            className={`flex-1 text-center py-2.5 text-sm font-medium rounded-full transition-all ${
-              period === 'day' ? 'bg-[#30BDF2] text-white shadow-md' : 'text-gray-300'
-            }`}
-            disabled={isRefreshing}
-          >
-            Day
-          </button>
-          <button
-            onClick={() => handlePeriodChange('week')}
-            className={`flex-1 text-center py-2.5 text-sm font-medium rounded-full transition-all ${
-              period === 'week' ? 'bg-[#30BDF2] text-white shadow-md' : 'text-gray-300'
-            }`}
-            disabled={isRefreshing}
-          >
-            Week
-          </button>
-          <button
-            onClick={() => handlePeriodChange('month')}
-            className={`flex-1 text-center py-2.5 text-sm font-medium rounded-full transition-all ${
-              period === 'month' ? 'bg-[#30BDF2] text-white shadow-md' : 'text-gray-300'
-            }`}
-            disabled={isRefreshing}
-          >
-            Month
-          </button>
-          <button
-            onClick={() => handlePeriodChange('year')}
-            className={`flex-1 text-center py-2.5 text-sm font-medium rounded-full transition-all ${
-              period === 'year' ? 'bg-[#30BDF2] text-white shadow-md' : 'text-gray-300'
-            }`}
-            disabled={isRefreshing}
-          >
-            Year
-          </button>
-          <button
-            onClick={() => handlePeriodChange('all')}
-            className={`flex-1 text-center py-2.5 text-sm font-medium rounded-full transition-all ${
-              period === 'all' ? 'bg-[#30BDF2] text-white shadow-md' : 'text-gray-300'
-            }`}
-            disabled={isRefreshing}
-          >
-            All
-          </button>
+    <div className="space-y-4 pb-20">
+
+      {/* Period Selector */}
+      <div className="px-2 pt-1">
+        <div className="flex rounded-2xl p-1 gap-0.5"
+          style={{
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.07)',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.3)'
+          }}
+        >
+          {periods.map(({ value, label }) => (
+            <button
+              key={value}
+              onClick={() => handlePeriodChange(value)}
+              disabled={isRefreshing}
+              className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-all duration-150 ${
+                period === value ? 'text-white' : 'text-gray-500'
+              }`}
+              style={period === value ? {
+                background: 'linear-gradient(135deg, #30BDF2 0%, #2DAAE0 100%)',
+                boxShadow: '0 2px 8px rgba(48,189,242,0.35)'
+              } : {}}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Financial Summary - Cards with native-like styling */}
-      <div className="grid grid-cols-2 gap-3 px-2">
-        <div className="relative card-dark flex flex-col p-4 rounded-xl shadow-lg bg-gradient-to-br from-gray-800 to-gray-900">
+      {/* Financial Summary Cards */}
+      <div className="grid grid-cols-2 gap-2.5 px-2">
+        {/* Income */}
+        <div className="relative rounded-2xl p-4 overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #0a2a1e 0%, #0d1f16 100%)',
+            border: '1px solid rgba(16,185,129,0.15)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.35)'
+          }}
+        >
           <LoadingOverlay />
-          <p className="text-xs text-gray-300 mb-1.5 font-medium">Income</p>
-          <p className={`font-bold text-green-400 ${
-            financialSummary && financialSummary.totals.income.toString().length > 8 
-              ? 'text-base' 
-              : financialSummary && financialSummary.totals.income.toString().length > 6 
-                ? 'text-lg' 
-                : 'text-xl'
-          }`}>
-            {financialSummary ? formatCurrency(financialSummary.totals.income) : '$0.00'}
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center"
+              style={{ background: 'rgba(16,185,129,0.15)' }}
+            >
+              <ArrowDownIcon className="h-3.5 w-3.5 text-emerald-400" />
+            </div>
+            <p className="text-xs font-medium text-emerald-700">Income</p>
+          </div>
+          <p className="text-lg font-bold text-emerald-400 leading-tight break-all">
+            {financialSummary ? formatCurrency(financialSummary.totals.income) : '—'}
           </p>
         </div>
-        <div className="relative card-dark flex flex-col p-4 rounded-xl shadow-lg bg-gradient-to-br from-gray-800 to-gray-900">
+
+        {/* Expenses */}
+        <div className="relative rounded-2xl p-4 overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #2a0e0e 0%, #1f0d0d 100%)',
+            border: '1px solid rgba(239,68,68,0.15)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.35)'
+          }}
+        >
           <LoadingOverlay />
-          <p className="text-xs text-gray-300 mb-1.5 font-medium">Expenses</p>
-          <p className={`font-bold text-red-400 ${
-            financialSummary && financialSummary.totals.expense.toString().length > 8 
-              ? 'text-base' 
-              : financialSummary && financialSummary.totals.expense.toString().length > 6 
-                ? 'text-lg' 
-                : 'text-xl'
-          }`}>
-            {financialSummary ? formatCurrency(financialSummary.totals.expense) : '$0.00'}
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center"
+              style={{ background: 'rgba(239,68,68,0.15)' }}
+            >
+              <ArrowUpIcon className="h-3.5 w-3.5 text-red-400" />
+            </div>
+            <p className="text-xs font-medium text-red-900">Expenses</p>
+          </div>
+          <p className="text-lg font-bold text-red-400 leading-tight break-all">
+            {financialSummary ? formatCurrency(financialSummary.totals.expense) : '—'}
           </p>
         </div>
-        <div className="relative card-dark flex flex-col p-4 rounded-xl shadow-lg bg-gradient-to-br from-gray-800 to-gray-900">
+
+        {/* Transfers */}
+        <div className="relative rounded-2xl p-4 overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #0e1a2a 0%, #0d1520 100%)',
+            border: '1px solid rgba(59,130,246,0.15)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.35)'
+          }}
+        >
           <LoadingOverlay />
-          <p className="text-xs text-gray-300 mb-1.5 font-medium">Transfers</p>
-          <p className={`font-bold text-blue-400 ${
-            financialSummary && financialSummary.totals.transfer.toString().length > 8 
-              ? 'text-base' 
-              : financialSummary && financialSummary.totals.transfer.toString().length > 6 
-                ? 'text-lg' 
-                : 'text-xl'
-          }`}>
-            {financialSummary ? formatCurrency(financialSummary.totals.transfer) : '$0.00'}
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center"
+              style={{ background: 'rgba(59,130,246,0.15)' }}
+            >
+              <ArrowsRightLeftIcon className="h-3.5 w-3.5 text-blue-400" />
+            </div>
+            <p className="text-xs font-medium text-blue-900">Transfers</p>
+          </div>
+          <p className="text-lg font-bold text-blue-400 leading-tight break-all">
+            {financialSummary ? formatCurrency(financialSummary.totals.transfer) : '—'}
           </p>
         </div>
-        <div className="relative card-dark flex flex-col p-4 rounded-xl shadow-lg bg-gradient-to-br from-gray-800 to-gray-900">
-          <LoadingOverlay />
-          <p className="text-xs text-gray-300 mb-1.5 font-medium">Net</p>
-          <p className={`font-bold ${
-            financialSummary && Math.abs(financialSummary.totals.net).toString().length > 8 
-              ? 'text-base' 
-              : financialSummary && Math.abs(financialSummary.totals.net).toString().length > 6 
-                ? 'text-lg' 
-                : 'text-xl'
-          } ${financialSummary && financialSummary.totals.net >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-            {financialSummary ? formatCurrency(financialSummary.totals.net) : '$0.00'}
-          </p>
-        </div>
+
+        {/* Net */}
+        {(() => {
+          const isPositive = !financialSummary || financialSummary.totals.net >= 0;
+          return (
+            <div className="relative rounded-2xl p-4 overflow-hidden"
+              style={{
+                background: isPositive
+                  ? 'linear-gradient(135deg, #0a2a1e 0%, #0d1f16 100%)'
+                  : 'linear-gradient(135deg, #2a0e0e 0%, #1f0d0d 100%)',
+                border: `1px solid ${isPositive ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)'}`,
+                boxShadow: '0 4px 16px rgba(0,0,0,0.35)'
+              }}
+            >
+              <LoadingOverlay />
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-6 h-6 rounded-lg flex items-center justify-center"
+                  style={{ background: isPositive ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)' }}
+                >
+                  {isPositive
+                    ? <ArrowDownIcon className="h-3.5 w-3.5 text-emerald-400" />
+                    : <ArrowUpIcon className="h-3.5 w-3.5 text-red-400" />
+                  }
+                </div>
+                <p className={`text-xs font-medium ${isPositive ? 'text-emerald-700' : 'text-red-900'}`}>Net</p>
+              </div>
+              <p className={`text-lg font-bold leading-tight break-all ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+                {financialSummary ? formatCurrency(financialSummary.totals.net) : '—'}
+              </p>
+            </div>
+          );
+        })()}
       </div>
 
-      {/* Statistics Tabs - iOS/Android style tabs */}
-      <div className="card-dark rounded-xl shadow-lg overflow-hidden bg-gradient-to-b from-gray-800 to-gray-900 mx-2">
-        <div className="flex border-b border-gray-700/50 mb-4">
-          <button
-            className={`flex-1 px-4 py-3.5 font-medium text-sm ${
-              activeStatsTab === 'trends'
-                ? 'border-b-2 border-[#30BDF2] text-[#30BDF2] bg-gray-800/30'
-                : 'text-gray-400 hover:text-gray-300'
-            }`}
-            onClick={() => setActiveStatsTab('trends')}
-          >
-            Trends
-          </button>
-          <button
-            className={`flex-1 px-4 py-3.5 font-medium text-sm ${
-              activeStatsTab === 'categories'
-                ? 'border-b-2 border-[#30BDF2] text-[#30BDF2] bg-gray-800/30'
-                : 'text-gray-400 hover:text-gray-300'
-            }`}
-            onClick={() => setActiveStatsTab('categories')}
-          >
-            Categories
-          </button>
+      {/* Charts Card */}
+      <div className="mx-2 rounded-2xl overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, #161e2e 0%, #111827 100%)',
+          border: '1px solid rgba(255,255,255,0.06)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+        }}
+      >
+        {/* Tab Bar */}
+        <div className="flex"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        >
+          {(['trends', 'categories'] as const).map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveStatsTab(tab)}
+              className={`flex-1 py-3.5 text-sm font-semibold capitalize transition-all duration-150 ${
+                activeStatsTab === tab
+                  ? 'text-[#30BDF2]'
+                  : 'text-gray-500'
+              }`}
+              style={activeStatsTab === tab ? {
+                borderBottom: '2px solid #30BDF2',
+              } : { borderBottom: '2px solid transparent' }}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
 
-        <div className="px-3 pb-4">
-          {/* Trends Content */}
+        <div className="p-4">
           {activeStatsTab === 'trends' && (
             <div className="relative">
               <LoadingOverlay />
-              <TransactionChart trends={trends || { period: { start_date: '', end_date: '', period_type: period, group_by: 'day' }, trends: [] }} period={period} />
+              <TransactionChart
+                trends={trends || { period: { start_date: '', end_date: '', period_type: period, group_by: 'day' }, trends: [] }}
+                period={period}
+              />
             </div>
           )}
 
-          {/* Categories Content */}
           {activeStatsTab === 'categories' && categoryData && (
             <div className="relative">
               <LoadingOverlay />
               <div className="flex justify-between items-center mb-4">
-                {/* iOS/Android style toggle */}
-                <div className="flex rounded-full overflow-hidden border border-gray-700 p-0.5 shadow-md">
-                  <button
-                    onClick={() => handleCategoryTypeChange('expense')}
-                    className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-                      categoryType === 'expense' ? 'bg-red-500 text-white shadow-sm' : 'bg-transparent text-gray-300'
-                    }`}
-                  >
-                    Expenses
-                  </button>
-                  <button
-                    onClick={() => handleCategoryTypeChange('income')}
-                    className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-                      categoryType === 'income' ? 'bg-green-500 text-white shadow-sm' : 'bg-transparent text-gray-300'
-                    }`}
-                  >
-                    Income
-                  </button>
+                <div className="flex rounded-xl overflow-hidden p-0.5 gap-0.5"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+                >
+                  {(['expense', 'income'] as const).map(type => (
+                    <button
+                      key={type}
+                      onClick={() => handleCategoryTypeChange(type)}
+                      className={`px-3 py-1 text-xs font-semibold rounded-lg capitalize transition-all ${
+                        categoryType === type ? 'text-white' : 'text-gray-400'
+                      }`}
+                      style={categoryType === type ? {
+                        background: type === 'expense'
+                          ? 'linear-gradient(135deg, #ef4444, #dc2626)'
+                          : 'linear-gradient(135deg, #10b981, #059669)',
+                        boxShadow: `0 1px 6px ${type === 'expense' ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`
+                      } : {}}
+                    >
+                      {type}
+                    </button>
+                  ))}
                 </div>
-                <div className="text-sm font-medium text-gray-200">
-                  {formatCurrency(categoryData.total)}
-                </div>
+                <span className="text-sm font-medium text-gray-300">{formatCurrency(categoryData.total)}</span>
               </div>
-              
+
               {categoryData.categories.length > 0 ? (
-                <div>
-                  <CategoryChart categoryData={categoryData} type={categoryType} />
-                </div>
+                <CategoryChart categoryData={categoryData} type={categoryType} />
               ) : (
-                <div className="h-64 w-full flex items-center justify-center bg-gray-800/30 rounded-xl">
-                  <p className="text-gray-400">No data available for this period</p>
+                <div className="h-48 flex items-center justify-center rounded-xl"
+                  style={{ background: 'rgba(255,255,255,0.02)' }}
+                >
+                  <p className="text-gray-500 text-sm">No data for this period</p>
                 </div>
               )}
             </div>
           )}
         </div>
       </div>
-      
-      {/* Recent Transactions - iOS/Android style list */}
-      <div className="card-dark rounded-xl shadow-lg overflow-hidden bg-gradient-to-b from-gray-800 to-gray-900 mx-2">
-        <div className="flex justify-between items-center p-4 border-b border-gray-700/50">
-          <h2 className="text-base font-semibold text-white">Recent Transactions</h2>
-          <Link to="/transactions" className="text-[#30BDF2] text-sm font-medium hover:text-[#28a8d8]">
-            View All
-          </Link>
+
+      {/* Recent Transactions */}
+      <div className="mx-2 rounded-2xl overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, #161e2e 0%, #111827 100%)',
+          border: '1px solid rgba(255,255,255,0.06)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+        }}
+      >
+        <div className="flex justify-between items-center px-4 py-3.5"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        >
+          <h2 className="text-sm font-semibold text-white">Recent Transactions</h2>
+          <Link to="/transactions" className="text-xs text-[#30BDF2] font-medium">View All →</Link>
         </div>
+
         {recentTransactions.length > 0 ? (
-          <div className="divide-y divide-gray-700/50">
-            {recentTransactions.map((transaction, index, arr) => (
-              <div 
-                key={transaction.id} 
-                className={`py-3.5 px-4 flex items-center justify-between active:bg-gray-700/20 transition-colors ${index === arr.length - 1 ? 'border-b-0' : ''}`}
-              >
-                <div className="flex items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md ${
-                    transaction.transaction_type === 'income' ? 'bg-green-500/10 text-green-400' :
-                    transaction.transaction_type === 'expense' ? 'bg-red-500/10 text-red-400' :
-                    'bg-blue-500/10 text-blue-400'
+          <div className="divide-y divide-gray-800/50">
+            {recentTransactions.map((tx) => (
+              <div key={tx.id} className="flex items-center justify-between px-4 py-3.5">
+                <div className="flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                    tx.transaction_type === 'income' ? 'bg-emerald-500/10' :
+                    tx.transaction_type === 'expense' ? 'bg-red-500/10' :
+                    'bg-blue-500/10'
                   }`}>
-                    {transaction.transaction_type === 'income' ? (
-                      <ArrowDownIcon className="h-5 w-5" />
-                    ) : transaction.transaction_type === 'expense' ? (
-                      <ArrowUpIcon className="h-5 w-5" />
-                    ) : (
-                      <ArrowsRightLeftIcon className="h-5 w-5" />
-                    )}
+                    {tx.transaction_type === 'income'
+                      ? <ArrowDownIcon className="h-4 w-4 text-emerald-400" />
+                      : tx.transaction_type === 'expense'
+                        ? <ArrowUpIcon className="h-4 w-4 text-red-400" />
+                        : <ArrowsRightLeftIcon className="h-4 w-4 text-blue-400" />
+                    }
                   </div>
-                  <div className="ml-3.5">
-                    <div className="text-base font-medium text-white">{transaction.description}</div>
-                    <div className="text-xs text-gray-400">
-                      {formatDate(transaction.transaction_date)} · {transaction.transaction_type === 'transfer' ? 'Transfer' : (transaction.category?.name || 'Uncategorized')}
-                    </div>
+                  <div>
+                    <p className="text-sm font-medium text-white leading-tight">{tx.description}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      {formatDate(tx.transaction_date)} · {tx.transaction_type === 'transfer' ? 'Transfer' : (tx.category?.name || 'Uncategorized')}
+                    </p>
                   </div>
                 </div>
-                <div className={`text-base font-medium ${
-                  transaction.transaction_type === 'income' ? 'text-green-400' :
-                  transaction.transaction_type === 'expense' ? 'text-red-400' :
-                  'text-blue-400'
-                }`}>
-                  {transaction.transaction_type === 'income' ? '+' : transaction.transaction_type === 'expense' ? '-' : ''}
-                  {formatCurrency(transaction.amount)}
-                  {transaction.transaction_type === 'transfer' && transaction.transfer_fee && transaction.transfer_fee > 0 && (
-                    <div className="text-xs text-yellow-400 text-right">
-                      Fee: {formatCurrency(transaction.transfer_fee)}
-                    </div>
+                <div className="text-right">
+                  <p className={`text-sm font-semibold ${
+                    tx.transaction_type === 'income' ? 'text-emerald-400' :
+                    tx.transaction_type === 'expense' ? 'text-red-400' :
+                    'text-blue-400'
+                  }`}>
+                    {tx.transaction_type === 'income' ? '+' : tx.transaction_type === 'expense' ? '-' : ''}
+                    {formatCurrency(tx.amount)}
+                  </p>
+                  {tx.transaction_type === 'transfer' && tx.transfer_fee && tx.transfer_fee > 0 && (
+                    <p className="text-xs text-yellow-500">Fee: {formatCurrency(tx.transfer_fee)}</p>
                   )}
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="py-8 text-center text-gray-300">
-            No recent transactions
-          </div>
+          <div className="py-8 text-center text-sm text-gray-500">No recent transactions</div>
         )}
       </div>
-      
-      {/* Account Summary - iOS/Android style cards */}
-      <div className="card-dark rounded-xl shadow-lg overflow-hidden bg-gradient-to-b from-gray-800 to-gray-900 mx-2">
-        <div className="flex justify-between items-center p-4 border-b border-gray-700/50">
-          <h2 className="text-base font-semibold text-white">Active Accounts</h2>
-          <Link to="/accounts" className="text-[#30BDF2] text-sm font-medium">View All</Link>
+
+      {/* Account Summary */}
+      <div className="mx-2 rounded-2xl overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, #161e2e 0%, #111827 100%)',
+          border: '1px solid rgba(255,255,255,0.06)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+        }}
+      >
+        <div className="flex justify-between items-center px-4 py-3.5"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        >
+          <h2 className="text-sm font-semibold text-white">Active Accounts</h2>
+          <Link to="/accounts" className="text-xs text-[#30BDF2] font-medium">View All →</Link>
         </div>
+
         {!errors.accounts ? (
           <>
-            <div className="divide-y divide-gray-700/50">
-              {accountSummary && accountSummary.accounts.length > 0 ? (
+            <div className="divide-y divide-gray-800/50">
+              {accountSummary?.accounts.length ? (
                 accountSummary.accounts.slice(0, 3).map((account) => (
-                  <div 
-                    key={account.id} 
-                    className="flex justify-between items-center p-4 active:bg-gray-700/20 transition-colors"
-                  >
-                    <div className="flex items-center">
-                      <div className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-800 mr-3">
-                        <span className="text-xl" role="img" aria-label={account.type}>
-                          {account.type === 'bank_account' ? <BuildingLibraryIcon className="h-6 w-6 text-blue-300" /> : 
-                           account.type === 'credit_card' ? <CreditCardIcon className="h-6 w-6 text-blue-300" /> : <BanknotesIcon className="h-6 w-6 text-blue-300" />}
-                        </span>
+                  <div key={account.id} className="flex items-center justify-between px-4 py-3.5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                        style={{ background: 'rgba(48,189,242,0.08)', border: '1px solid rgba(48,189,242,0.12)' }}
+                      >
+                        {account.type === 'bank_account'
+                          ? <BuildingLibraryIcon className="h-4 w-4 text-[#30BDF2]" />
+                          : account.type === 'credit_card'
+                            ? <CreditCardIcon className="h-4 w-4 text-[#30BDF2]" />
+                            : <BanknotesIcon className="h-4 w-4 text-[#30BDF2]" />
+                        }
                       </div>
                       <div>
-                        <p className="text-base font-medium text-white">{account.name}</p>
-                        <p className="text-xs text-gray-400 capitalize">{account.type.replace('_', ' ')}</p>
+                        <p className="text-sm font-medium text-white leading-tight">{account.name}</p>
+                        <p className="text-xs text-gray-500 capitalize mt-0.5">{account.type.replace('_', ' ')}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-base font-bold text-white">{formatCurrency(account.balance)}</p>
+                      <p className="text-sm font-bold text-white">{formatCurrency(account.balance)}</p>
                       {account.type === 'credit_card' && account.payable_balance !== undefined && (
-                        <p className="text-xs text-gray-400">
-                          Payable: {formatCurrency(account.payable_balance)}
-                        </p>
+                        <p className="text-xs text-gray-500">Payable: {formatCurrency(account.payable_balance)}</p>
                       )}
                     </div>
                   </div>
                 ))
               ) : (
-                <p className="text-gray-300 text-center py-4">No accounts found</p>
+                <p className="text-gray-500 text-sm text-center py-5">No accounts found</p>
               )}
             </div>
-            <div className="p-4 bg-gray-800/30 rounded-lg">
+
+            <div className="px-4 py-3.5"
+              style={{ borderTop: '1px solid rgba(255,255,255,0.06)', background: 'rgba(0,0,0,0.15)' }}
+            >
               <div className="flex justify-between items-center">
-                <p className="text-sm font-medium text-white">Total Balance:</p>
-                <p className="text-base font-bold text-[#30BDF2]">{accountSummary ? formatCurrency(accountSummary.total_balance) : '$0.00'}</p>
+                <p className="text-xs text-gray-400 font-medium">Total Balance</p>
+                <p className="text-sm font-bold text-[#30BDF2]">
+                  {accountSummary ? formatCurrency(accountSummary.total_balance) : '—'}
+                </p>
               </div>
-              {accountSummary && accountSummary.accounts.some(account => account.type === 'credit_card' && account.payable_balance !== undefined) && (
+              {accountSummary?.accounts.some(a => a.type === 'credit_card' && a.payable_balance !== undefined) && (
                 <div className="flex justify-between items-center mt-2">
-                  <p className="text-sm font-medium text-white">Credit Card Payable:</p>
-                  <p className="text-base font-bold text-red-400">
+                  <p className="text-xs text-gray-400 font-medium">CC Payable</p>
+                  <p className="text-sm font-bold text-red-400">
                     {formatCurrency(
                       accountSummary.accounts
-                        .filter(account => account.type === 'credit_card' && account.payable_balance !== undefined)
-                        .reduce((sum, account) => sum + (Number(account.payable_balance) || 0), 0)
+                        .filter(a => a.type === 'credit_card' && a.payable_balance !== undefined)
+                        .reduce((sum, a) => sum + (Number(a.payable_balance) || 0), 0)
                     )}
                   </p>
                 </div>
@@ -378,10 +425,10 @@ export default function DashboardMobile({
             </div>
           </>
         ) : (
-          <div className="py-4 text-center">
-            <p className="text-gray-300">Could not load account data</p>
-            <button 
-              className="mt-3 px-4 py-2 text-sm text-white bg-[#30BDF2] rounded-full shadow-md active:bg-[#28a8d8] transition-colors"
+          <div className="py-5 text-center">
+            <p className="text-sm text-gray-400">Could not load account data</p>
+            <button
+              className="mt-3 text-xs text-[#30BDF2] font-medium"
               onClick={() => window.location.reload()}
             >
               Try Again
@@ -391,4 +438,4 @@ export default function DashboardMobile({
       </div>
     </div>
   );
-} 
+}

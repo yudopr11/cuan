@@ -16,7 +16,7 @@ const updateSW = registerSW({
       (async () => {
         if ('connection' in navigator && !navigator.onLine) return
           
-        const resp = await fetch(self.location.href, {
+        const resp = await fetch(location.href, {
           cache: 'no-store',
           headers: {
             'cache': 'no-store',
@@ -34,7 +34,7 @@ const updateSW = registerSW({
         
         if ('connection' in navigator && !navigator.onLine) return
           
-        const resp = await fetch(self.location.href, {
+        const resp = await fetch(location.href, {
           cache: 'no-store',
           headers: {
             'cache': 'no-store',

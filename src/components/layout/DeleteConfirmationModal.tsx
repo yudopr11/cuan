@@ -19,57 +19,64 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   itemType = 'item',
 }) => {
   useEffect(() => {
-    if (isOpen) {
-      // Prevent scrolling on body when modal is open
-      document.body.style.overflow = 'hidden';
-    }
-    
-    return () => {
-      // Re-enable scrolling when component unmounts or modal closes
-      document.body.style.overflow = '';
-    };
+    if (isOpen) document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-5 z-50 animate-fadeIn">
-      <div className="bg-[#1a2030] rounded-xl w-full max-w-xs animate-scaleIn overflow-hidden">
-        <div className="p-6 flex flex-col items-center">
-          {/* Trash Icon */}
-          <div className="mb-4 text-red-500">
-            <TrashIcon className="h-10 w-10" />
+    <div className="fixed inset-0 flex items-center justify-center p-5 z-50 animate-fadeIn"
+      style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}
+    >
+      <div className="w-full max-w-xs rounded-3xl overflow-hidden animate-slideUp"
+        style={{
+          background: 'linear-gradient(135deg, #161e2e 0%, #111827 100%)',
+          border: '1px solid rgba(255,255,255,0.07)',
+          boxShadow: '0 25px 50px rgba(0,0,0,0.6), 0 0 0 1px rgba(239,68,68,0.1)'
+        }}
+      >
+        <div className="p-7 flex flex-col items-center">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
+            style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}
+          >
+            <TrashIcon className="h-7 w-7 text-red-400" />
           </div>
-          
-          <h2 className="text-lg font-bold mb-2 text-white text-center">{title}</h2>
-          
-          <p className="mb-2 text-sm text-center text-gray-200">
-            Are you sure you want to delete this {itemType} <span className="text-white font-medium">"{itemName}"</span>?
+
+          <h2 className="text-lg font-bold text-white text-center mb-2">{title}</h2>
+
+          <p className="text-sm text-gray-400 text-center mb-1">
+            Are you sure you want to delete this {itemType}?
           </p>
-          
-          <p className="text-xs text-gray-400 text-center mb-4">
-            This action cannot be undone.
-          </p>
+          <p className="text-sm font-semibold text-white text-center mb-4">"{itemName}"</p>
+
+          <p className="text-xs text-gray-600 text-center">This action cannot be undone.</p>
         </div>
-        
-        {/* Delete Button */}
-        <button
-          onClick={onDelete}
-          className="w-full py-4 bg-red-500 text-white font-medium"
+
+        <div className="grid grid-cols-2"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
         >
-          Delete
-        </button>
-        
-        {/* Cancel Button */}
-        <button
-          onClick={onClose}
-          className="w-full py-4 text-center text-white font-medium bg-[#2a3446] border-t border-gray-800"
-        >
-          Cancel
-        </button>
+          <button
+            onClick={onClose}
+            className="py-4 text-sm font-medium text-gray-300 transition-colors"
+            style={{ borderRight: '1px solid rgba(255,255,255,0.06)' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onDelete}
+            className="py-4 text-sm font-semibold text-red-400 transition-colors"
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(239,68,68,0.08)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
-export default DeleteConfirmationModal; 
+export default DeleteConfirmationModal;

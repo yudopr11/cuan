@@ -20,59 +20,54 @@ export default defineConfig(({ mode }) => {
       react(),
       VitePWA({
         registerType: 'autoUpdate',
-        // remove redundant includeAssets entry if necessary
-        includeAssets: ['**/*'],
-        includeManifestIcons: true,
-        injectRegister: 'auto',
+        // null because we register manually via virtual:pwa-register in main.tsx
+        injectRegister: null,
         strategies: 'generateSW',
-        manifestFilename: 'manifest.webmanifest',
+        includeAssets: ['favicon.ico', 'favicon.svg', 'apple-touch-icon.png'],
         manifest: {
-          "name": "Cuan - Money Manager",
-          "short_name": "Cuan",
-          "icons": [
+          name: 'Cuan - Money Manager',
+          short_name: 'Cuan',
+          description: 'Money Manager by yudopr',
+          start_url: '/',
+          scope: '/',
+          display: 'standalone',
+          display_override: ['window-controls-overlay', 'standalone'],
+          background_color: '#0d1117',
+          theme_color: '#0d1117',
+          icons: [
             {
-              "src": "/pwa-192x192.png",
-              "sizes": "192x192",
-              "type": "image/png",
-              "purpose": "any"
+              src: '/pwa-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'any',
             },
             {
-              "src": "/pwa-512x512.png",
-              "sizes": "512x512",
-              "type": "image/png",
-              "purpose": "any"
+              src: '/pwa-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'any',
             },
             {
-              "src": "/pwa-maskable-192x192.png",
-              "sizes": "192x192",
-              "type": "image/png",
-              "purpose": "maskable"
+              src: '/pwa-maskable-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'maskable',
             },
             {
-              "src": "/pwa-maskable-512x512.png",
-              "sizes": "512x512",
-              "type": "image/png",
-              "purpose": "maskable"
-            }
+              src: '/pwa-maskable-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable',
+            },
           ],
-          "start_url": "/",
-          "display": "standalone",
-          "background_color": "#FFFFFF",
-          "theme_color": "#FFFFFF",
-          "description": "Money Manager by yudopr"
         },
         workbox: {
-          // Ensure all asset types are included
-          globPatterns: ['**/*.{js,css,html,ico,png,svg}', 'icons/*.png'],
-          // Set the navigation fallback to /index.html...
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2}'],
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api/, /^\/_/],
-          // Explicitly precache index.html
-          additionalManifestEntries: [
-            { url: '/index.html', revision: '1' }
-          ],
           skipWaiting: true,
           clientsClaim: true,
+          cleanupOutdatedCaches: true,
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -81,51 +76,27 @@ export default defineConfig(({ mode }) => {
                 cacheName: 'google-fonts-cache',
                 expiration: {
                   maxEntries: 10,
-                  maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+                  maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
                 },
-                cacheableResponse: {
-                  statuses: [0, 200]
-                }
-              }
+                cacheableResponse: { statuses: [0, 200] },
+              },
             },
             {
-              urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
               handler: 'CacheFirst',
               options: {
                 cacheName: 'images-cache',
                 expiration: {
                   maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
-                }
-              }
-            },
-            {
-              urlPattern: ({ request }) => request.mode === 'navigate',
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'pages-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 // 1 day
-                }
-              }
-            },
-            {
-              urlPattern: /\/icons\/.*\.png$/,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'icon-cache',
-                expiration: {
-                  maxEntries: 20,
-                  maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
                 },
-                cacheableResponse: {
-                  statuses: [0, 200]
-                }
-              }
-            }
-          ]
-        }
+              },
+            },
+          ],
+        },
+        devOptions: {
+          enabled: false,
+        },
       })
     ],
     server: {

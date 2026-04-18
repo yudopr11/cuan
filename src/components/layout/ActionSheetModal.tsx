@@ -25,64 +25,77 @@ const ActionSheetModal: React.FC<ActionSheetModalProps> = ({
   actions,
 }) => {
   useEffect(() => {
-    if (isOpen) {
-      // Prevent scrolling on body when modal is open
-      document.body.style.overflow = 'hidden';
-    }
-    
-    return () => {
-      // Re-enable scrolling when component unmounts or modal closes
-      document.body.style.overflow = '';
-    };
+    if (isOpen) document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-col justify-end z-50 animate-fadeIn">
-      
-      <div className="bg-gray-900 px-2 pt-2 rounded-t-2xl overflow-hidden animate-slideUp">
-        {/* Handle indicator for bottom sheet */}
-        <div className="flex justify-center mb-2">
-          <div className="w-12 h-1.5 bg-gray-700 rounded-full my-2"></div>
+    <div className="fixed inset-0 flex flex-col justify-end z-50 animate-fadeIn"
+      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
+    >
+      <div className="rounded-t-3xl overflow-hidden animate-slideUp"
+        style={{
+          background: 'linear-gradient(180deg, #161e2e 0%, #111827 100%)',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderBottom: 'none',
+          boxShadow: '0 -8px 40px rgba(0,0,0,0.6)'
+        }}
+      >
+        {/* Handle */}
+        <div className="flex justify-center pt-3 mb-1">
+          <div className="w-10 h-1 rounded-full"
+            style={{ background: 'rgba(255,255,255,0.15)' }}
+          />
         </div>
 
-        {/* Title section (optional) */}
         {(title || subtitle) && (
-          <div className="px-4 text-center">
-            {title && <h2 className="text-lg font-bold text-gray-200">{title}</h2>}
-            {subtitle && <p className="text-sm text-gray-400 capitalize">{subtitle}</p>}
+          <div className="px-5 pt-2 pb-3 text-center"
+            style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+          >
+            {title && <h2 className="text-base font-bold text-white">{title}</h2>}
+            {subtitle && <p className="text-xs text-gray-400 capitalize mt-0.5">{subtitle}</p>}
           </div>
         )}
 
-        {/* Action items */}
-        {actions.map((action, index) => (
-          <div key={action.id} className={index > 0 ? "border-t border-gray-800" : ""}>
+        <div className="py-1">
+          {actions.map((action, index) => (
             <button
+              key={action.id}
               onClick={action.onClick}
-              className={`w-full py-4 px-5 flex items-center text-left ${action.textColor || 'text-gray-200'} active:bg-gray-800`}
+              className={`w-full py-4 px-5 flex items-center text-left transition-colors ${action.textColor || 'text-gray-200'}`}
+              style={index > 0 ? { borderTop: '1px solid rgba(255,255,255,0.04)' } : {}}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
-              {action.icon && <span className="mr-3">{action.icon}</span>}
-              {action.label}
+              {action.icon && <span className="mr-4">{action.icon}</span>}
+              <span className="text-sm font-medium">{action.label}</span>
             </button>
-          </div>
-        ))}
+          ))}
+        </div>
 
-        {/* Cancel button */}
-        <div className="border-t border-gray-800 p-6">
+        <div className="p-4"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+        >
           <button
             onClick={onClose}
-            className="w-full py-3 border border-gray-700 rounded-lg text-gray-300 font-medium active:bg-gray-800 transition-colors"
+            className="w-full py-3.5 rounded-2xl text-sm font-semibold text-gray-300 transition-all"
+            style={{
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.08)'
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.06)')}
           >
             Cancel
           </button>
         </div>
       </div>
-      
-      {/* Backdrop for closing by tapping outside */}
-      <div className="absolute inset-0 -z-10" onClick={onClose}></div>
+
+      <div className="absolute inset-0 -z-10" onClick={onClose} />
     </div>
   );
 };
 
-export default ActionSheetModal; 
+export default ActionSheetModal;
