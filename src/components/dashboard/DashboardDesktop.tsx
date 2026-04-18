@@ -269,7 +269,7 @@ export default function DashboardDesktop({
                   onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
                       tx.transaction_type === 'income' ? 'bg-emerald-500/10' :
                       tx.transaction_type === 'expense' ? 'bg-red-500/10' :
                       'bg-blue-500/10'
@@ -328,7 +328,7 @@ export default function DashboardDesktop({
                       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
                           style={{ background: 'rgba(48,189,242,0.08)', border: '1px solid rgba(48,189,242,0.12)' }}
                         >
                           {account.type === 'bank_account'

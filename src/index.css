@@ -316,8 +316,7 @@ body {
 
 @media (max-width: 768px) {
   .card-dark {
-    @apply p-4 mb-0;
-    margin-bottom: 0 !important;
+    @apply p-4;
   }
 
   .divide-y > :last-child {
@@ -326,21 +325,4 @@ body {
 }
 
 /* ========== ANIMATIONS ========== */
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.2s ease-out;
-}
-
-.animate-slideUp {
-  animation: slideUp 0.25s ease-out;
-}
+/* fadeIn, slideUp, scaleIn and their animate-* classes are defined in ModalAnimations.css */

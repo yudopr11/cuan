@@ -201,7 +201,7 @@ export default function AccountsMobile({
   ] : [];
 
   return (
-    <div className="pb-24 space-y-4">
+    <div className="pb-16 space-y-4">
       {/* Year Filter Bar — matches Transactions style */}
       <div className="px-2">
         <div

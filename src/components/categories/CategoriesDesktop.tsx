@@ -91,7 +91,7 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
   };
 
   const TableLoadingIndicator = () => (
-    <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-10 rounded-lg backdrop-blur-sm">
+    <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-10 rounded-lg backdrop-blur-sm">
       <div className="px-6 py-4 bg-gray-800/90 rounded-xl shadow-xl">
         <div className="flex items-center space-x-3">
           <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-[#30BDF2]"></div>
@@ -190,7 +190,7 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
             <div className="px-5 py-4 flex items-center gap-3"
               style={{ background: 'linear-gradient(90deg, #0a2a1e 0%, #0d1f16 100%)', borderBottom: '1px solid rgba(16,185,129,0.1)' }}
             >
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                 style={{ background: 'rgba(16,185,129,0.15)' }}
               >
                 <TagIcon className="h-4 w-4 text-emerald-400" />
@@ -222,7 +222,7 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
                       >
                         <td className="px-5 py-3.5 whitespace-nowrap">
                           <div className="flex items-center gap-2.5">
-                            <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0"
+                            <div className="w-6 h-6 rounded-md flex items-center justify-center shrink-0"
                               style={{ background: 'rgba(16,185,129,0.1)' }}
                             >
                               <TagIcon className="h-3.5 w-3.5 text-emerald-400" />
@@ -282,7 +282,7 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
             <div className="px-5 py-4 flex items-center gap-3"
               style={{ background: 'linear-gradient(90deg, #2a0e0e 0%, #1f0d0d 100%)', borderBottom: '1px solid rgba(239,68,68,0.1)' }}
             >
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                 style={{ background: 'rgba(239,68,68,0.15)' }}
               >
                 <TagIcon className="h-4 w-4 text-red-400" />
@@ -314,7 +314,7 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
                       >
                         <td className="px-5 py-3.5 whitespace-nowrap">
                           <div className="flex items-center gap-2.5">
-                            <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0"
+                            <div className="w-6 h-6 rounded-md flex items-center justify-center shrink-0"
                               style={{ background: 'rgba(239,68,68,0.1)' }}
                             >
                               <TagIcon className="h-3.5 w-3.5 text-red-400" />
@@ -426,7 +426,7 @@ const CategoriesDesktop: React.FC<CategoriesDesktopProps> = ({
         >
           <div className="modal-dark w-full max-w-sm p-6 animate-slideUp">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                 style={{ background: 'rgba(239,68,68,0.1)' }}
               >
                 <TrashIcon className="h-5 w-5 text-red-400" />

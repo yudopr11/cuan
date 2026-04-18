@@ -162,7 +162,7 @@ export default function SettingsMobile({ userInfo, isLoading }: SettingsMobilePr
           </button>
           
           {isCheckingUpdate && (
-            <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center z-10 rounded-lg backdrop-blur-sm">
+            <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-10 rounded-lg backdrop-blur-sm">
               <div className="px-6 py-4 bg-gray-800/90 rounded-xl shadow-xl">
                 <div className="flex items-center space-x-3">
                   <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-[#30BDF2]"></div>
@@ -176,7 +176,7 @@ export default function SettingsMobile({ userInfo, isLoading }: SettingsMobilePr
       
       {/* App info */}
       <div className="mt-8 text-center">
-        <p className="text-xs text-gray-500">Cuan App v1.0.1</p>
+        <p className="text-xs text-gray-500">Cuan App v1.0.2</p>
       </div>
     </div>
   );

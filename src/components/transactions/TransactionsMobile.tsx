@@ -189,19 +189,19 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
     switch (type) {
       case 'income':
         return (
-          <div className="w-10 h-10 rounded-full bg-green-500 bg-opacity-20 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
             <ArrowDownIcon className="h-5 w-5 text-green-400" />
           </div>
         );
       case 'expense':
         return (
-          <div className="w-10 h-10 rounded-full bg-red-500 bg-opacity-20 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
             <ArrowUpIcon className="h-5 w-5 text-red-400" />
           </div>
         );
       case 'transfer':
         return (
-          <div className="w-10 h-10 rounded-full bg-blue-500 bg-opacity-20 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
             <ArrowsRightLeftIcon className="h-5 w-5 text-blue-400" />
           </div>
         );
@@ -242,23 +242,23 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
               <span className="text-gray-300 text-xs font-medium">Filters:</span>
               <div className="flex flex-wrap gap-1">
                 {activeFilters.date_filter_type && (
-                <span className="inline-flex items-center px-2 py-1 bg-indigo-500 bg-opacity-30 text-indigo-300 text-xs rounded-full">
+                <span className="inline-flex items-center px-2 py-1 bg-indigo-500/30 text-indigo-300 text-xs rounded-full">
                   {dateFilterPresets.find(preset => preset.value === activeFilters.date_filter_type)?.label || activeFilters.date_filter_type}
                 </span>
                 )}
                 {activeFilters.transaction_type && (
-                  <span className="inline-flex items-center px-2 py-1 bg-indigo-500 bg-opacity-30 text-indigo-300 text-xs rounded-full">
+                  <span className="inline-flex items-center px-2 py-1 bg-indigo-500/30 text-indigo-300 text-xs rounded-full">
                     {activeFilters.transaction_type === 'income' ? 'Income' : 
                     activeFilters.transaction_type === 'expense' ? 'Expense' : 'Transfer'}
                   </span>
                 )}
                 {activeFilters.account_name && (
-                  <span className="inline-flex items-center px-2 py-1 bg-indigo-500 bg-opacity-30 text-indigo-300 text-xs rounded-full">
+                  <span className="inline-flex items-center px-2 py-1 bg-indigo-500/30 text-indigo-300 text-xs rounded-full">
                     {activeFilters.account_name}
                   </span>
                 )}
                 {activeFilters.category_name && (
-                  <span className="inline-flex items-center px-2 py-1 bg-indigo-500 bg-opacity-30 text-indigo-300 text-xs rounded-full">
+                  <span className="inline-flex items-center px-2 py-1 bg-indigo-500/30 text-indigo-300 text-xs rounded-full">
                     {activeFilters.category_name}
                   </span>
                 )}
@@ -582,7 +582,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
         >
           <div className="space-y-4 pb-6">
             {hasFilterChanges() && (
-              <div className="px-3 py-2 bg-blue-900 bg-opacity-30 border border-blue-800 rounded-md mb-3">
+              <div className="px-3 py-2 bg-blue-900/30 border border-blue-800 rounded-md mb-3">
                 <p className="text-xs text-blue-300">
                   You have unapplied filter changes. Click Apply to update results.
                 </p>

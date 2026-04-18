@@ -77,7 +77,7 @@ export default function DashboardMobile({
   ];
 
   return (
-    <div className="space-y-4 pb-20">
+    <div className="space-y-4">
 
       {/* Period Selector */}
       <div className="px-2 pt-1">
@@ -311,7 +311,7 @@ export default function DashboardMobile({
             {recentTransactions.map((tx) => (
               <div key={tx.id} className="flex items-center justify-between px-4 py-3.5">
                 <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
                     tx.transaction_type === 'income' ? 'bg-emerald-500/10' :
                     tx.transaction_type === 'expense' ? 'bg-red-500/10' :
                     'bg-blue-500/10'
@@ -373,7 +373,7 @@ export default function DashboardMobile({
                 accountSummary.accounts.slice(0, 3).map((account) => (
                   <div key={account.id} className="flex items-center justify-between px-4 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
                         style={{ background: 'rgba(48,189,242,0.08)', border: '1px solid rgba(48,189,242,0.12)' }}
                       >
                         {account.type === 'bank_account'

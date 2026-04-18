@@ -40,7 +40,7 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
   return (
     <div className="flex flex-col min-h-screen" style={{ background: '#0b1120' }}>
       {/* Header */}
-      <header className="px-4 py-3 flex justify-between items-center z-10 flex-shrink-0"
+      <header className="px-4 py-3 flex justify-between items-center z-10 shrink-0"
         style={{
           background: 'linear-gradient(90deg, #0d1528 0%, #0a1020 100%)',
           borderBottom: '1px solid rgba(255,255,255,0.06)',
@@ -48,7 +48,7 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
         }}
       >
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
             style={{
               background: 'linear-gradient(135deg, rgba(48,189,242,0.2) 0%, rgba(48,189,242,0.05) 100%)',
               border: '1px solid rgba(48,189,242,0.25)',
@@ -73,7 +73,7 @@ export default function MobileLayout({ children }: MobileLayoutProps) {
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 w-full z-10 flex-shrink-0"
+      <nav className="fixed bottom-0 w-full z-10 shrink-0"
         style={{
           background: 'linear-gradient(180deg, rgba(10,16,32,0.97) 0%, rgba(13,21,40,1) 100%)',
           borderTop: '1px solid rgba(255,255,255,0.06)',

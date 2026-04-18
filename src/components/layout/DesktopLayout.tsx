@@ -51,7 +51,7 @@ export default function DesktopLayout({ children }: DesktopLayoutProps) {
           style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
         >
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
               style={{
                 background: 'linear-gradient(135deg, rgba(48,189,242,0.2) 0%, rgba(48,189,242,0.05) 100%)',
                 border: '1px solid rgba(48,189,242,0.25)',
@@ -91,7 +91,7 @@ export default function DesktopLayout({ children }: DesktopLayoutProps) {
                     : 'text-gray-400 nav-item-inactive'
                 }`}
               >
-                <Icon className={`h-5 w-5 mr-3 flex-shrink-0 ${isActive ? 'text-[#30BDF2]' : ''}`} />
+                <Icon className={`h-5 w-5 mr-3 shrink-0 ${isActive ? 'text-[#30BDF2]' : ''}`} />
                 <span>{item.name}</span>
                 {isActive && (
                   <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#30BDF2]"
@@ -114,7 +114,7 @@ export default function DesktopLayout({ children }: DesktopLayoutProps) {
             onMouseEnter={e => (e.currentTarget.style.background = 'rgba(239,68,68,0.08)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
           >
-            <ArrowRightEndOnRectangleIcon className="h-5 w-5 mr-3 flex-shrink-0" />
+            <ArrowRightEndOnRectangleIcon className="h-5 w-5 mr-3 shrink-0" />
             <span>Log Out</span>
           </Link>
         </div>
@@ -123,7 +123,7 @@ export default function DesktopLayout({ children }: DesktopLayoutProps) {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="h-16 flex items-center px-8 flex-shrink-0"
+        <header className="h-16 flex items-center px-8 shrink-0"
           style={{
             background: 'linear-gradient(90deg, #0d1528 0%, #0a1020 100%)',
             borderBottom: '1px solid rgba(255,255,255,0.05)',

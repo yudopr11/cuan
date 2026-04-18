@@ -38,13 +38,13 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
         }}
       >
         {/* Handle */}
-        <div className="flex justify-center mb-3 flex-shrink-0">
+        <div className="flex justify-center mb-3 shrink-0">
           <div className="w-10 h-1 rounded-full"
             style={{ background: 'rgba(255,255,255,0.15)' }}
           />
         </div>
 
-        <div className="overflow-y-auto flex-grow">
+        <div className="overflow-y-auto grow">
           {title && (
             <div className="px-4 mb-4 text-center">
               <h2 className="text-lg font-bold text-white">{title}</h2>
