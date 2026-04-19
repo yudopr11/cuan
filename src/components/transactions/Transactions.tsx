@@ -16,6 +16,7 @@ import type {
   Account,
   Category} from '../../services/api';
 import usePageTitle from '../../hooks/usePageTitle';
+import useTimezone from '../../hooks/useTimezone';
 import TransactionsDesktop from './TransactionsDesktop';
 import TransactionsMobile from './TransactionsMobile';
 import { TransactionsDesktopSkeleton, TransactionsMobileSkeleton } from '../common/SkeletonLoader';
@@ -26,6 +27,7 @@ interface TransactionsProps {
 
 export default function Transactions({ isMobile }: TransactionsProps) {
   usePageTitle('Transactions');
+  const { toLocalDateString, getTodayString, toUTCISOString } = useTimezone();
   
   // Initial filter state
   const initialFilterState = {
@@ -69,7 +71,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
   const [formData, setFormData] = useState<TransactionCreate>({
     amount: 0,
     description: '',
-    transaction_date: new Date().toISOString().split('T')[0],
+    transaction_date: getTodayString(),
     transaction_type: 'expense',
     account_id: '',
     category_id: undefined,
@@ -155,6 +157,11 @@ export default function Transactions({ isMobile }: TransactionsProps) {
       if (activeFilters.date_filter_type === 'custom') {
         if (activeFilters.start_date) apiParams.start_date = activeFilters.start_date;
         if (activeFilters.end_date) apiParams.end_date = activeFilters.end_date;
+      } else if (activeFilters.date_filter_type === 'day') {
+        // Use the user's timezone to determine "today" instead of relying on server UTC
+        const today = getTodayString();
+        apiParams.start_date = today;
+        apiParams.end_date = today;
       } else {
         apiParams.date_filter_type = activeFilters.date_filter_type;
       }
@@ -201,15 +208,11 @@ export default function Transactions({ isMobile }: TransactionsProps) {
 
   const handleOpenModal = (transaction?: Transaction) => {
     if (transaction) {
-      // For existing transaction, convert UTC to local date
-      const utcDate = new Date(transaction.transaction_date);
-      const localDate = new Date(utcDate.getTime() - (utcDate.getTimezoneOffset() * 60000));
-      
       setSelectedTransaction(transaction);
       setFormData({
         amount: transaction.amount,
         description: transaction.description,
-        transaction_date: localDate.toISOString().split('T')[0],
+        transaction_date: toLocalDateString(transaction.transaction_date),
         transaction_type: transaction.transaction_type,
         account_id: transaction.account_id,
         category_id: transaction.category_id,
@@ -218,16 +221,10 @@ export default function Transactions({ isMobile }: TransactionsProps) {
       });
     } else {
       setSelectedTransaction(null);
-      // For new transaction, use today's local date
-      const today = new Date();
-      const todayStr = today.getFullYear() + '-' + 
-        String(today.getMonth() + 1).padStart(2, '0') + '-' + 
-        String(today.getDate()).padStart(2, '0');
-      
       setFormData({
         amount: 0,
         description: '',
-        transaction_date: todayStr,
+        transaction_date: getTodayString(),
         transaction_type: 'expense',
         account_id: accounts.length > 0 ? accounts[0].id : '',
         category_id: undefined,
@@ -291,22 +288,9 @@ export default function Transactions({ isMobile }: TransactionsProps) {
     }
     
     try {
-      // Get current time in local timezone
-      const now = new Date();
-      // Create date object from form date and current time
-      const localDate = new Date(
-        formData.transaction_date + 'T' + 
-        now.getHours().toString().padStart(2, '0') + ':' +
-        now.getMinutes().toString().padStart(2, '0') + ':' +
-        now.getSeconds().toString().padStart(2, '0')
-      );
-      
-      // Convert to UTC by adding the negative timezone offset
-      const utcDate = new Date(localDate.getTime());
-      
       const submissionData = {
         ...formData,
-        transaction_date: utcDate.toISOString()
+        transaction_date: toUTCISOString(formData.transaction_date),
       };
       
       if (selectedTransaction) {

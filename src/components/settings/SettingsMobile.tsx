@@ -3,6 +3,7 @@ import { ChevronRightIcon, CheckIcon, UserCircleIcon } from '@heroicons/react/24
 import type { User } from '../../services/api';
 import toast from 'react-hot-toast';
 import { updateSW } from './Settings';
+import { CURRENCY_OPTIONS, TIMEZONE_OPTIONS } from '../../utils/settingsOptions';
 
 interface SettingsMobileProps {
   userInfo: User | null;
@@ -11,15 +12,17 @@ interface SettingsMobileProps {
 
 export default function SettingsMobile({ userInfo, isLoading }: SettingsMobileProps) {
   const [currency, setCurrency] = useState('IDR');
+  const [timezone, setTimezone] = useState('UTC');
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
+  const [showTimezonePicker, setShowTimezonePicker] = useState(false);
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
-  
+
   useEffect(() => {
-    // Load saved currency setting from localStorage
     const savedCurrency = localStorage.getItem('currency');
-    if (savedCurrency) {
-      setCurrency(savedCurrency);
-    }
+    if (savedCurrency) setCurrency(savedCurrency);
+
+    const savedTimezone = localStorage.getItem('timezone');
+    if (savedTimezone) setTimezone(savedTimezone);
   }, []);
 
   const handleCurrencyChange = (value: string) => {
@@ -28,21 +31,21 @@ export default function SettingsMobile({ userInfo, isLoading }: SettingsMobilePr
     setShowCurrencyPicker(false);
   };
 
-  // Currency options with symbols
-  const currencyOptions = [
-    { value: 'IDR', label: 'IDR (Rp)' },
-    { value: 'USD', label: 'USD ($)' },
-    { value: 'EUR', label: 'EUR (€)' },
-    { value: 'GBP', label: 'GBP (£)' },
-    { value: 'JPY', label: 'JPY (¥)' },
-    { value: 'SGD', label: 'SGD (S$)' },
-    { value: 'MYR', label: 'MYR (RM)' },
-  ];
+  const handleTimezoneChange = (value: string) => {
+    setTimezone(value);
+    localStorage.setItem('timezone', value);
+    setShowTimezonePicker(false);
+  };
 
   // Find the current currency label
-  const currentCurrencyLabel = currencyOptions.find(
+  const currentCurrencyLabel = CURRENCY_OPTIONS.find(
     option => option.value === currency
   )?.label || 'IDR (Rp)';
+
+  // Find the current timezone label (show short version)
+  const currentTimezoneLabel = TIMEZONE_OPTIONS.find(
+    option => option.value === timezone
+  )?.label.split(' – ')[1] || timezone;
   
   // Handle manual update check
   const checkForUpdates = async () => {
@@ -126,12 +129,12 @@ export default function SettingsMobile({ userInfo, isLoading }: SettingsMobilePr
         {/* Currency options */}
         {showCurrencyPicker && (
           <div className="border-t border-gray-700/50 animate-fadeIn">
-            {currencyOptions.map((option) => (
-              <div 
+            {CURRENCY_OPTIONS.map((option) => (
+              <div
                 key={option.value}
                 className={`px-5 py-3 flex items-center justify-between transition-colors duration-150 ${
-                  currency === option.value 
-                    ? 'bg-[#30BDF2] text-white' 
+                  currency === option.value
+                    ? 'bg-[#30BDF2] text-white'
                     : 'text-gray-300 hover:bg-gray-700/30 active:bg-gray-700/50'
                 }`}
                 onClick={() => handleCurrencyChange(option.value)}
@@ -139,6 +142,43 @@ export default function SettingsMobile({ userInfo, isLoading }: SettingsMobilePr
                 <span className="text-xs">{option.label}</span>
                 {currency === option.value && (
                   <CheckIcon className="h-4 w-4" aria-hidden="true" />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Timezone selector */}
+        <div
+          className="flex items-center justify-between px-5 py-4 border-t border-gray-700/50 hover:bg-gray-700/30 active:bg-gray-700/50 transition-colors duration-150"
+          onClick={() => setShowTimezonePicker(!showTimezonePicker)}
+        >
+          <span className="text-sm text-white font-medium">Timezone</span>
+          <div className="flex items-center text-gray-300">
+            <span className="text-sm truncate max-w-36">{currentTimezoneLabel}</span>
+            <ChevronRightIcon
+              className={`h-5 w-5 ml-2 flex-shrink-0 transition-transform duration-200 ${showTimezonePicker ? 'rotate-90' : ''}`}
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+
+        {/* Timezone options */}
+        {showTimezonePicker && (
+          <div className="border-t border-gray-700/50 animate-fadeIn">
+            {TIMEZONE_OPTIONS.map((option) => (
+              <div
+                key={option.value}
+                className={`px-5 py-3 flex items-center justify-between transition-colors duration-150 ${
+                  timezone === option.value
+                    ? 'bg-[#30BDF2] text-white'
+                    : 'text-gray-300 hover:bg-gray-700/30 active:bg-gray-700/50'
+                }`}
+                onClick={() => handleTimezoneChange(option.value)}
+              >
+                <span className="text-xs">{option.label}</span>
+                {timezone === option.value && (
+                  <CheckIcon className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
                 )}
               </div>
             ))}
@@ -176,7 +216,7 @@ export default function SettingsMobile({ userInfo, isLoading }: SettingsMobilePr
       
       {/* App info */}
       <div className="mt-8 text-center">
-        <p className="text-xs text-gray-500">Cuan App v1.0.2</p>
+        <p className="text-xs text-gray-500">Cuan App v1.0.3</p>
       </div>
     </div>
   );

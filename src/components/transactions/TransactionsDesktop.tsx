@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { Transaction, TransactionCreate, Account, Category } from '../../services/api';
 import useCurrencyFormatter from '../../hooks/useCurrencyFormatter';
+import useTimezone from '../../hooks/useTimezone';
 import { TransactionsDesktopSkeleton } from '../common/SkeletonLoader';
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 
@@ -117,6 +118,7 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
   handlePageChange
 }) => {
   const { formatCurrency } = useCurrencyFormatter();
+  const { formatDate } = useTimezone();
   const [isTableLoading, setIsTableLoading] = useState(false);
 
   useEffect(() => {
@@ -351,7 +353,7 @@ const TransactionsDesktop: React.FC<TransactionsDesktopProps> = ({
                       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     >
                       <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-400">
-                        {new Date(transaction.transaction_date).toLocaleDateString()}
+                        {formatDate(transaction.transaction_date)}
                       </td>
                       <td className="px-5 py-4 whitespace-nowrap">
                         <span className="text-sm font-semibold text-gray-100">{transaction.description}</span>

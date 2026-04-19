@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { getAllAccounts, createAccount, updateAccount, deleteAccount, getAccountBalance, createTransaction } from '../../services/api';
 import type { Account, AccountCreate, AccountBalance } from '../../services/api';
 import useCurrencyFormatter from '../../hooks/useCurrencyFormatter';
+import useTimezone from '../../hooks/useTimezone';
 import usePageTitle from '../../hooks/usePageTitle';
 import AccountsDesktop from './AccountsDesktop';
 import AccountsMobile from './AccountsMobile';
@@ -15,6 +16,7 @@ interface AccountsProps {
 
 export default function Accounts({ isMobile }: AccountsProps) {
   usePageTitle('Accounts');
+  const { getTodayString } = useTimezone();
 
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +27,7 @@ export default function Accounts({ isMobile }: AccountsProps) {
   const [accountDetails, setAccountDetails] = useState<AccountBalance | null>(null);
   const [isViewingDetails, setIsViewingDetails] = useState(false);
   const [selectedYear, setSelectedYear] = useState<string>('');
-  const currentYear = new Date().getFullYear();
+  const currentYear = parseInt(getTodayString().split('-')[0], 10);
   const yearOptions = Array.from({ length: 6 }, (_, idx) => currentYear - idx);
   
   // Form state

@@ -15,6 +15,7 @@ Cuan (Catat Uang, Analisis, Nikmati!) is a modern personal financial management 
 * 🎨 Modern dark-themed UI for reduced eye strain
 * 📱 Responsive design for desktop and mobile devices
 * 🔄 Progressive Web App (PWA) support for offline access and app-like experience
+* 🌏 Timezone-aware date display — all dates shown in your selected timezone while API data stays in UTC
 
 ## Tech Stack
 
@@ -25,9 +26,10 @@ Cuan (Catat Uang, Analisis, Nikmati!) is a modern personal financial management 
    * Headless UI for accessible components  
    * Heroicons for beautiful icons
 * **Visualization**: Chart.js for financial graphs
-* **State Management**: React Hooks
+* **State Management**: React Hooks (custom hooks for currency, timezone, and page title)
 * **Routing**: React Router
 * **Notifications**: React Hot Toast
+* **Timezone Handling**: `Intl.DateTimeFormat` with user-selected timezone; UTC preserved for all API communication
 * **PWA Support**:
    * Vite PWA Plugin for full PWA functionality
    * Automatic service worker generation
@@ -40,6 +42,13 @@ Cuan (Catat Uang, Analisis, Nikmati!) is a modern personal financial management 
    * ESLint for code quality  
    * TypeScript for type safety  
    * PostCSS for CSS processing
+
+## Settings
+
+Cuan provides a built-in Settings page (available on both desktop and mobile) with the following options:
+
+* **Currency** — Choose how monetary values are displayed (IDR, USD, EUR, GBP, JPY, SGD, MYR). Affects display only; stored values are unchanged.
+* **Timezone** — Select your local timezone from a full list of UTC offsets. All dates and times in the UI — transactions, charts, filters, and account year views — are rendered in your selected timezone. Data is always stored and sent to the API as UTC.
 
 ## UI Design
 
@@ -159,11 +168,15 @@ cuan/
 │   │   ├── common/       # Shared/common components
 │   │   ├── dashboard/    # Dashboard and visualization components
 │   │   ├── layout/       # Page layout components
-│   │   ├── settings/     # Application settings components
+│   │   ├── settings/     # Application settings components (currency, timezone)
 │   │   └── transactions/ # Transaction management components
 │   ├── hooks/            # Custom React hooks
+│   │   ├── useCurrencyFormatter.ts  # Currency display formatting
+│   │   ├── useTimezone.ts           # Timezone-aware date formatting
+│   │   └── usePageTitle.ts          # Page title management
 │   ├── services/         # API and services
 │   ├── utils/            # Utility functions
+│   │   └── settingsOptions.ts       # Shared currency and timezone option lists
 │   ├── App.tsx           # Main application component
 │   └── main.tsx          # Application entry point with PWA registration
 ├── index.html            # HTML entry point

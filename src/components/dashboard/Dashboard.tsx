@@ -15,6 +15,7 @@ import type {
   TransactionTrends
 } from '../../services/api';
 import useCurrencyFormatter from '../../hooks/useCurrencyFormatter';
+import useTimezone from '../../hooks/useTimezone';
 import usePageTitle from '../../hooks/usePageTitle';
 import DashboardMobile from './DashboardMobile';
 import DashboardDesktop from './DashboardDesktop';
@@ -54,8 +55,8 @@ export default function Dashboard({ isMobile }: DashboardProps) {
     trends: false
   });
 
-  // Use the currency formatter hook
   const { formatCurrency } = useCurrencyFormatter();
+  const { formatDate } = useTimezone();
 
   // Initial data fetch and period changes
   useEffect(() => {
@@ -178,15 +179,6 @@ export default function Dashboard({ isMobile }: DashboardProps) {
     if (hasErrors) {
       toast.error('Some dashboard data could not be loaded. Please try refreshing the page.');
     }
-  };
-
-  // Format date
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
   };
 
   // Handle period change

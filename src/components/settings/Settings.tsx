@@ -26,8 +26,13 @@ export default function Settings({ isMobile }: SettingsProps) {
     // Load saved currency setting from localStorage if it doesn't exist
     const savedCurrency = localStorage.getItem('currency');
     if (!savedCurrency) {
-      // Set default to IDR if not saved yet
       localStorage.setItem('currency', 'IDR');
+    }
+
+    // Initialize timezone to browser default if not set
+    const savedTimezone = localStorage.getItem('timezone');
+    if (!savedTimezone) {
+      localStorage.setItem('timezone', 'UTC');
     }
     
     // Fetch user info

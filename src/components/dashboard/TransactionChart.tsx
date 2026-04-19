@@ -15,6 +15,7 @@ import { Line } from 'react-chartjs-2';
 import type { TransactionTrends } from '../../services/api';
 import { formatThousands } from '../../utils/formatters';
 import useCurrencyFormatter from '../../hooks/useCurrencyFormatter';
+import useTimezone from '../../hooks/useTimezone';
 
 ChartJS.register(
   CategoryScale,
@@ -34,6 +35,7 @@ interface TransactionChartProps {
 
 const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) => {
   const { formatCurrency } = useCurrencyFormatter();
+  const { getHourInTimezone, getWeekdayInTimezone, getMonthInTimezone, getDayOfMonthInTimezone } = useTimezone();
 
   const [datasetVisibility, setDatasetVisibility] = useState({
     income: true,
@@ -51,20 +53,19 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
   const formatLabel = (dateStr: string): string => {
     try {
       if (period === 'day') {
-        // Hourly: dateStr may be ISO datetime or "HH:MM" / "HH:MM:SS"
         const date = new Date(dateStr);
         if (!isNaN(date.getTime())) {
-          return `${date.getHours()}h`;
+          return `${getHourInTimezone(dateStr)}h`;
         }
         const hourMatch = dateStr.match(/^(\d{1,2}):/);
         return hourMatch ? `${parseInt(hourMatch[1])}h` : dateStr;
       }
 
       if (period === 'month') {
-        // Weekly: API returns first day of each week
         if (dateStr.startsWith('Week')) return dateStr;
         const date = new Date(dateStr);
-        const weekNum = Math.ceil(date.getDate() / 7);
+        if (isNaN(date.getTime())) return dateStr;
+        const weekNum = Math.ceil(getDayOfMonthInTimezone(dateStr) / 7);
         return `Week ${weekNum}`;
       }
 
@@ -72,9 +73,9 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
       if (isNaN(date.getTime())) return dateStr;
 
       if (period === 'week') {
-        return date.toLocaleDateString('en-US', { weekday: 'short' });
+        return getWeekdayInTimezone(dateStr);
       } else if (period === 'year') {
-        return date.toLocaleDateString('en-US', { month: 'short' });
+        return getMonthInTimezone(dateStr);
       } else if (period === 'all') {
         return date.getFullYear().toString();
       }

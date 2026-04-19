@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { Transaction, TransactionCreate, Account, Category } from '../../services/api';
 import useCurrencyFormatter from '../../hooks/useCurrencyFormatter';
+import useTimezone from '../../hooks/useTimezone';
 import { 
   ActionSheetModal, 
   BottomSheetModal, 
@@ -136,8 +137,8 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
   setIsFilterModalOpen,
   getUniqueCategories
 }) => {
-  // Use the currency formatter hook
   const { formatCurrency } = useCurrencyFormatter();
+  const { formatDate } = useTimezone();
   
   // States for action sheet
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
@@ -360,7 +361,7 @@ const TransactionsMobile: React.FC<TransactionsMobileProps> = ({
                         </p>
                       </div>
                       <p className="text-xs text-gray-400">
-                        {new Date(transaction.transaction_date).toLocaleDateString()}
+                        {formatDate(transaction.transaction_date)}
                       </p>
                     </div>
                   </div>
