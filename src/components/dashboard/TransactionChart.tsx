@@ -50,54 +50,72 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
     return isNaN(parsed) ? 0 : parsed;
   };
 
-  const formatLabel = (dateStr: string): string => {
-    try {
-      // API returns datetimes without timezone suffix — force UTC interpretation
-      const utcStr = /Z|[+-]\d{2}:?\d{2}$/.test(dateStr) ? dateStr : `${dateStr}Z`;
+  // 1. Move Regex outside the function so they only compile ONCE.
+const TIMEZONE_REGEX = /Z|[+-]\d{2}:?\d{2}$/;
+const HOUR_REGEX = /^(\d{1,2}):/;
 
-      if (period === 'day') {
-        const date = new Date(utcStr);
-        if (!isNaN(date.getTime())) {
+// 2. Cache 'today' outside the loop. 
+// (If your app stays open for days without refreshing, you can turn this into a memoized getter, 
+// but a static string is usually perfectly fine for page load performance).
+const TODAY_PREFIX = new Date().toISOString().slice(0, 10);
+
+const formatLabel = (dateStr: string): string => {
+  try {
+    // Fast UTC string generation
+    const utcStr = TIMEZONE_REGEX.test(dateStr) ? dateStr : `${dateStr}Z`;
+
+    // 3. Switch statements are generally faster and easier to read than chained if/else
+    switch (period) {
+      case 'day': {
+        // Date.parse is faster for validity checking than new Date()
+        if (!isNaN(Date.parse(utcStr))) {
           return `${getHourInTimezone(utcStr)}h`;
         }
-        // time-only fallback e.g. "14:00:00"
-        const hourMatch = dateStr.match(/^(\d{1,2}):/);
+        
+        // Time-only fallback
+        const hourMatch = dateStr.match(HOUR_REGEX);
         if (hourMatch) {
-          const today = new Date().toISOString().slice(0, 10);
           const normalized = dateStr.length <= 5 ? `${dateStr}:00` : dateStr;
-          const fullUtc = `${today}T${normalized}Z`;
-          const reconstructed = new Date(fullUtc);
-          if (!isNaN(reconstructed.getTime())) {
+          const fullUtc = `${TODAY_PREFIX}T${normalized}Z`;
+          
+          if (!isNaN(Date.parse(fullUtc))) {
             return `${getHourInTimezone(fullUtc)}h`;
           }
-          return `${parseInt(hourMatch[1])}h`;
+          // Parse base-10 to be safe
+          return `${parseInt(hourMatch[1], 10)}h`; 
         }
         return dateStr;
       }
 
-      if (period === 'month') {
+      case 'month': {
         if (dateStr.startsWith('Week')) return dateStr;
-        const date = new Date(utcStr);
-        if (isNaN(date.getTime())) return dateStr;
+        if (isNaN(Date.parse(utcStr))) return dateStr;
+        
         const weekNum = Math.ceil(getDayOfMonthInTimezone(utcStr) / 7);
         return `Week ${weekNum}`;
       }
 
-      const date = new Date(utcStr);
-      if (isNaN(date.getTime())) return dateStr;
-
-      if (period === 'week') {
+      case 'week':
+        if (isNaN(Date.parse(utcStr))) return dateStr;
         return getWeekdayInTimezone(utcStr);
-      } else if (period === 'year') {
+
+      case 'year':
+        if (isNaN(Date.parse(utcStr))) return dateStr;
         return getMonthInTimezone(utcStr);
-      } else if (period === 'all') {
+
+      case 'all': {
+        const date = new Date(utcStr);
+        if (isNaN(date.getTime())) return dateStr;
         return date.getFullYear().toString();
       }
-      return dateStr;
-    } catch {
-      return dateStr;
+
+      default:
+        return dateStr;
     }
-  };
+  } catch {
+    return dateStr;
+  }
+};
 
   const hasData = trends && trends.trends && trends.trends.length > 0;
 
