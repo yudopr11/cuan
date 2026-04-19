@@ -52,30 +52,44 @@ const TransactionChart: React.FC<TransactionChartProps> = ({ trends, period }) =
 
   const formatLabel = (dateStr: string): string => {
     try {
+      // API returns datetimes without timezone suffix — force UTC interpretation
+      const utcStr = /Z|[+-]\d{2}:?\d{2}$/.test(dateStr) ? dateStr : `${dateStr}Z`;
+
       if (period === 'day') {
-        const date = new Date(dateStr);
+        const date = new Date(utcStr);
         if (!isNaN(date.getTime())) {
-          return `${getHourInTimezone(dateStr)}h`;
+          return `${getHourInTimezone(utcStr)}h`;
         }
+        // time-only fallback e.g. "14:00:00"
         const hourMatch = dateStr.match(/^(\d{1,2}):/);
-        return hourMatch ? `${parseInt(hourMatch[1])}h` : dateStr;
+        if (hourMatch) {
+          const today = new Date().toISOString().slice(0, 10);
+          const normalized = dateStr.length <= 5 ? `${dateStr}:00` : dateStr;
+          const fullUtc = `${today}T${normalized}Z`;
+          const reconstructed = new Date(fullUtc);
+          if (!isNaN(reconstructed.getTime())) {
+            return `${getHourInTimezone(fullUtc)}h`;
+          }
+          return `${parseInt(hourMatch[1])}h`;
+        }
+        return dateStr;
       }
 
       if (period === 'month') {
         if (dateStr.startsWith('Week')) return dateStr;
-        const date = new Date(dateStr);
+        const date = new Date(utcStr);
         if (isNaN(date.getTime())) return dateStr;
-        const weekNum = Math.ceil(getDayOfMonthInTimezone(dateStr) / 7);
+        const weekNum = Math.ceil(getDayOfMonthInTimezone(utcStr) / 7);
         return `Week ${weekNum}`;
       }
 
-      const date = new Date(dateStr);
+      const date = new Date(utcStr);
       if (isNaN(date.getTime())) return dateStr;
 
       if (period === 'week') {
-        return getWeekdayInTimezone(dateStr);
+        return getWeekdayInTimezone(utcStr);
       } else if (period === 'year') {
-        return getMonthInTimezone(dateStr);
+        return getMonthInTimezone(utcStr);
       } else if (period === 'all') {
         return date.getFullYear().toString();
       }
