@@ -27,7 +27,7 @@ interface TransactionsProps {
 
 export default function Transactions({ isMobile }: TransactionsProps) {
   usePageTitle('Transactions');
-  const { toLocalDateString, getTodayString, toUTCISOString } = useTimezone();
+  const { toLocalDateString, getTodayString, toUTCISOString, timezone } = useTimezone();
   
   // Initial filter state
   const initialFilterState = {
@@ -98,10 +98,10 @@ export default function Transactions({ isMobile }: TransactionsProps) {
     fetchCategories();
   }, []);
 
-  // Fetch transactions when active filters or pagination changes
+  // Fetch transactions when active filters, pagination, or timezone changes
   useEffect(() => {
     fetchTransactions();
-  }, [activeFilters, skip, limit]);
+  }, [activeFilters, skip, limit, timezone]);
 
   // New function to handle unique categories based on name and type for filtering
   const getUniqueCategories = (categories: Category[], transactionType: string | null = null) => {
@@ -164,6 +164,7 @@ export default function Transactions({ isMobile }: TransactionsProps) {
         apiParams.end_date = today;
       } else {
         apiParams.date_filter_type = activeFilters.date_filter_type;
+        apiParams.timezone = timezone;
       }
       
       apiParams.limit = limit;

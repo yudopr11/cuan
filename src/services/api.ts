@@ -320,6 +320,7 @@ export const getAllTransactions = async (
     start_date?: string;
     end_date?: string;
     date_filter_type?: 'day' | 'week' | 'month' | 'year' | 'all';
+    timezone?: string;
     limit?: number;
     skip?: number;
   } = {}
@@ -365,6 +366,7 @@ export const getFinancialSummary = async (
     start_date?: string;
     end_date?: string;
     period?: 'day' | 'week' | 'month' | 'year' | 'all';
+    timezone?: string;
   } = {}
 ): Promise<FinancialSummary> => {
   try {
@@ -381,6 +383,7 @@ export const getCategoryDistribution = async (
     start_date?: string;
     end_date?: string;
     period?: 'day' | 'week' | 'month' | 'year' | 'all';
+    timezone?: string;
   } = {}
 ): Promise<CategoryDistribution> => {
   try {
@@ -398,6 +401,7 @@ export const getTransactionTrends = async (
     period?: 'day' | 'week' | 'month' | 'year' | 'all';
     group_by?: 'hour' | 'day' | 'week' | 'month' | 'year';
     transaction_types?: string[];
+    timezone?: string;
   } = {}
 ): Promise<TransactionTrends> => {
   try {

@@ -56,7 +56,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
   });
 
   const { formatCurrency } = useCurrencyFormatter();
-  const { formatDate } = useTimezone();
+  const { formatDate, timezone } = useTimezone();
 
   // Initial data fetch and period changes
   useEffect(() => {
@@ -69,13 +69,13 @@ export default function Dashboard({ isMobile }: DashboardProps) {
     fetchData();
   }, []);
 
-  // Refresh data when period changes
+  // Refresh data when period or timezone changes
   useEffect(() => {
     if (!isInitialLoading) {
       fetchPeriodRelatedData();
       fetchCategoryData();
     }
-  }, [period]);
+  }, [period, timezone]);
 
   // Refresh category data when type changes
   useEffect(() => {
@@ -86,9 +86,10 @@ export default function Dashboard({ isMobile }: DashboardProps) {
 
   const fetchCategoryData = async () => {
     try {
-      const categoryDistributionData = await getCategoryDistribution({ 
+      const categoryDistributionData = await getCategoryDistribution({
         transaction_type: categoryType,
-        period
+        period,
+        timezone
       });
       setCategoryData(categoryDistributionData);
       setErrors(prev => ({ ...prev, categories: false }));
@@ -144,7 +145,7 @@ export default function Dashboard({ isMobile }: DashboardProps) {
     
     // Fetch financial summary for selected period
     try {
-      const summary = await getFinancialSummary({ period });
+      const summary = await getFinancialSummary({ period, timezone });
       setFinancialSummary(summary);
       setErrors(prev => ({ ...prev, financial: false }));
     } catch (error) {
@@ -160,9 +161,10 @@ export default function Dashboard({ isMobile }: DashboardProps) {
                      period === 'month' ? 'week' :
                      period === 'year' ? 'month' : 'year';
       
-      const trendsData = await getTransactionTrends({ 
+      const trendsData = await getTransactionTrends({
         period,
-        group_by: groupBy
+        group_by: groupBy,
+        timezone
       });
       
       setTrends(trendsData);

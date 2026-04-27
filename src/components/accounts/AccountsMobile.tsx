@@ -313,12 +313,6 @@ export default function AccountsMobile({
               </div>
             </div>
             
-            {/* Description (if available) */}
-            {account.description && (
-              <div className="mt-2 pl-12">
-                <p className="text-xs text-gray-400 truncate">{account.description}</p>
-              </div>
-            )}
           </div>
         ))): (
           <div className="card-dark flex flex-col items-center justify-center rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
@@ -353,6 +347,7 @@ export default function AccountsMobile({
         isOpen={isActionMenuOpen}
         onClose={handleCloseActionMenu}
         title={accountForAction?.name}
+        description={accountForAction?.description || undefined}
         subtitle={accountForAction?.type ? accountForAction.type.replace('_', ' ') : ''}
         actions={actionItems}
       />

@@ -14,6 +14,7 @@ interface ActionSheetModalProps {
   onClose: () => void;
   title?: string;
   subtitle?: string;
+  description?: string;
   actions: ActionItem[];
 }
 
@@ -22,6 +23,7 @@ const ActionSheetModal: React.FC<ActionSheetModalProps> = ({
   onClose,
   title,
   subtitle,
+  description,
   actions,
 }) => {
   useEffect(() => {
@@ -50,12 +52,13 @@ const ActionSheetModal: React.FC<ActionSheetModalProps> = ({
           />
         </div>
 
-        {(title || subtitle) && (
+        {(title || subtitle || description) && (
           <div className="px-5 pt-2 pb-3 text-center"
             style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
           >
             {title && <h2 className="text-base font-bold text-white">{title}</h2>}
             {subtitle && <p className="text-xs text-gray-400 capitalize mt-0.5">{subtitle}</p>}
+            {description && <p className="text-xs text-gray-500 mt-1 px-4 break-words">{description}</p>}
           </div>
         )}
 
